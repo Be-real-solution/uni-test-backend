@@ -27,7 +27,7 @@ dependencies:
     specifier: ^4.0.2
     version: 4.0.2(@nestjs/common@9.4.3)(@nestjs/core@9.4.3)(express@4.19.2)
   '@nestjs/swagger':
-    specifier: ^7.3.0
+    specifier: ^7.3.1
     version: 7.3.1(@nestjs/common@9.4.3)(@nestjs/core@9.4.3)(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.1.14)
   '@prisma/client':
     specifier: ^5.11.0
@@ -59,6 +59,9 @@ dependencies:
   express:
     specifier: ^4.19.2
     version: 4.19.2
+  express-basic-auth:
+    specifier: ^1.2.1
+    version: 1.2.1
   multer:
     specifier: 1.4.5-lts.1
     version: 1.4.5-lts.1
@@ -71,6 +74,9 @@ dependencies:
   rxjs:
     specifier: ^7.2.0
     version: 7.8.1
+  swagger-ui-express:
+    specifier: ^5.0.1
+    version: 5.0.1(express@4.19.2)
   uuid:
     specifier: ^10.0.0
     version: 10.0.0
@@ -2235,6 +2241,13 @@ packages:
   /base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
+  /basic-auth@2.0.1:
+    resolution: {integrity: sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==}
+    engines: {node: '>= 0.8'}
+    dependencies:
+      safe-buffer: 5.1.2
+    dev: false
+
   /bcrypt@5.1.1:
     resolution: {integrity: sha512-AGBHOG5hPYZ5Xl9KXzU5iKq9516yEmvCKDg3ecP5kX2aB6UqTeXZxk2ELnDgDm6BQSMlLt9rDB4LoSMx0rYwww==}
     engines: {node: '>= 10.0.0'}
@@ -3413,6 +3426,12 @@ packages:
       jest-message-util: 29.7.0
       jest-util: 29.7.0
     dev: true
+
+  /express-basic-auth@1.2.1:
+    resolution: {integrity: sha512-L6YQ1wQ/mNjVLAmK3AG1RK6VkokA1BIY6wmiH304Xtt/cLTps40EusZsU1Uop+v9lTDPxdtzbFmdXfFO3KEnwA==}
+    dependencies:
+      basic-auth: 2.0.1
+    dev: false
 
   /express@4.18.2:
     resolution: {integrity: sha512-5/PsL6iGPdfQ/lKM1UuielYgv3BUoJfz1aUwU9vHZ+J7gyvwdQXFEBIEIaxeGf0GIcreATNyBExtalisDbuMqQ==}
@@ -6847,6 +6866,16 @@ packages:
 
   /swagger-ui-dist@5.11.2:
     resolution: {integrity: sha512-jQG0cRgJNMZ7aCoiFofnoojeSaa/+KgWaDlfgs8QN+BXoGMpxeMVY5OEnjq4OlNvF3yjftO8c9GRAgcHlO+u7A==}
+    dev: false
+
+  /swagger-ui-express@5.0.1(express@4.19.2):
+    resolution: {integrity: sha512-SrNU3RiBGTLLmFU8GIJdOdanJTl4TOmT27tt3bWWHppqYmAZ6IDuEuBvMU6nZq0zLEe6b/1rACXCgLZqO6ZfrA==}
+    engines: {node: '>= v0.10.32'}
+    peerDependencies:
+      express: '>=4.0.0 || >=5.0.0-beta'
+    dependencies:
+      express: 4.19.2
+      swagger-ui-dist: 5.11.2
     dev: false
 
   /symbol-observable@4.0.0:
