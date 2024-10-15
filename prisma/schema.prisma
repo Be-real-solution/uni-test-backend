@@ -84,6 +84,7 @@ model Group {
 
   archives    Archive[]
   userInfos  UserInfo[]
+  userLogs   UserLog[]
 
   @@id([ id ])
   @@map("group")
@@ -328,4 +329,21 @@ model ArchiveAnswer {
 
   @@id([ id ])
   @@map("archive_answer")
+}
+
+model UserLog {
+  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
+  hemisId       String     @map("hemis_id")       @db.VarChar(128)
+  fullname      String     @map("fullname")       @db.VarChar(64)
+  groupId       String     @map("group_id")       @db.Uuid
+  course        Int        @map("course")         @db.SmallInt
+  semester      Int        @map("semester")       @db.SmallInt
+  groupName     String     @map("group_name")     @db.VarChar(128)
+  faculty       String     @map("faculty")        @db.VarChar(255)
+  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
+
+  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@id([ id ])
+  @@map("user_log")
 }

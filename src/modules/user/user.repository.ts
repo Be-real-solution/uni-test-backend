@@ -300,26 +300,61 @@ export class UserRepository {
 				groups.push(group)
 			}
 
-			const userPromise = await this.prisma.user
-				.create({
-					data: {
-						fullName: u.full_name,
-						image: u.image ?? '',
-						password: await bcrypt.hash(u.password, 7),
-						type: 'student',
-					},
-				})
-				.then((user) => {
-					return this.prisma.userInfo.create({
+			const user_info = await this.prisma.userInfo.findFirst({ where: { hemisId: u.hemis_id }, include: { group: true } })
+
+			let userPromise
+			if (user_info) {
+				userPromise = await this.prisma.user
+					.update({
+						where: { id: user_info.userId },
 						data: {
-							userId: user.id,
-							hemisId: u.hemis_id,
-							groupId: group.id,
+							fullName: u.full_name,
+							image: u.image ?? '',
+							password: await bcrypt.hash(u.password, 7),
 						},
 					})
-				})
+					.then((user) => {
+						return this.prisma.userInfo.update({
+							where: { id: user_info.id },
+							data: {
+								groupId: group.id,
+							},
+						})
+					})
+			} else {
+				userPromise = await this.prisma.user
+					.create({
+						data: {
+							fullName: u.full_name,
+							image: u.image ?? '',
+							password: await bcrypt.hash(u.password, 7),
+							type: 'student',
+						},
+					})
+					.then((user) => {
+						return this.prisma.userInfo.create({
+							data: {
+								userId: user.id,
+								hemisId: u.hemis_id,
+								groupId: group.id,
+							},
+						})
+					})
+			}
 
+			const userLog = await this.prisma.userLog.create({
+				data: {
+					hemisId: u.hemis_id,
+					groupId: group.id,
+					semester: u.semestr,
+					groupName: u.group,
+					faculty: u.faculty,
+					course: u.course,
+					fullname: u.full_name,
+				},
+			})
 			promises.push(userPromise)
+			promises.push(userLog)
 		}
 
 		await Promise.all(promises)
