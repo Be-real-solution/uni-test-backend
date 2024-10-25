@@ -94,6 +94,7 @@ model Group {
 model Science {
   id         String     @map("id")          @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
   name       String     @map("name")        @db.VarChar(255) 
+  since_id   Int?       @map("since_id")    @db.Integer
   createdAt  DateTime   @map("created_at")  @db.Timestamp     @default(now())
   updatedAt  DateTime   @map("updated_at")  @db.Timestamp     @updatedAt
   deletedAt  DateTime?  @map("deleted_at")  @db.Timestamp

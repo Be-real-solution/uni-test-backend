@@ -47,6 +47,11 @@ export class ScienceCreateRequestDto implements ScienceCreateRequest {
 	@IsString()
 	@IsNotEmpty()
 	name: string
+
+	@ApiPropertyOptional({ example: 12345 })
+	@IsOptional()
+	@IsNumber()
+	since_id?: number
 }
 
 export class ScienceUpdateRequestDto implements ScienceUpdateRequest {
@@ -54,6 +59,11 @@ export class ScienceUpdateRequestDto implements ScienceUpdateRequest {
 	@IsString()
 	@IsOptional()
 	name?: string
+
+	@ApiPropertyOptional({ example: 12345 })
+	@IsOptional()
+	@IsNumber()
+	since_id?: number
 }
 
 export class ScienceDeleteRequestDto implements ScienceDeleteRequest {
@@ -72,6 +82,9 @@ export class ScienceFindFullResponseDto implements ScienceFindOneResponse {
 	@ApiProperty({ example: 'name' })
 	name: string
 
+	@ApiProperty({ example: 3627 })
+	since_id: number
+
 	@ApiProperty({ example: new Date() })
 	createdAt: Date
 }
@@ -82,6 +95,9 @@ export class ScienceFindOneResponseDto implements ScienceFindOneResponse {
 
 	@ApiProperty({ example: 'name' })
 	name: string
+
+	@ApiProperty({ example: 3627 })
+	since_id: number
 
 	@ApiProperty({ example: new Date() })
 	createdAt: Date

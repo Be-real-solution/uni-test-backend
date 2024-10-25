@@ -29,7 +29,7 @@ export class ScienceRepository {
 	async findFull(payload: ScienceFindFullRequest): Promise<ScienceFindFullResponse> {
 		const sciences = await this.prisma.science.findMany({
 			where: { deletedAt: null },
-			select: { id: true, name: true, createdAt: true },
+			select: { id: true, name: true, since_id: true, createdAt: true },
 			orderBy: [{ createdAt: 'desc' }],
 		})
 
@@ -41,7 +41,7 @@ export class ScienceRepository {
 			where: { deletedAt: null },
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
-			select: { id: true, name: true, createdAt: true },
+			select: { id: true, name: true, since_id: true, createdAt: true },
 			orderBy: [{ createdAt: 'desc' }],
 		})
 
@@ -60,24 +60,26 @@ export class ScienceRepository {
 	async findOne(payload: ScienceFindOneRequest): Promise<ScienceFindOneResponse> {
 		const science = await this.prisma.science.findFirst({
 			where: { id: payload.id, deletedAt: null },
-			select: { id: true, name: true, createdAt: true },
+			select: { id: true, name: true, since_id: true, createdAt: true },
 		})
 
 		return science
 	}
 
 	async findByName(payload: Partial<ScienceFindOneResponse>): Promise<ScienceFindOneResponse> {
-		const science = await this.prisma.science.findFirst({ where: { name: payload.name, id: { not: payload.id }, deletedAt: null } })
+		const science = await this.prisma.science.findFirst({ where: { OR: [{ name: payload.name }, { since_id: payload.since_id }], id: { not: payload.id }, deletedAt: null } })
 		return science
 	}
 
 	async create(payload: ScienceCreateRequest): Promise<ScienceCreateResponse> {
-		await this.prisma.science.create({ data: { name: payload.name } })
+		const since = await this.prisma.science.findFirst({ where: { since_id: payload.since_id } })
+
+		await this.prisma.science.create({ data: { ...payload } })
 		return null
 	}
 
 	async update(payload: ScienceFindOneRequest & ScienceUpdateRequest): Promise<ScienceUpdateRequest> {
-		await this.prisma.science.update({ where: { id: payload.id, deletedAt: null }, data: { name: payload.name } })
+		await this.prisma.science.update({ where: { id: payload.id, deletedAt: null }, data: { ...payload } })
 		return null
 	}
 
@@ -103,6 +105,7 @@ export class ScienceRepository {
 			select: {
 				id: true,
 				name: true,
+				since_id: true,
 				createdAt: true,
 				collections: {
 					select: {
@@ -139,6 +142,7 @@ export class ScienceRepository {
 			select: {
 				id: true,
 				name: true,
+				since_id: true,
 				collections: {
 					select: {
 						id: true,
@@ -182,6 +186,7 @@ export class ScienceRepository {
 			const sc = {
 				id: s.id,
 				name: s.name,
+				since_id: s.since_id,
 				collections: collections,
 			}
 			return sc

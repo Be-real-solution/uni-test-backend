@@ -49,7 +49,7 @@ export class ScienceService {
 	}
 
 	async findOneByName(payload: Partial<ScienceFindOneResponse>): Promise<ScienceFindOneResponse> {
-		const science = await this.repository.findByName({ name: payload.name, id: payload.id })
+		const science = await this.repository.findByName({ name: payload.name, since_id: payload.since_id, id: payload.id })
 		if (science) {
 			throw new BadRequestException('Science already exists')
 		}
@@ -57,7 +57,7 @@ export class ScienceService {
 	}
 
 	async create(payload: ScienceCreateRequest): Promise<ScienceCreateResponse> {
-		await this.findOneByName({ name: payload.name })
+		await this.findOneByName({ name: payload.name, since_id: payload.since_id })
 		return this.repository.create(payload)
 	}
 

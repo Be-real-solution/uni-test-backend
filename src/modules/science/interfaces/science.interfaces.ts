@@ -13,6 +13,7 @@ export declare interface ScienceFindOneRequest {
 
 export declare interface ScienceCreateRequest {
 	name: string
+	since_id?: number
 }
 
 export declare interface ScienceUpdateRequest {
@@ -37,6 +38,7 @@ export declare interface ScienceFindAllResponse {
 export declare interface ScienceFindOneResponse {
 	id: string
 	name: string
+	since_id: number
 	createdAt: Date
 }
 
