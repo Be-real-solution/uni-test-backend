@@ -66,7 +66,7 @@ export class ScienceRepository {
 		return science
 	}
 
-	async findByName(payload: Partial<ScienceFindOneResponse>): Promise<ScienceFindOneResponse> {
+	async findByNameOrSinceId(payload: Partial<ScienceFindOneResponse>): Promise<ScienceFindOneResponse> {
 		const science = await this.prisma.science.findFirst({ where: { OR: [{ name: payload.name }, { since_id: payload.since_id }], id: { not: payload.id }, deletedAt: null } })
 		return science
 	}
