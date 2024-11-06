@@ -38,6 +38,7 @@ export class UserCollectionRepository {
 						maxAttempts: true,
 						givenMinutes: true,
 						amountInTest: true,
+						questions: { select: { id: true, text: true, createdAt: true, answers: { select: { id: true, text: true, createdAt: true } } } },
 						science: { select: { id: true, name: true, since_id: true, createdAt: true } },
 					},
 				},
