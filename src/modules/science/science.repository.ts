@@ -120,7 +120,7 @@ export class ScienceRepository {
 							select: {
 								course: { select: { id: true, stage: true } },
 								faculty: { select: { id: true, name: true } },
-								semestr: { select: { id: true, stage: true } },
+								// semestr: { select: { id: true, stage: true } },
 								group: { select: { id: true, name: true } },
 								result: true,
 								id: true,

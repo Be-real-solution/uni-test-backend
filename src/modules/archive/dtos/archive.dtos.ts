@@ -21,7 +21,7 @@ import { FacultyFindOneResponse, FacultyFindOneResponseDto } from '../../faculty
 import { GroupFindOneResponse, GroupFindOneResponseDto } from '../../group'
 import { UserFindOneResponse, UserFindOneResponseDto } from '../../user'
 import { CourseFindOneResponse, CourseFindOneResponseDto } from '../../course'
-import { SemestrFindOneResponse, SemestrFindOneResponseDto } from '../../semestr'
+// import { SemestrFindOneResponse, SemestrFindOneResponseDto } from '../../semestr'
 import { Type } from 'class-transformer'
 
 export class ArchiveFindFullRequestDto implements ArchiveFindFullRequest {
@@ -45,10 +45,10 @@ export class ArchiveFindFullRequestDto implements ArchiveFindFullRequest {
 	@IsOptional()
 	groupId?: string
 
-	@ApiPropertyOptional({ example: 'uuid' })
-	@IsUUID('4')
-	@IsOptional()
-	semestrId?: string
+	// @ApiPropertyOptional({ example: 'uuid' })
+	// @IsUUID('4')
+	// @IsOptional()
+	// semestrId?: string
 
 	@ApiPropertyOptional({ example: 'uuid' })
 	@IsUUID('4')
@@ -97,10 +97,10 @@ export class ArchiveFindAllRequestDto implements ArchiveFindAllRequest {
 	@IsOptional()
 	groupId?: string
 
-	@ApiPropertyOptional({ example: 'uuid' })
-	@IsUUID('4')
-	@IsOptional()
-	semestrId?: string
+	// @ApiPropertyOptional({ example: 'uuid' })
+	// @IsUUID('4')
+	// @IsOptional()
+	// semestrId?: string
 
 	@ApiPropertyOptional({ example: 'uuid' })
 	@IsUUID('4')
@@ -208,8 +208,8 @@ export class ArchiveFindFullResponseDto implements ArchiveFindOneResponse {
 	@ApiProperty({ type: CollectionFindOneResponseDto })
 	collection: CollectionFindOneResponse
 
-	@ApiProperty({ type: SemestrFindOneResponseDto })
-	semestr: SemestrFindOneResponse
+	// @ApiProperty({ type: SemestrFindOneResponseDto })
+	// semestr: SemestrFindOneResponse
 
 	@ApiProperty({ type: FacultyFindOneResponseDto })
 	faculty: FacultyFindOneResponse
@@ -294,8 +294,8 @@ export class ArchiveFindOneResponseDto implements ArchiveFindOneResponse {
 	@ApiProperty({ type: FacultyFindOneResponseDto })
 	faculty: FacultyFindOneResponse
 
-	@ApiProperty({ type: SemestrFindOneResponseDto })
-	semestr: SemestrFindOneResponse
+	// @ApiProperty({ type: SemestrFindOneResponseDto })
+	// semestr: SemestrFindOneResponse
 
 	@ApiProperty({ type: GroupFindOneResponseDto })
 	group: GroupFindOneResponse

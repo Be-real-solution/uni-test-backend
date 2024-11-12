@@ -134,8 +134,8 @@ export class FacultyCourseDto implements FacultyCourse {
 	@ApiProperty({ example: 2 })
 	stage: number
 
-	@ApiProperty({ type: FacultyCourseSemestrDto, isArray: true })
-	semestrs: FacultyCourseSemestr[]
+	@ApiProperty({ type: FacultyCourseSemestrGroupDto, isArray: true })
+	groups: FacultyCourseSemestrGroup[]
 }
 
 export class FacultyFindFullForSetCollectionDto implements FacultyFindFullForSetCollection {

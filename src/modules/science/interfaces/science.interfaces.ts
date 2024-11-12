@@ -66,7 +66,7 @@ export declare interface ScienceCollectionArchive {
 	result: number
 	course: ScienceCollectionArchiveCourse
 	faculty: ScienceCollectionArchiveFaculty
-	semestr: ScienceCollectionArchiveSemestr
+	// semestr: ScienceCollectionArchiveSemestr
 }
 
 export declare interface ScienceCollectionArchiveCourse {

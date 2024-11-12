@@ -12,7 +12,7 @@ import {
 import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { CourseFindOneResponse, CourseFindOneResponseDto } from '../../course'
 import { FacultyFindOneResponse, FacultyFindOneResponseDto } from '../../faculty'
-import { SemestrFindOneResponse, SemestrFindOneResponseDto } from '../../semestr'
+// import { SemestrFindOneResponse, SemestrFindOneResponseDto } from '../../semestr'
 
 export class GroupFindFullRequestDto implements GroupFindFullRequest {
 	@ApiPropertyOptional({ example: 'uuid' })
@@ -81,10 +81,10 @@ export class GroupCreateRequestDto implements GroupCreateRequest {
 	@IsNotEmpty()
 	facultyId: string
 
-	@ApiProperty({ example: 'uuid' })
-	@IsUUID('4')
-	@IsNotEmpty()
-	semestrId: string
+	// @ApiProperty({ example: 'uuid' })
+	// @IsUUID('4')
+	// @IsNotEmpty()
+	// semestrId: string
 }
 
 export class GroupUpdateRequestDto implements GroupUpdateRequest {
@@ -131,8 +131,8 @@ export class GroupFindFullResponseDto implements GroupFindOneResponse {
 	@ApiProperty({ type: FacultyFindOneResponseDto })
 	faculty: FacultyFindOneResponse
 
-	@ApiPropertyOptional({ type: SemestrFindOneResponseDto })
-	semestr?: SemestrFindOneResponse
+	// @ApiPropertyOptional({ type: SemestrFindOneResponseDto })
+	// semestr?: SemestrFindOneResponse
 
 	@ApiProperty({ example: new Date() })
 	createdAt: Date
@@ -151,8 +151,8 @@ export class GroupFindOneResponseDto implements GroupFindOneResponse {
 	@ApiProperty({ type: FacultyFindOneResponseDto })
 	faculty: FacultyFindOneResponse
 
-	@ApiPropertyOptional({ type: SemestrFindOneResponseDto })
-	semestr?: SemestrFindOneResponse
+	// @ApiPropertyOptional({ type: SemestrFindOneResponseDto })
+	// semestr?: SemestrFindOneResponse
 
 	@ApiProperty({ example: new Date() })
 	createdAt: Date

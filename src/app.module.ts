@@ -12,7 +12,7 @@ import {
 	PrismaModule,
 	QuestionModule,
 	ScienceModule,
-	SemestrModule,
+	// SemestrModule,
 	UserCollectionModule,
 	UserInfoModule,
 	UserModule,
@@ -48,7 +48,7 @@ import { join } from 'path'
 		AnswerModule,
 		UserCollectionModule,
 		ArchiveModule,
-		SemestrModule,
+		// SemestrModule,
 	],
 })
 export class AppModule {}

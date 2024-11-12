@@ -16,7 +16,7 @@ import {
 } from './interfaces'
 import { FacultyFindOneResponse } from '../faculty'
 import { CourseFindOneResponse } from '../course'
-import { SemestrFindOneResponse } from '../semestr'
+// import { SemestrFindOneResponse } from '../semestr'
 import { GroupFindOneResponse } from '../group'
 import * as bcrypt from 'bcrypt'
 
@@ -51,7 +51,7 @@ export class UserRepository {
 								id: true,
 								course: { select: { id: true, stage: true, createdAt: true } },
 								faculty: { select: { id: true, name: true, createdAt: true } },
-								semestr: { select: { id: true, stage: true, createdAt: true } },
+								// semestr: { select: { id: true, stage: true, createdAt: true } },
 								name: true,
 								createdAt: true,
 							},
@@ -92,7 +92,7 @@ export class UserRepository {
 								id: true,
 								course: { select: { id: true, stage: true, createdAt: true } },
 								faculty: { select: { id: true, name: true, createdAt: true } },
-								semestr: { select: { id: true, stage: true, createdAt: true } },
+								// semestr: { select: { id: true, stage: true, createdAt: true } },
 								name: true,
 								createdAt: true,
 							},
@@ -140,7 +140,7 @@ export class UserRepository {
 								id: true,
 								course: { select: { id: true, stage: true, createdAt: true } },
 								faculty: { select: { id: true, name: true, createdAt: true } },
-								semestr: { select: { id: true, stage: true, createdAt: true } },
+								// semestr: { select: { id: true, stage: true, createdAt: true } },
 								name: true,
 								createdAt: true,
 							},
@@ -174,7 +174,7 @@ export class UserRepository {
 								id: true,
 								course: { select: { id: true, stage: true, createdAt: true } },
 								faculty: { select: { id: true, name: true, createdAt: true } },
-								semestr: { select: { id: true, stage: true, createdAt: true } },
+								// semestr: { select: { id: true, stage: true, createdAt: true } },
 								name: true,
 								createdAt: true,
 							},
@@ -217,7 +217,7 @@ export class UserRepository {
 		const courseStages: number[] = []
 		const courses: CourseFindOneResponse[] = []
 		const semestrStages: number[] = []
-		const semestrs: SemestrFindOneResponse[] = []
+		// const semestrs: SemestrFindOneResponse[] = []
 		const groupNames: string[] = []
 		const groups: GroupFindOneResponse[] = []
 
@@ -249,23 +249,23 @@ export class UserRepository {
 			}
 
 			//semestr
-			let semestr: SemestrFindOneResponse
-			if (semestrStages.includes(u.semestr)) {
-				semestr = semestrs.find((s) => s.stage === u.semestr)
-			} else {
-				semestr = await this.prisma.semestr.findFirst({ where: { stage: u.semestr, deletedAt: null } })
-				if (!semestr) {
-					semestr = await this.prisma.semestr.create({ data: { stage: u.semestr }, select: { id: true, stage: true, createdAt: true } })
-				}
-				semestrStages.push(semestr.stage)
-				semestrs.push(semestr)
-			}
+			// let semestr: SemestrFindOneResponse
+			// if (semestrStages.includes(u.semestr)) {
+			// 	semestr = semestrs.find((s) => s.stage === u.semestr)
+			// } else {
+			// 	semestr = await this.prisma.semestr.findFirst({ where: { stage: u.semestr, deletedAt: null } })
+			// 	if (!semestr) {
+			// 		semestr = await this.prisma.semestr.create({ data: { stage: u.semestr }, select: { id: true, stage: true, createdAt: true } })
+			// 	}
+			// 	semestrStages.push(semestr.stage)
+			// 	semestrs.push(semestr)
+			// }
 
 			//group
 			let group: GroupFindOneResponse
 			if (groupNames.includes(u.group)) {
 				group = groups.find((g) => g.name === u.group)
-				if (group.course.id !== course.id || group.faculty.id !== faculty.id || group.semestr.id !== semestr.id) {
+				if (group.course.id !== course.id || group.faculty.id !== faculty.id ) {
 					throw new BadRequestException(`Fileni o'qishda xatolik. Talaba ma'lumotlarida xatolik mavjud.` + u.full_name)
 				}
 			} else {
@@ -276,24 +276,24 @@ export class UserRepository {
 						name: true,
 						createdAt: true,
 						faculty: { select: { id: true, name: true, createdAt: true } },
-						semestr: { select: { id: true, stage: true, createdAt: true } },
+						// semestr: { select: { id: true, stage: true, createdAt: true } },
 						course: { select: { id: true, stage: true, createdAt: true } },
 					},
 				})
 				if (!group) {
 					group = await this.prisma.group.create({
-						data: { name: u.group, facultyId: faculty.id, courseId: course.id, semestrId: semestr.id },
+						data: { name: u.group, facultyId: faculty.id, courseId: course.id },
 						select: {
 							id: true,
 							name: true,
 							createdAt: true,
 							faculty: { select: { id: true, name: true, createdAt: true } },
-							semestr: { select: { id: true, stage: true, createdAt: true } },
+							// semestr: { select: { id: true, stage: true, createdAt: true } },
 							course: { select: { id: true, stage: true, createdAt: true } },
 						},
 					})
 				}
-				if (group.course.id !== course.id || group.faculty.id !== faculty.id || group.semestr.id !== semestr.id) {
+				if (group.course.id !== course.id || group.faculty.id !== faculty.id) {
 					throw new BadRequestException(`Fileni o'qishda xatolik. Talaba ma'lumotlarida xatolik mavjud.` + u.full_name)
 				}
 				groupNames.push(group.name)
@@ -346,7 +346,7 @@ export class UserRepository {
 				data: {
 					hemisId: u.hemis_id,
 					groupId: group.id,
-					semester: u.semestr,
+					// semester: u.semestr,
 					groupName: u.group,
 					faculty: u.faculty,
 					course: u.course,

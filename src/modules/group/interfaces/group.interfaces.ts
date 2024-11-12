@@ -1,6 +1,6 @@
 import { CourseFindOneResponse } from '../../course'
 import { FacultyFindOneResponse } from '../../faculty'
-import { SemestrFindOneResponse } from '../../semestr'
+// import { SemestrFindOneResponse } from '../../semestr'
 
 export declare interface GroupFindFullRequest {
 	courseId?: string
@@ -24,7 +24,7 @@ export declare interface GroupCreateRequest {
 	name: string
 	courseId: string
 	facultyId: string
-	semestrId: string
+	// semestrId: string
 }
 
 export declare interface GroupUpdateRequest {
@@ -54,7 +54,7 @@ export declare interface GroupFindOneResponse {
 	name: string
 	course?: CourseFindOneResponse
 	faculty?: FacultyFindOneResponse
-	semestr?: SemestrFindOneResponse
+	// semestr?: SemestrFindOneResponse
 	createdAt: Date
 }
 

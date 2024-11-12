@@ -94,20 +94,20 @@ export class FacultyRepository {
 			select: { id: true, stage: true },
 			orderBy: [{ createdAt: 'desc' }],
 		})
-		const semestrs = await this.prisma.semestr.findMany({ where: { deletedAt: null }, select: { id: true, stage: true }, orderBy: [{ createdAt: 'desc' }] })
+		// const semestrs = await this.prisma.semestr.findMany({ where: { deletedAt: null }, select: { id: true, stage: true }, orderBy: [{ createdAt: 'desc' }] })
 
 		const customFaculties = []
 		for (const f of faculties) {
 			const customCourses = []
 			for (const c of courses) {
-				const customSemestrs = []
-				for (const s of semestrs) {
+				// const customSemestrs = []
+				// for (const s of semestrs) {
 					const groups = await this.prisma.group.findMany({
 						where: {
 							deletedAt: null,
 							facultyId: f.id,
 							courseId: c.id,
-							semestrId: s.id,
+							// semestrId: s.id,
 						},
 						select: { id: true, name: true },
 						orderBy: [{ createdAt: 'desc' }],
@@ -125,9 +125,9 @@ export class FacultyRepository {
 						})
 						customGroups.push({ ...g, students: userInfos.map((u) => ({ ...u.user })) })
 					}
-					customSemestrs.push({ ...s, groups: customGroups })
-				}
-				customCourses.push({ ...c, semestrs: customSemestrs })
+					// customSemestrs.push({ ...s, groups: customGroups })
+				// }
+				customCourses.push({ ...c, groups: customGroups })
 			}
 			customFaculties.push({ ...f, courses: customCourses })
 		}

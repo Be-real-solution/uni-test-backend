@@ -2,7 +2,7 @@ import { CollectionFindOneResponse } from '../../collection'
 import { CourseFindOneResponse } from '../../course'
 import { FacultyFindOneResponse } from '../../faculty'
 import { GroupFindOneResponse } from '../../group'
-import { SemestrFindOneResponse } from '../../semestr'
+// import { SemestrFindOneResponse } from '../../semestr'
 import { UserFindOneResponse } from '../../user'
 
 export declare interface ArchiveFindFullRequest {
@@ -65,7 +65,7 @@ export declare interface ArchiveFindOneResponse {
 	user: UserFindOneResponse
 	group: GroupFindOneResponse
 	course: CourseFindOneResponse
-	semestr: SemestrFindOneResponse
+	// semestr: SemestrFindOneResponse
 	testCount: number
 	faculty: FacultyFindOneResponse
 	collection: CollectionFindOneResponse
