@@ -62,7 +62,7 @@ export declare interface QuestionFindOneResponse {
 	createdAt: Date
 }
 
-export declare type QuestionCreateResponse = null
+export declare type QuestionCreateResponse = QuestionFindOneResponse
 
 export declare type QuestionsCreateWithAnswersResponse = null
 

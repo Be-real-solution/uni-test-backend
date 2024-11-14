@@ -106,8 +106,7 @@ export class QuestionRepository {
 	}
 
 	async create(payload: QuestionCreateRequest): Promise<QuestionCreateResponse> {
-		await this.prisma.question.create({ data: { text: payload.text, collectionId: payload.collectionId } })
-		return null
+		return await this.prisma.question.create({ data: { text: payload.text, collectionId: payload.collectionId } })
 	}
 
 	async createWithAnswers(payload: QuestionsCreateWithAnswersRequest): Promise<QuestionsCreateWithAnswersResponse> {
