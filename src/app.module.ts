@@ -20,6 +20,7 @@ import {
 import { databaseConfig } from './configs'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
+import { DirectoryModule } from './modules/directory/directory.module';
 
 @Module({
 	imports: [
@@ -48,6 +49,7 @@ import { join } from 'path'
 		AnswerModule,
 		UserCollectionModule,
 		ArchiveModule,
+		DirectoryModule,
 		// SemestrModule,
 	],
 })

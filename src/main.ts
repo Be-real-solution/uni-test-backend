@@ -12,15 +12,15 @@ setImmediate(async (): Promise<void> => {
 	app.use(json({ limit: '50mb' }))
 	app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
 
-	app.use(
-		'/docs*',
-		BasicAuth({
-			challenge: true,
-			users: {
-				swaggerusername: 'swaggerpassword',
-			},
-		}),
-	)
+	// app.use(
+	// 	'/docs*',
+	// 	BasicAuth({
+	// 		challenge: true,
+	// 		users: {
+	// 			swaggerusername: 'swaggerpassword',
+	// 		},
+	// 	}),
+	// )
 
 	const swaggerConfig = new DocumentBuilder()
 		.addBearerAuth({

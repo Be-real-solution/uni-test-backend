@@ -348,3 +348,17 @@ model UserLog {
   @@id([ id ])
   @@map("user_log")
 }
+
+model Directory {
+  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
+  name          String     @map("name")           @db.VarChar(128)
+  parentId      String?    @map("parent_id")      @db.Uuid
+  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
+  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
+  
+  parent   Directory?  @relation("parent_id", fields: [parentId], references: [id], onDelete: Cascade)
+  children Directory[] @relation("parent_id")
+
+  @@id([ id ])
+  @@map("directory")
+}
