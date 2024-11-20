@@ -21,6 +21,7 @@ import { databaseConfig } from './configs'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { DirectoryModule } from './modules/directory/directory.module';
+import { SettingModule } from './modules/setting/setting.module';
 
 @Module({
 	imports: [
@@ -50,6 +51,7 @@ import { DirectoryModule } from './modules/directory/directory.module';
 		UserCollectionModule,
 		ArchiveModule,
 		DirectoryModule,
+		SettingModule,
 		// SemestrModule,
 	],
 })

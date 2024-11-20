@@ -365,3 +365,14 @@ model Directory {
   @@id([ id ])
   @@map("directory")
 }
+
+model Setting {
+  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
+  name          String     @map("name")           @db.VarChar(128)
+  status        Boolean    @map("status")         @db.Boolean       @default(false)
+  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
+  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
+
+  @@id([ id ])
+  @@map("setting")
+}
