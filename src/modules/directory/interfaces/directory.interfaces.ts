@@ -1,3 +1,5 @@
+import { CollectionFindAllResponse, CollectionFindOneResponse } from "modules/collection"
+
 export declare interface ICreateDirectory {
 	name: string
 	parentId?: string
@@ -10,6 +12,7 @@ export declare interface IFindOneDirectoryResponse {
 	createdAt: Date
 	parent?: IFindOneDirectoryResponse
 	children?: IFindOneDirectoryResponse[]
+	collections?: CollectionFindOneResponse[]
 }
 
 export declare interface IFindOneByParentIdOrName {

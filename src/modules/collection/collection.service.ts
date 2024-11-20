@@ -18,6 +18,7 @@ import {
 	CollectionUpdateResponse,
 } from './interfaces'
 import { QuestionService } from '../question'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class CollectionService {
@@ -116,25 +117,27 @@ export class CollectionService {
 		return collection
 	}
 
-	async create(payload: CollectionCreateRequest): Promise<CollectionCreateResponse> {
+	async create(payload: CollectionCreateRequest): Promise<IResponse<CollectionCreateResponse>> {
 		await this.findOneByName({ name: payload.name })
-		return this.repository.create(payload)
+		const collection = await this.repository.create(payload)
+
+		return { status_code: 201, data: collection, message: 'created' }
 	}
 
-	async createWithQuestions(payload: CollectionCreateRequest, text: string): Promise<CollectionCreateResponse> {
+	async createWithQuestions(payload: CollectionCreateRequest, text: string): Promise<IResponse<CollectionCreateResponse>> {
 		await this.findOneByName({ name: payload.name })
-		const collectionId = await this.repository.createWithReturningId(payload)
-		await this.questionService.createManyWithAnswers({ collectionId: collectionId }, text).catch(async (e) => {
-			await this.repository.HardDelete({ id: collectionId })
+		const collection = await this.repository.create(payload)
+		await this.questionService.createManyWithAnswers({ collectionId: collection.id }, text).catch(async (e) => {
+			await this.repository.HardDelete({ id: collection.id })
 			console.log(e)
 			throw new BadRequestException(e)
 		})
-		return null
+		return { status_code: 201, data: collection, message: 'created' }
 	}
 
-	async confirmCreateWithQuestions(payload: CollectionBeforeCreateResponse): Promise<CollectionCreateResponse> {
+	async confirmCreateWithQuestions(payload: CollectionBeforeCreateResponse): Promise<IResponse<CollectionCreateResponse>> {
 		await this.findOneByName({ name: payload.name })
-		const collectionId = await this.repository.createWithReturningId({
+		const collection = await this.repository.create({
 			adminId: payload.adminId,
 			amountInTest: payload.amountInTest,
 			givenMinutes: payload.givenMinutes,
@@ -142,17 +145,18 @@ export class CollectionService {
 			maxAttempts: payload.maxAttempts,
 			name: payload.name,
 			scienceId: payload.science.id,
+			directoryId: payload.directoryId,
 		})
-		await this.questionService.confirmCreateManyWithAnswers({ collectionId: collectionId }, { questions: payload.questions }).catch(async (e) => {
-			await this.repository.HardDelete({ id: collectionId })
+		await this.questionService.confirmCreateManyWithAnswers({ collectionId: collection.id }, { questions: payload.questions }).catch(async (e) => {
+			await this.repository.HardDelete({ id: collection.id })
 			console.log(e)
 
 			throw new BadRequestException(e)
 		})
-		return null
+		return { status_code: 201, data: collection, message: 'created' }
 	}
 
-	async returnWithQuestions(payload: CollectionBeforeCreateRequest, text: string): Promise<CollectionBeforeCreateResponse> {
+	async returnWithQuestions(payload: CollectionBeforeCreateRequest, text: string): Promise<IResponse<CollectionBeforeCreateResponse>> {
 		payload.name ? await this.findOneByName({ name: payload.name }) : null
 		const ques = await this.questionService.returnManyWithAnswers(text)
 		let s: any
@@ -160,23 +164,29 @@ export class CollectionService {
 			s = await this.repository.scienceFindOne({ id: payload.scienceId })
 		}
 		return {
-			amountInTest: payload.amountInTest,
-			givenMinutes: payload.givenMinutes,
-			language: payload.language,
-			maxAttempts: payload.maxAttempts,
-			name: payload.name,
-			science: s,
-			questions: ques.questions,
-			adminId: payload.adminId,
+			status_code: 201,
+			data: {
+				amountInTest: payload.amountInTest,
+				givenMinutes: payload.givenMinutes,
+				language: payload.language,
+				maxAttempts: payload.maxAttempts,
+				name: payload.name,
+				science: s,
+				questions: ques.questions,
+				adminId: payload.adminId,
+				directoryId: payload.directoryId,
+			},
+			message: 'created',
 		}
 	}
 
-	async update(params: CollectionFindOneRequest, payload: CollectionUpdateRequest): Promise<CollectionUpdateResponse> {
+	async update(params: CollectionFindOneRequest, payload: CollectionUpdateRequest): Promise<IResponse<CollectionUpdateResponse>> {
 		await this.findOne({ id: params.id })
 		payload.name ? await this.findOneByName({ name: payload.name, id: params.id }) : null
 
-		await this.repository.update({ ...params, ...payload })
-		return null
+		const collection = await this.repository.update({ ...params, ...payload })
+
+		return { status_code: 200, data: collection, message: 'updated' }
 	}
 
 	async delete(payload: CollectionDeleteRequest): Promise<CollectionDeleteResponse> {

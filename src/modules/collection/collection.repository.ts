@@ -13,6 +13,7 @@ import {
 	CollectionFindOneResponse,
 	CollectionFindOneWithQuestionAnswers,
 	CollectionUpdateRequest,
+	CollectionUpdateResponse,
 } from './interfaces'
 
 @Injectable()
@@ -161,7 +162,7 @@ export class CollectionRepository {
 	}
 
 	async create(payload: CollectionCreateRequest): Promise<CollectionCreateResponse> {
-		await this.prisma.collection.create({
+		return this.prisma.collection.create({
 			data: {
 				name: payload.name,
 				amountInTest: payload.amountInTest,
@@ -170,9 +171,10 @@ export class CollectionRepository {
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
 				adminId: payload.adminId,
+				directoryId: payload.directoryId
 			},
 		})
-		return null
+
 	}
 
 	async createWithReturningId(payload: CollectionCreateRequest): Promise<string> {
@@ -185,13 +187,14 @@ export class CollectionRepository {
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
 				adminId: payload.adminId,
+				directoryId: payload.directoryId
 			},
 		})
 		return collection.id
 	}
 
-	async update(payload: CollectionFindOneRequest & CollectionUpdateRequest): Promise<CollectionUpdateRequest> {
-		await this.prisma.collection.update({
+	async update(payload: CollectionFindOneRequest & CollectionUpdateRequest): Promise<CollectionUpdateResponse> {
+		return this.prisma.collection.update({
 			where: { id: payload.id, deletedAt: null },
 			data: {
 				name: payload.name,
@@ -201,8 +204,10 @@ export class CollectionRepository {
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
 				adminId: payload.adminId,
+				directoryId: payload.directoryId
 			},
-		})
+		})		
+		
 		return null
 	}
 

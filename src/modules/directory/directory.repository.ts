@@ -25,7 +25,7 @@ export class DirectoryRepository {
 	async findOne(id: string): Promise<IFindOneDirectoryResponse> {
 		return this.prisma.directory.findFirst({
 			where: { id },
-			include: { children: { orderBy: { createdAt: 'desc' } }, parent: true },
+			include: { children: { orderBy: { createdAt: 'desc' } }, parent: true, collections: { orderBy: { createdAt: 'desc' } } },
 		})
 	}
 

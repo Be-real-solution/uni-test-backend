@@ -29,6 +29,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { UploadedTxtFile } from '../../interfaces'
 import { CheckAuthGuard } from '../../guards'
 import { Response } from 'express'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Collection')
 @UseGuards(CheckAuthGuard)
@@ -83,7 +84,7 @@ export class CollectionController {
 
 	@Post()
 	@ApiResponse({ type: null })
-	create(@Body() payload: CollectionCreateRequestDto): Promise<CollectionCreateResponse> {
+	create(@Body() payload: CollectionCreateRequestDto): Promise<IResponse<CollectionCreateResponse>> {
 		return this.service.create(payload)
 	}
 
@@ -100,7 +101,7 @@ export class CollectionController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
-	createWithQuestions(@Body() payload: CollectionCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<CollectionCreateResponse> {
+	createWithQuestions(@Body() payload: CollectionCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<IResponse<CollectionCreateResponse>> {
 		return this.service.createWithQuestions(payload, file.buffer.toString('utf-8'))
 	}
 
@@ -117,19 +118,19 @@ export class CollectionController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: CollectionBeforeCreateResponseDto })
-	returnWithQuestions(@Body() payload: CollectionBeforeCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<CollectionBeforeCreateResponse> {
+	returnWithQuestions(@Body() payload: CollectionBeforeCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<IResponse<CollectionBeforeCreateResponse>> {
 		return this.service.returnWithQuestions(payload, file.buffer.toString('utf-8'))
 	}
 
 	@Post('confirm-with-questions')
 	@ApiResponse({ type: null })
-	confirmWithQuestions(@Body() payload: CollectionBeforeCreateResponseDto): Promise<CollectionCreateResponse> {
+	confirmWithQuestions(@Body() payload: CollectionBeforeCreateResponseDto): Promise<IResponse<CollectionCreateResponse>> {
 		return this.service.confirmCreateWithQuestions(payload)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: CollectionFindOneRequestDto, @Body() payload: CollectionUpdateRequestDto): Promise<CollectionUpdateResponse> {
+	update(@Param() params: CollectionFindOneRequestDto, @Body() payload: CollectionUpdateRequestDto): Promise<IResponse<CollectionUpdateResponse>> {
 		return this.service.update(params, payload)
 	}
 

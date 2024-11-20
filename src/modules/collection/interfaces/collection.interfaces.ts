@@ -2,6 +2,7 @@ import { CollectionLanguageEnum } from '@prisma/client'
 import { ScienceFindOneResponse } from '../../science'
 import { QuestionFindOneResponse } from '../../question'
 import { AdminFindOneResponse } from '../../admin'
+import { IFindOneDirectoryResponse } from 'modules/directory/interfaces'
 
 export declare interface CollectionFindFullRequest {
 	name?: string
@@ -31,6 +32,7 @@ export declare interface CollectionCreateRequest {
 	givenMinutes: number
 	amountInTest: number
 	adminId: string
+	directoryId: string
 }
 
 export declare interface CollectionBeforeCreateRequest {
@@ -41,6 +43,7 @@ export declare interface CollectionBeforeCreateRequest {
 	givenMinutes?: number
 	amountInTest?: number
 	adminId?: string
+	directoryId?: string
 }
 
 export declare interface CollectionUpdateRequest {
@@ -51,6 +54,7 @@ export declare interface CollectionUpdateRequest {
 	givenMinutes?: number
 	amountInTest?: number
 	adminId?: string
+	directoryId?: string
 }
 
 export declare interface CollectionDeleteRequest {
@@ -78,6 +82,7 @@ export declare interface CollectionFindOneResponse {
 	amountInTest: number
 	questions?: QuestionFindOneResponse[]
 	admin?: AdminFindOneResponse
+	directory?: IFindOneDirectoryResponse
 	createdAt: Date
 }
 
@@ -109,9 +114,11 @@ export declare interface QuestionAnswer {
 	createdAt: Date
 }
 
-export declare type CollectionCreateResponse = null
+export declare type CollectionCreateResponse = CollectionFindOneResponse
 
-export declare type CollectionUpdateResponse = null
+export declare interface CollectionUpdateResponse extends CollectionUpdateRequest {
+
+}
 
 export declare type CollectionDeleteResponse = null
 
@@ -123,6 +130,7 @@ export declare interface CollectionBeforeCreateResponse {
 	givenMinutes: number
 	amountInTest: number
 	adminId: string
+	directoryId: string
 	questions: ColBeforeQuestion[]
 }
 
