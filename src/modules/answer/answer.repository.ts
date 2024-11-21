@@ -30,7 +30,7 @@ export class AnswerRepository {
 				text: true,
 				createdAt: true,
 				isCorrect: true,
-				question: { select: { id: true, createdAt: true, text: true } },
+				question: { select: { id: true, createdAt: true, text: true, imageUrl: true } },
 			},
 			orderBy: [{ createdAt: 'desc' }],
 		})
@@ -48,7 +48,7 @@ export class AnswerRepository {
 				text: true,
 				createdAt: true,
 				isCorrect: true,
-				question: { select: { id: true, createdAt: true, text: true } },
+				question: { select: { id: true, createdAt: true, text: true, imageUrl: true } },
 			},
 			orderBy: [{ createdAt: 'desc' }],
 		})
@@ -73,7 +73,7 @@ export class AnswerRepository {
 				text: true,
 				createdAt: true,
 				isCorrect: true,
-				question: { select: { id: true, createdAt: true, text: true } },
+				question: { select: { id: true, createdAt: true, text: true, imageUrl: true } },
 			},
 		})
 
@@ -88,7 +88,7 @@ export class AnswerRepository {
 				text: true,
 				createdAt: true,
 				isCorrect: true,
-				question: { select: { id: true, createdAt: true, text: true } },
+				question: { select: { id: true, createdAt: true, text: true, imageUrl: true } },
 			},
 		})
 		return answer

@@ -104,6 +104,9 @@ export class QuestionFindFullResponseDto implements QuestionFindOneResponse {
 	@ApiProperty({ example: 'text' })
 	text: string
 
+	@ApiProperty({ example: 'image url' })
+	imageUrl: string
+
 	@ApiProperty({ type: CollectionFindOneResponseDto })
 	collection: CollectionFindOneResponse
 
@@ -118,6 +121,9 @@ export class QuestionFindOneResponseDto implements QuestionFindOneResponse {
 	@ApiProperty({ example: 'text' })
 	text: string
 
+	@ApiProperty({ example: 'image url' })
+	imageUrl: string
+	
 	@ApiProperty({ type: CollectionFindOneResponseDto })
 	collection: CollectionFindOneResponse
 

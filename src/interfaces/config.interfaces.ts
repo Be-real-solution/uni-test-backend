@@ -1,6 +1,8 @@
 export declare interface AppConfigOptions {
 	host: string
 	port: number
+	path_for_file_upload: string
+	file_size: number
 }
 
 export declare interface DatabaseConfigOptions {

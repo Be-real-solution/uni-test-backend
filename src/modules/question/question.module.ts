@@ -8,6 +8,6 @@ import { PrismaModule } from '../prisma'
 	imports: [PrismaModule],
 	controllers: [QuestionController],
 	providers: [QuestionService, QuestionRepository],
-	exports: [QuestionService, QuestionRepository],
+	exports: [QuestionService, QuestionRepository, ],
 })
 export class QuestionModule {}

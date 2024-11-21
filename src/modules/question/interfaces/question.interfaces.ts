@@ -37,6 +37,7 @@ export declare interface AnswerDefinition {
 }
 export declare interface QuestionUpdateRequest {
 	text?: string
+	imageUrl?: string
 	collectionId?: string
 }
 
@@ -58,6 +59,7 @@ export declare interface QuestionFindAllResponse {
 export declare interface QuestionFindOneResponse {
 	id: string
 	text: string
+	imageUrl: string
 	collection?: CollectionFindOneResponse
 	createdAt: Date
 }

@@ -17,6 +17,7 @@ import {
 	QuestionsCreateWithAnswersResponse,
 } from './interfaces'
 import { CollectionBeforeCreateResponse } from '../collection'
+import { deleteFile } from 'libs/fileService'
 
 @Injectable()
 export class QuestionService {
@@ -43,28 +44,59 @@ export class QuestionService {
 		return question
 	}
 
-	async findOneByTextWithCollectionId(payload: Partial<QuestionCreateRequest>): Promise<QuestionFindOneResponse> {
-		const question = await this.repository.findByTextWithCollectionId({ text: payload.text, collectionId: payload.collectionId })
+	async findOneByTextWithCollectionId(
+		payload: Partial<QuestionCreateRequest>,
+	): Promise<QuestionFindOneResponse> {
+		const question = await this.repository.findByTextWithCollectionId({
+			text: payload.text,
+			collectionId: payload.collectionId,
+		})
 		if (question) {
 			throw new BadRequestException('Question already exists')
 		}
 		return question
 	}
-	async findManyByTextsWithCollectionId(payload: { texts: string[]; collectionId: string }): Promise<QuestionFindFullResponse> {
-		const questions = await this.repository.findByTextsWithCollectionId({ texts: payload.texts, collectionId: payload.collectionId })
+	async findManyByTextsWithCollectionId(payload: {
+		texts: string[]
+		collectionId: string
+	}): Promise<QuestionFindFullResponse> {
+		const questions = await this.repository.findByTextsWithCollectionId({
+			texts: payload.texts,
+			collectionId: payload.collectionId,
+		})
 		if (questions.length) {
-			throw new BadRequestException(`This ${questions.map((q) => q.text).join(' ')} questions already exists in ${questions[0].collection.name}`)
+			throw new BadRequestException(
+				`This ${questions.map((q) => q.text).join(' ')} questions already exists in ${
+					questions[0].collection.name
+				}`,
+			)
 		}
 		return questions
 	}
 
-	async create(payload: QuestionCreateRequest): Promise<QuestionCreateResponse> {
-		await this.findOneByTextWithCollectionId({ text: payload.text, collectionId: payload.collectionId })
-		return this.repository.create(payload)
+	async create(payload: QuestionCreateRequest, file: any): Promise<QuestionCreateResponse> {
+		try {
+			await this.findOneByTextWithCollectionId({
+				text: payload.text,
+				collectionId: payload.collectionId,
+			})
+			return this.repository.create(payload, file?.filename)
+		} catch (err) {
+			if (file) {
+				deleteFile(file.filename)
+				throw err
+			}
+		}
 	}
 
-	async createManyWithAnswers(payload: Pick<QuestionsCreateWithAnswersRequest, 'collectionId'>, text: string): Promise<QuestionsCreateWithAnswersResponse> {
-		const qwa: QuestionsCreateWithAnswersRequest = { collectionId: payload.collectionId, questions: [] }
+	async createManyWithAnswers(
+		payload: Pick<QuestionsCreateWithAnswersRequest, 'collectionId'>,
+		text: string,
+	): Promise<QuestionsCreateWithAnswersResponse> {
+		const qwa: QuestionsCreateWithAnswersRequest = {
+			collectionId: payload.collectionId,
+			questions: [],
+		}
 		const questions = text
 			.split('#')
 			.map((q) => q.trim())
@@ -82,7 +114,9 @@ export class QuestionService {
 				.includes('+')
 
 			if (!isExistTrueAnswer) {
-				throw new BadRequestException(`Savolga to'g'ri javob berilmagan: ${questionWithAnswers[0]}`)
+				throw new BadRequestException(
+					`Savolga to'g'ri javob berilmagan: ${questionWithAnswers[0]}`,
+				)
 			}
 
 			qwa.questions.push({
@@ -98,7 +132,10 @@ export class QuestionService {
 			})
 		}
 
-		await this.findManyByTextsWithCollectionId({ collectionId: payload.collectionId, texts: qwa.questions.map((q) => q.text) })
+		await this.findManyByTextsWithCollectionId({
+			collectionId: payload.collectionId,
+			texts: qwa.questions.map((q) => q.text),
+		})
 
 		await this.repository.createWithAnswers({ ...qwa })
 
@@ -109,7 +146,10 @@ export class QuestionService {
 		collection: { collectionId: string },
 		payload: Pick<CollectionBeforeCreateResponse, 'questions'>,
 	): Promise<QuestionsCreateWithAnswersResponse> {
-		await this.findManyByTextsWithCollectionId({ collectionId: collection.collectionId, texts: payload.questions.map((q) => q.text) })
+		await this.findManyByTextsWithCollectionId({
+			collectionId: collection.collectionId,
+			texts: payload.questions.map((q) => q.text),
+		})
 
 		payload.questions.forEach((q) => {
 			if (!q.answers.filter((a) => a.isCorrect).length) {
@@ -117,12 +157,17 @@ export class QuestionService {
 			}
 		})
 
-		await this.repository.createWithAnswers({ collectionId: collection.collectionId, questions: payload.questions })
+		await this.repository.createWithAnswers({
+			collectionId: collection.collectionId,
+			questions: payload.questions,
+		})
 
 		return null
 	}
 
-	async returnManyWithAnswers(text: string): Promise<Pick<CollectionBeforeCreateResponse, 'questions'>> {
+	async returnManyWithAnswers(
+		text: string,
+	): Promise<Pick<CollectionBeforeCreateResponse, 'questions'>> {
 		const qwa: Pick<QuestionsCreateWithAnswersRequest, 'questions'> = { questions: [] }
 		const questions = text
 			.split('#')
@@ -151,8 +196,14 @@ export class QuestionService {
 		return qwa
 	}
 
-	async createManyWithAnswers2(payload: Pick<QuestionsCreateWithAnswersRequest, 'collectionId'>, text: string): Promise<QuestionsCreateWithAnswersResponse> {
-		const qwa: QuestionsCreateWithAnswersRequest = { collectionId: payload.collectionId, questions: [] }
+	async createManyWithAnswers2(
+		payload: Pick<QuestionsCreateWithAnswersRequest, 'collectionId'>,
+		text: string,
+	): Promise<QuestionsCreateWithAnswersResponse> {
+		const qwa: QuestionsCreateWithAnswersRequest = {
+			collectionId: payload.collectionId,
+			questions: [],
+		}
 		const questions = text
 			.split('S:')
 			.map((q) => q.trim())
@@ -173,7 +224,10 @@ export class QuestionService {
 						.map((q, i): any => {
 							const isCorrect = q[q.length - 1] === '+' ? true : false
 							if (i !== 0) {
-								return { isCorrect: isCorrect, text: isCorrect ? q.slice(0, q.length - 1) : q }
+								return {
+									isCorrect: isCorrect,
+									text: isCorrect ? q.slice(0, q.length - 1) : q,
+								}
 							}
 						})
 						.slice(1),
@@ -181,7 +235,10 @@ export class QuestionService {
 			}
 		})
 
-		await this.findManyByTextsWithCollectionId({ collectionId: payload.collectionId, texts: qwa.questions.map((q) => q.text) })
+		await this.findManyByTextsWithCollectionId({
+			collectionId: payload.collectionId,
+			texts: qwa.questions.map((q) => q.text),
+		})
 
 		await this.repository.createWithAnswers({ ...qwa })
 
@@ -200,12 +257,39 @@ export class QuestionService {
 		return count
 	}
 
-	async update(params: QuestionFindOneRequest, payload: QuestionUpdateRequest): Promise<QuestionUpdateResponse> {
-		await this.findOne({ id: params.id })
-		payload.text ? await this.findOneByTextWithCollectionId({ text: payload.text, collectionId: payload.collectionId }) : null
+	async update(
+		params: QuestionFindOneRequest,
+		payload: QuestionUpdateRequest,
+		file: any,
+	): Promise<QuestionUpdateResponse> {
+		try {
+			const question = await this.findOne({ id: params.id })
 
-		await this.repository.update({ ...params, ...payload })
-		return null
+			const imageUrl = question.imageUrl
+			payload.text
+				? await this.findOneByTextWithCollectionId({
+						text: payload.text,
+						collectionId: payload.collectionId,
+				  })
+				: null
+
+			if (file) {
+				payload.imageUrl = file.filename
+			}
+			await this.repository.update({ ...params, ...payload })
+
+			if (file && imageUrl) {
+				await deleteFile(imageUrl)
+			}
+			return null
+		} catch (err) {
+			if (file) {
+				console.log(file)
+
+				await deleteFile(file.filename)
+			}
+			throw err
+		}
 	}
 
 	async delete(payload: QuestionDeleteRequest): Promise<QuestionDeleteResponse> {

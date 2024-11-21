@@ -1,5 +1,18 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
-import { ApiBearerAuth, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+	BadRequestException,
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query,
+	UploadedFile,
+	UseGuards,
+	UseInterceptors,
+} from '@nestjs/common'
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { QuestionService } from './question.service'
 import {
 	QuestionCreateRequestDto,
@@ -26,10 +39,11 @@ import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { UploadedTxtFile } from '../../interfaces'
 import { CheckAuthGuard } from '../../guards'
+import { multerImageUpload } from 'libs/fileService'
 
 @ApiTags('Question')
-@UseGuards(CheckAuthGuard)
-@ApiBearerAuth()
+// @UseGuards(CheckAuthGuard)
+// @ApiBearerAuth()
 @Controller('question')
 export class QuestionController {
 	private readonly service: QuestionService
@@ -69,20 +83,74 @@ export class QuestionController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
-	createQuestionsWithFile(@Body() payload: QuestionsCreateWithAnswersDto, @UploadedFile() file: UploadedTxtFile): Promise<QuestionsCreateWithAnswersResponse> {
+	createQuestionsWithFile(
+		@Body() payload: QuestionsCreateWithAnswersDto,
+		@UploadedFile() file: UploadedTxtFile,
+	): Promise<QuestionsCreateWithAnswersResponse> {
 		return this.service.createManyWithAnswers(payload, file.buffer.toString('utf-8'))
 	}
 
 	@Post()
 	@ApiResponse({ type: null })
-	create(@Body() payload: QuestionCreateRequestDto): Promise<QuestionCreateResponse> {
-		return this.service.create(payload)
+	@ApiConsumes('multipart/form-data')
+	@UseInterceptors(FileInterceptor('file', multerImageUpload))
+	@ApiBody({
+		description: 'Fayl yuklash',
+		schema: {
+			type: 'object',
+			properties: {
+				file: {
+					type: 'string',
+					format: 'binary',
+				},
+				text: {
+					type: 'string',
+					example: 'kimyo',
+				},
+				collectionId: {
+					type: 'string',
+					example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
+				},
+			},
+		},
+	})
+	create(
+		@Body() payload: QuestionCreateRequestDto,
+		@UploadedFile() file: Express.Multer.File,
+	): Promise<QuestionCreateResponse> {
+		return this.service.create(payload, file)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: QuestionFindOneRequestDto, @Body() payload: QuestionUpdateRequestDto): Promise<QuestionUpdateResponse> {
-		return this.service.update(params, payload)
+	@ApiConsumes('multipart/form-data')
+	@UseInterceptors(FileInterceptor('file', multerImageUpload))
+	@ApiBody({
+		description: 'Fayl yuklash',
+		schema: {
+			type: 'object',
+			properties: {
+				file: {
+					type: 'string',
+					format: 'binary',
+				},
+				text: {
+					type: 'string',
+					example: 'kimyo',
+				},
+				collectionId: {
+					type: 'string',
+					example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
+				},
+			},
+		},
+	})
+	update(
+		@Param() params: QuestionFindOneRequestDto,
+		@Body() payload: QuestionUpdateRequestDto,
+		@UploadedFile() file: Express.Multer.File,
+	): Promise<QuestionUpdateResponse> {
+		return this.service.update(params, payload, file)
 	}
 
 	@Delete(':id')

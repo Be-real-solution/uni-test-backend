@@ -30,8 +30,19 @@ export class QuestionRepository {
 			select: {
 				id: true,
 				text: true,
+				imageUrl: true,
 				createdAt: true,
-				collection: { select: { id: true, createdAt: true, language: true, givenMinutes: true, maxAttempts: true, name: true, amountInTest: true } },
+				collection: {
+					select: {
+						id: true,
+						createdAt: true,
+						language: true,
+						givenMinutes: true,
+						maxAttempts: true,
+						name: true,
+						amountInTest: true,
+					},
+				},
 			},
 			orderBy: [{ createdAt: 'desc' }],
 		})
@@ -47,8 +58,19 @@ export class QuestionRepository {
 			select: {
 				id: true,
 				text: true,
+				imageUrl: true,
 				createdAt: true,
-				collection: { select: { id: true, createdAt: true, language: true, givenMinutes: true, maxAttempts: true, name: true, amountInTest: true } },
+				collection: {
+					select: {
+						id: true,
+						createdAt: true,
+						language: true,
+						givenMinutes: true,
+						maxAttempts: true,
+						name: true,
+						amountInTest: true,
+					},
+				},
 			},
 			orderBy: [{ createdAt: 'desc' }],
 		})
@@ -71,45 +93,98 @@ export class QuestionRepository {
 			select: {
 				id: true,
 				text: true,
+				imageUrl: true,
 				createdAt: true,
-				collection: { select: { id: true, createdAt: true, language: true, givenMinutes: true, maxAttempts: true, name: true, amountInTest: true } },
+				collection: {
+					select: {
+						id: true,
+						createdAt: true,
+						language: true,
+						givenMinutes: true,
+						maxAttempts: true,
+						name: true,
+						amountInTest: true,
+					},
+				},
 			},
 		})
 
 		return question
 	}
 
-	async findByTextWithCollectionId(payload: Partial<QuestionCreateRequest>): Promise<QuestionFindOneResponse> {
+	async findByTextWithCollectionId(
+		payload: Partial<QuestionCreateRequest>,
+	): Promise<QuestionFindOneResponse> {
 		const question = await this.prisma.question.findFirst({
 			where: { text: payload.text, collectionId: payload.collectionId, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
+				imageUrl: true,
 				createdAt: true,
-				collection: { select: { id: true, createdAt: true, language: true, givenMinutes: true, maxAttempts: true, name: true, amountInTest: true } },
+				collection: {
+					select: {
+						id: true,
+						createdAt: true,
+						language: true,
+						givenMinutes: true,
+						maxAttempts: true,
+						name: true,
+						amountInTest: true,
+					},
+				},
 			},
 		})
 		return question
 	}
 
-	async findByTextsWithCollectionId(payload: { texts: string[]; collectionId: string }): Promise<QuestionFindFullResponse> {
+	async findByTextsWithCollectionId(payload: {
+		texts: string[]
+		collectionId: string
+	}): Promise<QuestionFindFullResponse> {
 		const questions = await this.prisma.question.findMany({
-			where: { text: { in: payload.texts }, collectionId: payload.collectionId, deletedAt: null },
+			where: {
+				text: { in: payload.texts },
+				collectionId: payload.collectionId,
+				deletedAt: null,
+			},
 			select: {
 				id: true,
 				text: true,
+				imageUrl: true,
 				createdAt: true,
-				collection: { select: { id: true, createdAt: true, language: true, givenMinutes: true, maxAttempts: true, name: true, amountInTest: true } },
+				collection: {
+					select: {
+						id: true,
+						createdAt: true,
+						language: true,
+						givenMinutes: true,
+						maxAttempts: true,
+						name: true,
+						amountInTest: true,
+					},
+				},
 			},
 		})
 		return questions
 	}
 
-	async create(payload: QuestionCreateRequest): Promise<QuestionCreateResponse> {
-		return await this.prisma.question.create({ data: { text: payload.text, collectionId: payload.collectionId } })
+	async create(
+		payload: QuestionCreateRequest,
+		file_name: string,
+	): Promise<QuestionCreateResponse> {
+		return await this.prisma.question.create({
+			data: {
+				text: payload.text,
+				collectionId: payload.collectionId,
+				imageUrl: file_name || null,
+			},
+		})
 	}
 
-	async createWithAnswers(payload: QuestionsCreateWithAnswersRequest): Promise<QuestionsCreateWithAnswersResponse> {
+	async createWithAnswers(
+		payload: QuestionsCreateWithAnswersRequest,
+	): Promise<QuestionsCreateWithAnswersResponse> {
 		// await this.prisma.question.createMany({
 		// 	data: payload.questions.map((q) => {
 		// 		return {
@@ -128,7 +203,9 @@ export class QuestionRepository {
 					collectionId: payload.collectionId,
 					text: q.text,
 					answers: {
-						createMany: { data: q.answers.map((a) => ({ text: a.text, isCorrect: a.isCorrect })) },
+						createMany: {
+							data: q.answers.map((a) => ({ text: a.text, isCorrect: a.isCorrect })),
+						},
 					},
 				},
 			})
@@ -137,13 +214,21 @@ export class QuestionRepository {
 		return null
 	}
 
-	async update(payload: QuestionFindOneRequest & QuestionUpdateRequest): Promise<QuestionUpdateRequest> {
-		await this.prisma.question.update({ where: { id: payload.id, deletedAt: null }, data: { text: payload.text, collectionId: payload.collectionId } })
+	async update(
+		payload: QuestionFindOneRequest & QuestionUpdateRequest,
+	): Promise<QuestionUpdateRequest> {
+		await this.prisma.question.update({
+			where: { id: payload.id, deletedAt: null },
+			data: payload,
+		})
 		return null
 	}
 
 	async delete(payload: QuestionDeleteRequest): Promise<QuestionDeleteResponse> {
-		await this.prisma.question.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.question.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 		return null
 	}
 
