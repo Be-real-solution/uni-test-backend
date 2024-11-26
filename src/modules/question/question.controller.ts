@@ -42,8 +42,8 @@ import { CheckAuthGuard } from '../../guards'
 import { multerImageUpload } from 'libs/fileService'
 
 @ApiTags('Question')
-// @UseGuards(CheckAuthGuard)
-// @ApiBearerAuth()
+@UseGuards(CheckAuthGuard)
+@ApiBearerAuth()
 @Controller('question')
 export class QuestionController {
 	private readonly service: QuestionService

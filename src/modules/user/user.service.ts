@@ -22,16 +22,20 @@ import {
 } from './interfaces'
 import { UserInfoService } from '../user-info'
 import { JWTService } from '../jwt'
+import { SettingService } from 'modules/setting/setting.service'
 
 @Injectable()
 export class UserService {
 	private readonly repository: UserRepository
 	private readonly jwtService: JWTService
 	private readonly userInfoService: UserInfoService
-	constructor(repository: UserRepository, userInfoService: UserInfoService, jwtService: JWTService) {
+	private readonly settingService: SettingService
+
+	constructor(repository: UserRepository, userInfoService: UserInfoService, jwtService: JWTService, settingService: SettingService) {
 		this.repository = repository
 		this.jwtService = jwtService
 		this.userInfoService = userInfoService
+		this.settingService = settingService
 	}
 
 	async findFull(payload: UserFindFullRequest): Promise<UserFindFullResponse> {
@@ -49,6 +53,9 @@ export class UserService {
 		if (!user) {
 			throw new BadRequestException('User not found')
 		}
+		const setting = await this.settingService.findAll()
+		user.setting = setting
+
 		return user
 	}
 

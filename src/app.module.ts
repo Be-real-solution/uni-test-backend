@@ -22,6 +22,7 @@ import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { DirectoryModule } from './modules/directory/directory.module';
 import { SettingModule } from './modules/setting/setting.module';
+import { UserResultModule } from './modules/user-result/user-result.module';
 
 @Module({
 	imports: [
@@ -52,6 +53,7 @@ import { SettingModule } from './modules/setting/setting.module';
 		ArchiveModule,
 		DirectoryModule,
 		SettingModule,
+		UserResultModule,
 		// SemestrModule,
 	],
 })

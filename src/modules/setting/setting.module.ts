@@ -8,5 +8,6 @@ import { SettingRepository } from './setting.repository'
 	imports: [PrismaModule],
 	controllers: [SettingController],
 	providers: [SettingService, SettingRepository],
+	exports: [SettingService],
 })
 export class SettingModule {}

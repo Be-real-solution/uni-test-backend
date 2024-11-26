@@ -24,6 +24,7 @@ import { AdminService } from '../admin'
 import { diskStorage } from 'multer'
 import { extname, join } from 'path'
 import { v4 as uuidv4 } from 'uuid'
+import { SettingService } from 'modules/setting/setting.service'
 
 @ApiTags('User')
 @UseGuards(CheckAuthGuard)

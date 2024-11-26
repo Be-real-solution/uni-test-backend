@@ -85,6 +85,7 @@ model Group {
   archives    Archive[]
   userInfos  UserInfo[]
   userLogs   UserLog[]
+  userResults UserResult[]
 
   @@id([ id ])
   @@map("group")
@@ -120,6 +121,7 @@ model User {
   userInfo         UserInfo?
   archives         Archive[]
   userCollections  UserCollection[]
+  userResults    UserResult[]
 
 
   @@id([ id ])
@@ -185,6 +187,7 @@ model Collection {
   archives         Archive[]
   questions        Question[]
   userCollectiona  UserCollection[]
+  userResults    UserResult[]
 
   @@id([ id ])
   @@map("collection")
@@ -203,6 +206,7 @@ model Question {
   collection  Collection  @relation(fields: [ collectionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
 
   answers  Answer[]
+  userResults UserResult[]
 
   @@id([ id ])
   @@map("question")
@@ -376,4 +380,28 @@ model Setting {
 
   @@id([ id ])
   @@map("setting")
+}
+
+model UserResult {
+  id                  String     @map("id")                    @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
+  userId              String     @map("user_id")               @db.Uuid
+  collectionId        String     @map("collection_id")         @db.Uuid 
+  groupId             String     @map("group_id")              @db.Uuid 
+  questionId          String?    @map("question_id")           @db.Uuid 
+  compyuterName       String     @map("compyuter_name")        @db.VarChar(255)
+  grade               Int        @map("grade")                 @db.Integer
+  userFullName        String     @map("user_fullname")         @db.VarChar(255)
+  questionCount       Int        @map("question_count")        @db.SmallInt      @default(0)
+  questionFindCount   Int        @map("question_find_count")   @db.SmallInt      @default(0)
+  hasFinished         Boolean    @map("hash_finished")         @db.Boolean       @default(false)
+  createdAt           DateTime   @map("created_at")            @db.Timestamp     @default(now())
+  updatedAt           DateTime   @map("updated_at")            @db.Timestamp     @updatedAt
+
+  user        User        @relation(fields: [ userId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  collection  Collection  @relation(fields: [ collectionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  group       Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  question    Question?   @relation(fields: [ questionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  
+  @@id([ id ])
+  @@map("user_result")
 }

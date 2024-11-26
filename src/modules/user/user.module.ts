@@ -6,9 +6,10 @@ import { PrismaModule } from '../prisma'
 import { JWTModule } from '../jwt'
 import { UserInfoModule } from '../user-info'
 import { AdminModule } from '../admin'
+import { SettingModule } from 'modules/setting/setting.module'
 
 @Module({
-	imports: [PrismaModule, UserInfoModule, JWTModule, AdminModule],
+	imports: [PrismaModule, UserInfoModule, JWTModule, AdminModule, SettingModule],
 	controllers: [UserController],
 	providers: [UserService, UserRepository],
 	exports: [UserRepository, UserService],

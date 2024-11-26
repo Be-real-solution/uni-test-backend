@@ -1,5 +1,6 @@
 import { UserTypeEnum } from '@prisma/client'
 import { UserInfoCreateRequest, UserInfoFindOneResponse, UserInfoUpdateRequest } from '../../user-info'
+import { ISettingResponse } from 'modules/setting/interfaces/setting.interface'
 
 export declare interface UserFindFullRequest {
 	type?: UserTypeEnum
@@ -78,6 +79,7 @@ export declare interface UserFindOneResponse {
 	password?: string
 	emailAddress: string
 	userInfo?: UserInfoFindOneResponse
+	setting?: ISettingResponse[]
 	createdAt: Date
 }
 
