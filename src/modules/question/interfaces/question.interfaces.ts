@@ -1,3 +1,4 @@
+import { AnswerUpdateRequest } from 'modules/answer'
 import { CollectionFindOneResponse } from '../../collection'
 
 export declare interface QuestionFindFullRequest {
@@ -35,10 +36,19 @@ export declare interface AnswerDefinition {
 	text: string
 	isCorrect: boolean
 }
+
+export declare interface AnswerUpdateRequestForQuestionUpdate extends AnswerUpdateRequest {
+	id: string
+	text: string
+	isCorrect: boolean
+	questionId: string
+}
+
 export declare interface QuestionUpdateRequest {
 	text?: string
 	imageUrl?: string
 	collectionId?: string
+	answers?: AnswerUpdateRequestForQuestionUpdate[]
 }
 
 export declare interface QuestionDeleteRequest {

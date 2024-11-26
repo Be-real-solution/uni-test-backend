@@ -95,6 +95,7 @@ export class QuestionRepository {
 				text: true,
 				imageUrl: true,
 				createdAt: true,
+				answers: true,
 				collection: {
 					select: {
 						id: true,
@@ -219,7 +220,11 @@ export class QuestionRepository {
 	): Promise<QuestionUpdateRequest> {
 		await this.prisma.question.update({
 			where: { id: payload.id, deletedAt: null },
-			data: payload,
+			data: {
+				text: payload.text,
+				collectionId: payload.collectionId,
+				imageUrl: payload.imageUrl,
+			},
 		})
 		return null
 	}

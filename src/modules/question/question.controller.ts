@@ -25,6 +25,7 @@ import {
 	QuestionFindAllResponseDto,
 	QuestionFindOneResponseDto,
 	QuestionsCreateWithAnswersDto,
+	AnswerUpdateForQuestionDto,
 } from './dtos'
 import {
 	QuestionCreateResponse,
@@ -40,6 +41,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { UploadedTxtFile } from '../../interfaces'
 import { CheckAuthGuard } from '../../guards'
 import { multerImageUpload } from 'libs/fileService'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Question')
 @UseGuards(CheckAuthGuard)
@@ -132,7 +134,7 @@ export class QuestionController {
 			properties: {
 				file: {
 					type: 'string',
-					format: 'binary',
+					format: 'binary', // Fayl yuklash uchun kerak
 				},
 				text: {
 					type: 'string',
@@ -142,6 +144,46 @@ export class QuestionController {
 					type: 'string',
 					example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
 				},
+				answers: {
+					type: 'array', // Massiv ekanligini ko‘rsatish
+					items: {
+						type: 'object',
+						properties: {
+							id: {
+								type: 'string',
+								format: 'uuid',
+								example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
+							},
+							text: {
+								type: 'string',
+								example: 'Answer text',
+							},
+							questionId: {
+								type: 'string',
+								format: 'uuid',
+								example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
+							},
+							isCorrect: {
+								type: 'boolean',
+								example: true,
+							},
+						},
+					},
+					example: [
+						{
+							id: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
+							text: 'Answer text 1',
+							questionId: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
+							isCorrect: true,
+						},
+						{
+							id: '31919fb5-a5b4-4775-aedd-efc1254bca5d',
+							text: 'Answer text 2',
+							questionId: '21919fb5-a5b4-4775-aedd-efc1254bca5e',
+							isCorrect: false,
+						},
+					],
+				},
 			},
 		},
 	})
@@ -149,7 +191,7 @@ export class QuestionController {
 		@Param() params: QuestionFindOneRequestDto,
 		@Body() payload: QuestionUpdateRequestDto,
 		@UploadedFile() file: Express.Multer.File,
-	): Promise<QuestionUpdateResponse> {
+	): Promise<IResponse<{}>> {
 		return this.service.update(params, payload, file)
 	}
 

@@ -8,6 +8,6 @@ import { PrismaModule } from '../prisma'
 	imports: [PrismaModule],
 	controllers: [AnswerController],
 	providers: [AnswerService, AnswerRepository],
-	exports: [],
+	exports: [AnswerService],
 })
 export class AnswerModule {}

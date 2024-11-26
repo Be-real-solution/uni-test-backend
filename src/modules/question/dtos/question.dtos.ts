@@ -10,8 +10,9 @@ import {
 	QuestionUpdateRequest,
 	QuestionsCreateWithAnswersRequest,
 } from '../interfaces'
-import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
+import { Type } from 'class-transformer'
 
 export class QuestionFindFullRequestDto implements QuestionFindFullRequest {
 	@ApiPropertyOptional({ example: 'uuid' })
@@ -76,6 +77,28 @@ export class QuestionsCreateWithAnswersDto implements Pick<QuestionsCreateWithAn
 	collectionId: string
 }
 
+export class AnswerUpdateForQuestionDto {
+	@ApiPropertyOptional({ example: 'UUID' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	id: string
+
+	@ApiPropertyOptional({ example: 'text' })
+	@IsString()
+	@IsNotEmpty()
+	text: string
+
+	@ApiPropertyOptional({ example: 'uuid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	questionId: string
+
+	@ApiPropertyOptional({ example: true })
+	@IsBoolean()
+	@IsNotEmpty()
+	isCorrect: boolean
+}
+
 export class QuestionUpdateRequestDto implements QuestionUpdateRequest {
 	@ApiPropertyOptional({ example: 'text' })
 	@IsString()
@@ -86,6 +109,12 @@ export class QuestionUpdateRequestDto implements QuestionUpdateRequest {
 	@IsUUID('4')
 	@IsOptional()
 	collectionId?: string
+
+	@ApiPropertyOptional({ examples: AnswerUpdateForQuestionDto })
+	@ValidateNested({ each: true })
+	@Type(() => AnswerUpdateForQuestionDto)
+	@IsOptional()
+	answers?: AnswerUpdateForQuestionDto[]
 }
 
 export class QuestionDeleteRequestDto implements QuestionDeleteRequest {

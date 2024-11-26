@@ -18,12 +18,17 @@ import {
 } from './interfaces'
 import { CollectionBeforeCreateResponse } from '../collection'
 import { deleteFile } from 'libs/fileService'
+import { AnswerService } from 'modules/answer/answer.service'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class QuestionService {
 	private readonly repository: QuestionRepository
-	constructor(repository: QuestionRepository) {
+	private readonly answerSerive: AnswerService
+
+	constructor(repository: QuestionRepository, answerService: AnswerService) {
 		this.repository = repository
+		this.answerSerive = answerService
 	}
 
 	async findFull(payload: QuestionFindFullRequest): Promise<QuestionFindFullResponse> {
@@ -261,7 +266,7 @@ export class QuestionService {
 		params: QuestionFindOneRequest,
 		payload: QuestionUpdateRequest,
 		file: any,
-	): Promise<QuestionUpdateResponse> {
+	): Promise<IResponse<{}>> {
 		try {
 			const question = await this.findOne({ id: params.id })
 
@@ -278,13 +283,57 @@ export class QuestionService {
 			}
 			await this.repository.update({ ...params, ...payload })
 
+			if (payload.answers) {
+				const answers = await this.answerSerive.findFull({ questionId: params.id })
+
+				const new_answers = payload.answers.filter(
+					(item) => !answers.some((value) => value.id == item.id),
+				)
+
+				const remove_answers = answers.filter(
+					(item) => !payload.answers.some((value) => value.id == item.id),
+				)
+
+				const updated_answers = payload.answers.filter((item) =>
+					answers.filter((value) => value.id == item.id),
+				)
+
+				if (new_answers.length) {
+					new_answers.forEach(async (item) => {
+						await this.answerSerive.create({
+							text: item.text,
+							isCorrect: item.isCorrect,
+							questionId: item.questionId,
+						})
+					})
+				}
+
+				if (remove_answers.length) {
+					remove_answers.forEach(async (item) => {
+						await this.answerSerive.delete({ id: item.id })
+					})
+				}
+
+				if (updated_answers.length) {
+					updated_answers.forEach(async (item) => {
+						await this.answerSerive.update(
+							{ id: item.id },
+							{
+								text: item.text,
+								questionId: item.questionId,
+								isCorrect: item.isCorrect,
+							},
+						)
+					})
+				}
+			}
+
 			if (file && imageUrl) {
 				await deleteFile(imageUrl)
 			}
-			return null
+			return {status_code: 200, data: {}, message: 'updated'}
 		} catch (err) {
 			if (file) {
-				console.log(file)
 
 				await deleteFile(file.filename)
 			}
