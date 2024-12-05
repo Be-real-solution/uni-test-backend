@@ -116,9 +116,7 @@ export declare interface QuestionAnswer {
 
 export declare type CollectionCreateResponse = CollectionFindOneResponse
 
-export declare interface CollectionUpdateResponse extends CollectionUpdateRequest {
-
-}
+export type CollectionUpdateResponse = CollectionUpdateRequest
 
 export declare type CollectionDeleteResponse = null
 

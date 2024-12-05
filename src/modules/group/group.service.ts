@@ -14,6 +14,7 @@ import {
 	GroupUpdateRequest,
 	GroupUpdateResponse,
 } from './interfaces'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class GroupService {
@@ -48,22 +49,26 @@ export class GroupService {
 		return group
 	}
 
-	async create(payload: GroupCreateRequest): Promise<GroupCreateResponse> {
+	async create(payload: GroupCreateRequest): Promise<IResponse<GroupCreateResponse>> {
 		await this.findOneByName({ name: payload.name })
-		return this.repository.create(payload)
+		const group = await this.repository.create(payload)
+		return { status_code: 201, data: group, message: 'created' }
 	}
 
-	async update(params: GroupFindOneRequest, payload: GroupUpdateRequest): Promise<GroupUpdateResponse> {
+	async update(
+		params: GroupFindOneRequest,
+		payload: GroupUpdateRequest,
+	): Promise<IResponse<GroupUpdateResponse>> {
 		await this.findOne({ id: params.id })
 		payload.name ? await this.findOneByName({ name: payload.name, id: params.id }) : null
 
-		await this.repository.update({ ...params, ...payload })
-		return null
+		const group = await this.repository.update({ ...params, ...payload })
+		return { status_code: 200, data: group, message: 'updated' }
 	}
 
-	async delete(payload: GroupDeleteRequest): Promise<GroupDeleteResponse> {
+	async delete(payload: GroupDeleteRequest): Promise<IResponse<[]>> {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
-		return null
+		return { status_code: 200, data: [], message: 'deleted' }
 	}
 }

@@ -97,9 +97,23 @@ export class ArchiveCollectionQuestionAnswerResponse {
 	text: string
 }
 
-export declare type ArchiveCreateResponse = null
+export declare type ArchiveCreateResponse = {
+	id: string
+	result: number
+	user?: UserFindOneResponse
+	group?: GroupFindOneResponse
+	course?: CourseFindOneResponse
+	// semestr: SemestrFindOneResponse
+	testCount: number
+	faculty?: FacultyFindOneResponse
+	collection?: CollectionFindOneResponse
+	createdAt: Date
+	startTime: Date
+	endTime: Date
+	archiveCollection?: ArchiveCollectionResponse
+}
 
-export declare type ArchiveUpdateResponse = null
+export declare type ArchiveUpdateResponse = { id?: string; result?: number }
 
 export declare type ArchiveDeleteResponse = null
 

@@ -1,11 +1,8 @@
-import { CanActivate, ExecutionContext, Injectable, MethodNotAllowedException, UnauthorizedException } from '@nestjs/common'
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
+import { JwtService } from '@nestjs/jwt'
 import { Request } from 'express'
 import { PrismaService } from '../modules'
-import { JwtService } from '@nestjs/jwt'
-import { JwtConfig } from '../configs'
-import { isUUID } from 'class-validator'
-import { Reflector } from '@nestjs/core'
-import { ROLES_KEY } from '../constants'
 
 @Injectable()
 export class CheckAuthGuard implements CanActivate {

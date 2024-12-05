@@ -24,14 +24,30 @@ export const fileFilters = {
 		if (file.mimetype.split('/')[0] === 'image') {
 			cb(null, true)
 		} else {
-			cb(new HttpException(`Unsupported file type ${extname(file.originalname)}, there should only be a image`, HttpStatus.BAD_REQUEST), false)
+			cb(
+				new HttpException(
+					`Unsupported file type ${extname(
+						file.originalname,
+					)}, there should only be a image`,
+					HttpStatus.BAD_REQUEST,
+				),
+				false,
+			)
 		}
 	},
 	excel: (req: any, file: any, cb: any) => {
 		if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
 			cb(null, true)
 		} else {
-			cb(new HttpException(`Unsupported file type ${extname(file.originalname)}, there should only be a excel`, HttpStatus.BAD_REQUEST), false)
+			cb(
+				new HttpException(
+					`Unsupported file type ${extname(
+						file.originalname,
+					)}, there should only be a excel`,
+					HttpStatus.BAD_REQUEST,
+				),
+				false,
+			)
 		}
 	},
 	image_video: (req: any, file: any, cb: any) => {
@@ -42,7 +58,15 @@ export const fileFilters = {
 		} else if (file.mimetype.split('/')[0] === 'video') {
 			cb(null, true)
 		} else {
-			cb(new HttpException(`Unsupported file type ${extname(file.originalname)}, there should only be a image or video`, HttpStatus.BAD_REQUEST), false)
+			cb(
+				new HttpException(
+					`Unsupported file type ${extname(
+						file.originalname,
+					)}, there should only be a image or video`,
+					HttpStatus.BAD_REQUEST,
+				),
+				false,
+			)
 		}
 	},
 	all: (req: any, file: any, cb: any) => {

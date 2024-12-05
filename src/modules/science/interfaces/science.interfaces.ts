@@ -84,9 +84,14 @@ export declare interface ScienceCollectionArchiveSemestr {
 	stage: number
 }
 
-export declare type ScienceCreateResponse = null
+export declare type ScienceCreateResponse = ScienceFindOneResponse
 
-export declare type ScienceUpdateResponse = null
+export declare type ScienceUpdateResponse = {
+	id?: string
+	name?: string
+	since_id?: number
+	createdAt?: Date
+}
 
 export declare type ScienceDeleteResponse = null
 

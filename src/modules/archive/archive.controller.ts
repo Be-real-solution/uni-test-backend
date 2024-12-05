@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query,
+	Res,
+	UseGuards,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ArchiveService } from './archive.service'
 import {
@@ -13,11 +24,19 @@ import {
 	ArchiveFindOneResponseDto,
 	ArchiveExcelResponseDto,
 } from './dtos'
-import { ArchiveCreateResponse, ArchiveDeleteResponse, ArchiveFindAllResponse, ArchiveFindFullResponse, ArchiveFindOneResponse, ArchiveUpdateResponse } from './interfaces'
+import {
+	ArchiveCreateResponse,
+	ArchiveDeleteResponse,
+	ArchiveFindAllResponse,
+	ArchiveFindFullResponse,
+	ArchiveFindOneResponse,
+	ArchiveUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 import { Roles } from '../../decorators'
 import { Response } from 'express'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Archive')
 @UseGuards(CheckAuthGuard)
@@ -40,7 +59,10 @@ export class ArchiveController {
 	@Get('excel-old')
 	@Roles('admin', 'student')
 	@ApiResponse({ type: null })
-	findFullInExcel1(@Query() payload: ArchiveFindFullRequestDto, @Res() res: Response): Promise<void> {
+	findFullInExcel1(
+		@Query() payload: ArchiveFindFullRequestDto,
+		@Res() res: Response,
+	): Promise<void> {
 		return this.service.downloadInExcel1(payload, res)
 	}
 
@@ -65,19 +87,22 @@ export class ArchiveController {
 
 	@Post()
 	@ApiResponse({ type: null })
-	create(@Body() payload: ArchiveCreateRequestDto): Promise<ArchiveCreateResponse> {
+	create(@Body() payload: ArchiveCreateRequestDto): Promise<IResponse<ArchiveCreateResponse>> {
 		return this.service.create(payload)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: ArchiveFindOneRequestDto, @Body() payload: ArchiveUpdateRequestDto): Promise<ArchiveUpdateResponse> {
+	update(
+		@Param() params: ArchiveFindOneRequestDto,
+		@Body() payload: ArchiveUpdateRequestDto,
+	): Promise<IResponse<ArchiveUpdateResponse>> {
 		return this.service.update(params, payload)
 	}
 
 	@Delete(':id')
 	@ApiResponse({ type: null })
-	delete(@Param() payload: ArchiveDeleteRequestDto): Promise<ArchiveDeleteResponse> {
+	delete(@Param() payload: ArchiveDeleteRequestDto): Promise<IResponse<[]>> {
 		return this.service.delete(payload)
 	}
 }

@@ -35,7 +35,10 @@ export class DirectoryController {
 
 	@ApiResponse({ type: SwaggerDirectoryDto })
 	@Patch(':id')
-	update(@Param('id') id: string, @Body() payload: UpdateDirectoryDto): Promise<IResponse<IFindOneDirectoryResponse>> {
+	update(
+		@Param('id') id: string,
+		@Body() payload: UpdateDirectoryDto,
+	): Promise<IResponse<IFindOneDirectoryResponse>> {
 		return this.directoryService.update(id, payload)
 	}
 

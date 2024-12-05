@@ -12,9 +12,17 @@ import {
 	AnswerFindAllResponseDto,
 	AnswerFindOneResponseDto,
 } from './dtos'
-import { AnswerCreateResponse, AnswerDeleteResponse, AnswerFindAllResponse, AnswerFindFullResponse, AnswerFindOneResponse, AnswerUpdateResponse } from './interfaces'
+import {
+	AnswerCreateResponse,
+	AnswerDeleteResponse,
+	AnswerFindAllResponse,
+	AnswerFindFullResponse,
+	AnswerFindOneResponse,
+	AnswerUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Answer')
 @ApiBearerAuth()
@@ -47,19 +55,22 @@ export class AnswerController {
 
 	@Post()
 	@ApiResponse({ type: null })
-	create(@Body() payload: AnswerCreateRequestDto): Promise<AnswerCreateResponse> {
+	create(@Body() payload: AnswerCreateRequestDto): Promise<IResponse<AnswerCreateResponse>> {
 		return this.service.create(payload)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: AnswerFindOneRequestDto, @Body() payload: AnswerUpdateRequestDto): Promise<AnswerUpdateResponse> {
+	update(
+		@Param() params: AnswerFindOneRequestDto,
+		@Body() payload: AnswerUpdateRequestDto,
+	): Promise<IResponse<AnswerUpdateResponse>> {
 		return this.service.update(params, payload)
 	}
 
 	@Delete(':id')
 	@ApiResponse({ type: null })
-	delete(@Param() payload: AnswerDeleteRequestDto): Promise<AnswerDeleteResponse> {
+	delete(@Param() payload: AnswerDeleteRequestDto): Promise<IResponse<[]>> {
 		return this.service.delete(payload)
 	}
 }

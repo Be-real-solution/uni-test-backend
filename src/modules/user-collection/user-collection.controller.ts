@@ -24,6 +24,7 @@ import {
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 import { UserIdInAccessToken } from '../../decorators'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('UserCollection')
 @UseGuards(CheckAuthGuard)
@@ -38,49 +39,65 @@ export class UserCollectionController {
 
 	@Get()
 	@ApiResponse({ type: UserCollectionFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: UserCollectionFindFullRequestDto): Promise<UserCollectionFindFullResponse> {
+	findFull(
+		@Query() payload: UserCollectionFindFullRequestDto,
+	): Promise<UserCollectionFindFullResponse> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('full')
 	@ApiResponse({ type: UserCollectionFindFullResponseDto, isArray: true })
-	findFullForUser(@UserIdInAccessToken() id: string, @Query() payload: UserCollectionFindFullRequestDto): Promise<UserCollectionFindFullResponse> {
+	findFullForUser(
+		@UserIdInAccessToken() id: string,
+		@Query() payload: UserCollectionFindFullRequestDto,
+	): Promise<UserCollectionFindFullResponse> {
 		return this.service.findFull({ ...payload, userId: id })
 	}
 
 	@Get('all')
 	@ApiResponse({ type: UserCollectionFindAllResponseDto })
-	findAll(@Query() payload: UserCollectionFindAllRequestDto): Promise<UserCollectionFindAllResponse> {
+	findAll(
+		@Query() payload: UserCollectionFindAllRequestDto,
+	): Promise<UserCollectionFindAllResponse> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
 	@Get(':id')
 	@ApiResponse({ type: UserCollectionFindOneResponseDto })
-	findOne(@Param() payload: UserCollectionFindOneRequestDto): Promise<UserCollectionFindOneResponse> {
+	findOne(
+		@Param() payload: UserCollectionFindOneRequestDto,
+	): Promise<UserCollectionFindOneResponse> {
 		return this.service.findOne(payload)
 	}
 
 	@Post()
 	@ApiResponse({ type: null })
-	create(@Body() payload: UserCollectionCreateRequestDto): Promise<UserCollectionCreateResponse> {
+	create(
+		@Body() payload: UserCollectionCreateRequestDto,
+	): Promise<IResponse<UserCollectionCreateResponse>> {
 		return this.service.create(payload)
 	}
 
 	@Post('many')
 	@ApiResponse({ type: null })
-	createMany(@Body() payload: UserCollectionCreateManyRequestDto): Promise<UserCollectionCreateResponse> {
+	createMany(@Body() payload: UserCollectionCreateManyRequestDto): Promise<IResponse<[]>> {
 		return this.service.createMany(payload)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: UserCollectionFindOneRequestDto, @Body() payload: UserCollectionUpdateRequestDto): Promise<UserCollectionUpdateResponse> {
+	update(
+		@Param() params: UserCollectionFindOneRequestDto,
+		@Body() payload: UserCollectionUpdateRequestDto,
+	): Promise<IResponse<UserCollectionUpdateResponse>> {
 		return this.service.update(params, payload)
 	}
 
 	@Delete(':id')
 	@ApiResponse({ type: null })
-	delete(@Param() payload: UserCollectionDeleteRequestDto): Promise<UserCollectionDeleteResponse> {
+	delete(
+		@Param() payload: UserCollectionDeleteRequestDto,
+	): Promise<IResponse<[]>> {
 		return this.service.delete(payload)
 	}
 }

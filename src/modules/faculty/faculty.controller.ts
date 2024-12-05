@@ -24,6 +24,7 @@ import {
 } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Faculty')
 @UseGuards(CheckAuthGuard)
@@ -62,19 +63,22 @@ export class FacultyController {
 
 	@Post()
 	@ApiResponse({ type: null })
-	create(@Body() payload: FacultyCreateRequestDto): Promise<FacultyCreateResponse> {
+	create(@Body() payload: FacultyCreateRequestDto): Promise<IResponse<FacultyCreateResponse>> {
 		return this.service.create(payload)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: FacultyFindOneRequestDto, @Body() payload: FacultyUpdateRequestDto): Promise<FacultyUpdateResponse> {
+	update(
+		@Param() params: FacultyFindOneRequestDto,
+		@Body() payload: FacultyUpdateRequestDto,
+	): Promise<IResponse<FacultyUpdateResponse>> {
 		return this.service.update(params, payload)
 	}
 
 	@Delete(':id')
 	@ApiResponse({ type: null })
-	delete(@Param() payload: FacultyDeleteRequestDto): Promise<FacultyDeleteResponse> {
+	delete(@Param() payload: FacultyDeleteRequestDto): Promise<IResponse<[]>> {
 		return this.service.delete(payload)
 	}
 }

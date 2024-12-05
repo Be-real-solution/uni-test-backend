@@ -43,11 +43,11 @@ export class CreateUserResultDto {
 
 export class UserResultResponseDto implements IUserResultResponse {
 	@ApiProperty({ example: 'UUID' })
-  id: string
-  
+	id: string
+
 	@ApiProperty({ example: 'computer name' })
-  compyuterName: string
-  
+	compyuterName: string
+
 	@ApiProperty({ example: 'ALI Akmalov' })
 	userFullName: string
 
@@ -67,14 +67,14 @@ export class UserResultResponseDto implements IUserResultResponse {
 	createdAt: Date
 
 	@ApiPropertyOptional({ example: {} })
-  user?: UserFindOneResponse
-  
+	user?: UserFindOneResponse
+
 	@ApiPropertyOptional({ example: {} })
-  collection?: CollectionFindOneResponse
-  
+	collection?: CollectionFindOneResponse
+
 	@ApiPropertyOptional({ example: {} })
-  question?: QuestionFindOneResponse
-  
+	question?: QuestionFindOneResponse
+
 	@ApiPropertyOptional({ example: {} })
 	group?: GroupFindOneResponse
 }

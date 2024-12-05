@@ -19,6 +19,7 @@ import * as ExcelJs from 'exceljs'
 import { Response } from 'express'
 import * as path from 'path'
 import * as fs from 'fs'
+import { IResponse } from 'interfaces/response.interfaces'
 @Injectable()
 export class ArchiveService {
 	private readonly repository: ArchiveRepository
@@ -47,34 +48,43 @@ export class ArchiveService {
 		return Archive
 	}
 
-	async create(payload: ArchiveCreateRequest): Promise<ArchiveCreateResponse> {
-		const userCollection = await this.userCollectionRepository.findByUserCollection({ collectionId: payload.collectionId, userId: payload.userId })
-		console.log('userCollec', userCollection)
+	async create(payload: ArchiveCreateRequest): Promise<IResponse<ArchiveCreateResponse>> {
+		const userCollection = await this.userCollectionRepository.findByUserCollection({
+			collectionId: payload.collectionId,
+			userId: payload.userId,
+		})
+		// console.log('userCollec', userCollection)
 		if (!userCollection || !userCollection.haveAttempt) {
 			throw new BadRequestException("You haven't attempt for this collection")
 		}
-		await this.repository.create(payload)
+		const archive = await this.repository.create(payload)
 
 		if (userCollection.haveAttempt === 1) {
 			await this.userCollectionRepository.delete({ id: userCollection.id })
 		} else {
-			await this.userCollectionRepository.update({ id: userCollection.id, haveAttempt: userCollection.haveAttempt - 1 })
+			await this.userCollectionRepository.update({
+				id: userCollection.id,
+				haveAttempt: userCollection.haveAttempt - 1,
+			})
 		}
 
-		return null
+		return { status_code: 201, data: archive, message: 'created' }
 	}
 
-	async update(params: ArchiveFindOneRequest, payload: ArchiveUpdateRequest): Promise<ArchiveUpdateResponse> {
+	async update(
+		params: ArchiveFindOneRequest,
+		payload: ArchiveUpdateRequest,
+	): Promise<IResponse<ArchiveUpdateResponse>> {
 		await this.findOne({ id: params.id })
 
-		await this.repository.update({ ...params, ...payload })
-		return null
+		const archive = await this.repository.update({ ...params, ...payload })
+		return { status_code: 200, data: archive, message: 'updated' }
 	}
 
-	async delete(payload: ArchiveDeleteRequest): Promise<ArchiveDeleteResponse> {
+	async delete(payload: ArchiveDeleteRequest): Promise<IResponse<[]>> {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
-		return null
+		return { status_code: 200, data: [], message: 'deleted' }
 	}
 
 	async downloadInExcel1(payload: ArchiveFindFullRequest, res: Response): Promise<void> {
@@ -113,7 +123,20 @@ export class ArchiveService {
 		}
 
 		const table = [
-			['№', 'F.I.SH', 'Fakultet', 'Kurs', 'Semestr', 'Guruh', 'Fan', 'Test', 'Boshlangan vaqt', 'Tugatilgan vaqt', 'Umumiy testlar soni', 'Natija'],
+			[
+				'№',
+				'F.I.SH',
+				'Fakultet',
+				'Kurs',
+				'Semestr',
+				'Guruh',
+				'Fan',
+				'Test',
+				'Boshlangan vaqt',
+				'Tugatilgan vaqt',
+				'Umumiy testlar soni',
+				'Natija',
+			],
 			// [0, 'Qodirov Jahongir', 'Bugalteriya', 1, 1, 'Buxgalteriya ishi', 'Tarix', 'Tarix yakuniy test', this.formatDate(new Date()), this.formatDate(new Date()), 10, 5],
 			...mappedArchives,
 		]
@@ -151,7 +174,10 @@ export class ArchiveService {
 
 		const buffer = await workbook.xlsx.writeBuffer()
 		res.setHeader('Content-Disposition', 'attachment; filename="archives.xlsx"')
-		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+		res.setHeader(
+			'Content-Type',
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		)
 		res.write(buffer)
 		res.end()
 	}
@@ -191,7 +217,20 @@ export class ArchiveService {
 		}
 
 		const table = [
-			['№', 'F.I.SH', 'Fakultet', 'Kurs', 'Semestr', 'Guruh', 'Fan', 'Test', 'Boshlangan vaqt', 'Tugatilgan vaqt', 'Umumiy testlar soni', 'Natija'],
+			[
+				'№',
+				'F.I.SH',
+				'Fakultet',
+				'Kurs',
+				'Semestr',
+				'Guruh',
+				'Fan',
+				'Test',
+				'Boshlangan vaqt',
+				'Tugatilgan vaqt',
+				'Umumiy testlar soni',
+				'Natija',
+			],
 			...mappedArchives,
 		]
 

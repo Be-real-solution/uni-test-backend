@@ -1,4 +1,18 @@
-import { BadGatewayException, BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
+import {
+	BadGatewayException,
+	BadRequestException,
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query,
+	UploadedFile,
+	UseGuards,
+	UseInterceptors,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserService } from './user.service'
 import {
@@ -15,7 +29,15 @@ import {
 	UserCreateManyWithJsonFileDto,
 	UserUpdateWithInfoRequestDto,
 } from './dtos'
-import { UserCreateResponse, UserDeleteResponse, UserFindAllResponse, UserFindFullResponse, UserFindOneResponse, UserSignInResponse, UserUpdateResponse } from './interfaces'
+import {
+	UserCreateResponse,
+	UserDeleteResponse,
+	UserFindAllResponse,
+	UserFindFullResponse,
+	UserFindOneResponse,
+	UserSignInResponse,
+	UserUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -25,6 +47,7 @@ import { diskStorage } from 'multer'
 import { extname, join } from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import { SettingService } from 'modules/setting/setting.service'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('User')
 @UseGuards(CheckAuthGuard)
@@ -110,7 +133,10 @@ export class UserController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
-	createWithInfo(@Body() payload: UserCreateWithInfoRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserCreateResponse> {
+	createWithInfo(
+		@Body() payload: UserCreateWithInfoRequestDto,
+		@UploadedFile() image: Express.Multer.File,
+	): Promise<IResponse<UserCreateResponse>> {
 		const imagePath = image ? `/uploads/${image.filename}` : ''
 
 		return this.service.createWithUserInfo({ ...payload, image: imagePath })
@@ -155,7 +181,7 @@ export class UserController {
 	})
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
-	createManyWithJson(@UploadedFile() file: any): Promise<null> {
+	createManyWithJson(@UploadedFile() file: any): Promise<IResponse<[]>> {
 		if (file) {
 			const data = file.buffer.toString('utf8')
 			const jsonData: UserCreateManyWithJsonFileDto[] = JSON.parse(data)
@@ -189,7 +215,11 @@ export class UserController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
-	update(@Param() params: UserFindOneRequestDto, @Body() payload: UserUpdateWithInfoRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserUpdateResponse> {
+	update(
+		@Param() params: UserFindOneRequestDto,
+		@Body() payload: UserUpdateWithInfoRequestDto,
+		@UploadedFile() image: Express.Multer.File,
+	): Promise<IResponse<UserUpdateResponse>> {
 		const imagePath = image ? `/uploads/${image.filename}` : undefined
 		return this.service.updateWithUserInfo(params, { ...payload, image: imagePath })
 	}
@@ -197,7 +227,7 @@ export class UserController {
 	@Delete(':id')
 	@ApiBearerAuth()
 	@ApiResponse({ type: null })
-	delete(@Param() payload: UserDeleteRequestDto): Promise<UserDeleteResponse> {
+	delete(@Param() payload: UserDeleteRequestDto): Promise<IResponse<[]>> {
 		return this.service.delete(payload)
 	}
 }

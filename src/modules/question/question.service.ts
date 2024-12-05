@@ -79,13 +79,17 @@ export class QuestionService {
 		return questions
 	}
 
-	async create(payload: QuestionCreateRequest, file: any): Promise<QuestionCreateResponse> {
+	async create(
+		payload: QuestionCreateRequest,
+		file: any,
+	): Promise<IResponse<QuestionCreateResponse>> {
 		try {
 			await this.findOneByTextWithCollectionId({
 				text: payload.text,
 				collectionId: payload.collectionId,
 			})
-			return this.repository.create(payload, file?.filename)
+			const question = await this.repository.create(payload, file?.filename)
+			return { status_code: 201, data: question, message: 'created' }
 		} catch (err) {
 			if (file) {
 				deleteFile(file.filename)
@@ -97,7 +101,7 @@ export class QuestionService {
 	async createManyWithAnswers(
 		payload: Pick<QuestionsCreateWithAnswersRequest, 'collectionId'>,
 		text: string,
-	): Promise<QuestionsCreateWithAnswersResponse> {
+	): Promise<IResponse<[]>> {
 		const qwa: QuestionsCreateWithAnswersRequest = {
 			collectionId: payload.collectionId,
 			questions: [],
@@ -144,7 +148,7 @@ export class QuestionService {
 
 		await this.repository.createWithAnswers({ ...qwa })
 
-		return null
+		return { status_code: 200, data: [], message: 'created' }
 	}
 
 	async confirmCreateManyWithAnswers(
@@ -266,7 +270,7 @@ export class QuestionService {
 		params: QuestionFindOneRequest,
 		payload: QuestionUpdateRequest,
 		file: any,
-	): Promise<IResponse<{}>> {
+	): Promise<IResponse<[]>> {
 		try {
 			const question = await this.findOne({ id: params.id })
 
@@ -331,19 +335,18 @@ export class QuestionService {
 			if (file && imageUrl) {
 				await deleteFile(imageUrl)
 			}
-			return {status_code: 200, data: {}, message: 'updated'}
+			return { status_code: 200, data: [], message: 'updated' }
 		} catch (err) {
 			if (file) {
-
 				await deleteFile(file.filename)
 			}
 			throw err
 		}
 	}
 
-	async delete(payload: QuestionDeleteRequest): Promise<QuestionDeleteResponse> {
+	async delete(payload: QuestionDeleteRequest): Promise<IResponse<[]>> {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
-		return null
+		return { status_code: 200, data: [], message: 'deleted' }
 	}
 }

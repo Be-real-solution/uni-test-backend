@@ -70,8 +70,16 @@ export declare interface AdminSignInResponse {
 	tokens: SignInTokenDefinition
 }
 
-export declare type AdminCreateResponse = null
+export declare type AdminCreateResponse = AdminFindOneResponse
 
-export declare type AdminUpdateResponse = null
+export declare type AdminUpdateResponse = {
+	id?: string
+	fullName?: string
+	image?: string
+	type?: string
+	password?: string
+	emailAddress?: string
+	createdAt?: Date
+}
 
 export declare type AdminDeleteResponse = null

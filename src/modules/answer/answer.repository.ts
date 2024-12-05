@@ -24,7 +24,11 @@ export class AnswerRepository {
 
 	async findFull(payload: AnswerFindFullRequest): Promise<AnswerFindFullResponse> {
 		const answers = await this.prisma.answer.findMany({
-			where: { text: { contains: payload.text, mode: 'insensitive' }, deletedAt: null, questionId: payload.questionId },
+			where: {
+				text: { contains: payload.text, mode: 'insensitive' },
+				deletedAt: null,
+				questionId: payload.questionId,
+			},
 			select: {
 				id: true,
 				text: true,
@@ -42,7 +46,11 @@ export class AnswerRepository {
 		const answers = await this.prisma.answer.findMany({
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
-			where: { text: { contains: payload.text, mode: 'insensitive' }, deletedAt: null, questionId: payload.questionId },
+			where: {
+				text: { contains: payload.text, mode: 'insensitive' },
+				deletedAt: null,
+				questionId: payload.questionId,
+			},
 			select: {
 				id: true,
 				text: true,
@@ -54,7 +62,11 @@ export class AnswerRepository {
 		})
 
 		const answersCount = await this.prisma.answer.count({
-			where: { text: { contains: payload.text, mode: 'insensitive' }, deletedAt: null, questionId: payload.questionId },
+			where: {
+				text: { contains: payload.text, mode: 'insensitive' },
+				deletedAt: null,
+				questionId: payload.questionId,
+			},
 		})
 
 		return {
@@ -80,7 +92,9 @@ export class AnswerRepository {
 		return answer
 	}
 
-	async findByTextWithQuestionId(payload: Partial<AnswerCreateRequest>): Promise<AnswerFindOneResponse> {
+	async findByTextWithQuestionId(
+		payload: Partial<AnswerCreateRequest>,
+	): Promise<AnswerFindOneResponse> {
 		const answer = await this.prisma.answer.findFirst({
 			where: { text: payload.text, questionId: payload.questionId, deletedAt: null },
 			select: {
@@ -95,17 +109,35 @@ export class AnswerRepository {
 	}
 
 	async create(payload: AnswerCreateRequest): Promise<AnswerCreateResponse> {
-		await this.prisma.answer.create({ data: { text: payload.text, questionId: payload.questionId, isCorrect: payload.isCorrect } })
+		return await this.prisma.answer.create({
+			data: {
+				text: payload.text,
+				questionId: payload.questionId,
+				isCorrect: payload.isCorrect,
+			},
+		})
 		return null
 	}
 
-	async update(payload: AnswerFindOneRequest & AnswerUpdateRequest): Promise<AnswerUpdateRequest> {
-		await this.prisma.answer.update({ where: { id: payload.id, deletedAt: null }, data: { text: payload.text, questionId: payload.questionId, isCorrect: payload.isCorrect } })
+	async update(
+		payload: AnswerFindOneRequest & AnswerUpdateRequest,
+	): Promise<AnswerUpdateRequest> {
+		return await this.prisma.answer.update({
+			where: { id: payload.id, deletedAt: null },
+			data: {
+				text: payload.text,
+				questionId: payload.questionId,
+				isCorrect: payload.isCorrect,
+			},
+		})
 		return null
 	}
 
 	async delete(payload: AnswerDeleteRequest): Promise<AnswerDeleteResponse> {
-		await this.prisma.answer.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.answer.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 		return null
 	}
 }

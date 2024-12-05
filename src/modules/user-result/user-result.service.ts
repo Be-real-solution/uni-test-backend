@@ -1,7 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { CreateUserResultDto } from './dto/create-user-result.dto'
 import { UpdateUserResultDto } from './dto/update-user-result.dto'
-import { ICreateUserResultService, IUserResultFindAll, IUserResultFindAllResponse, IUserResultResponse } from './interfaces/user-result.interfaces'
+import {
+	ICreateUserResultService,
+	IUserResultFindAll,
+	IUserResultFindAllResponse,
+	IUserResultResponse,
+} from './interfaces/user-result.interfaces'
 import { QuestionService } from 'modules/question'
 import { UserService } from 'modules/user'
 import { UserResultRepository } from './user-result.repository'
@@ -72,6 +77,4 @@ export class UserResultService {
 
 		return userResult
 	}
-
-
 }

@@ -191,7 +191,7 @@ export class UserCollectionRepository {
 	}
 
 	async create(payload: UserCollectionCreateRequest): Promise<UserCollectionCreateResponse> {
-		await this.prisma.userCollection.create({
+		return await this.prisma.userCollection.create({
 			data: {
 				haveAttempt: payload.haveAttempt,
 				userId: payload.userId,
@@ -243,7 +243,7 @@ export class UserCollectionRepository {
 	async update(
 		payload: UserCollectionFindOneRequest & UserCollectionUpdateRequest,
 	): Promise<UserCollectionUpdateRequest> {
-		await this.prisma.userCollection.update({
+		return await this.prisma.userCollection.update({
 			where: { id: payload.id, deletedAt: null },
 			data: {
 				haveAttempt: payload.haveAttempt,

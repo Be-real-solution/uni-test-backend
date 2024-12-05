@@ -23,7 +23,11 @@ export class ArchiveRepository {
 	private readonly userService: UserService
 	private readonly collectionService: CollectionService
 
-	constructor(prisma: PrismaService, userService: UserService, collectionService: CollectionService) {
+	constructor(
+		prisma: PrismaService,
+		userService: UserService,
+		collectionService: CollectionService,
+	) {
 		this.prisma = prisma
 		this.userService = userService
 		this.collectionService = collectionService
@@ -39,7 +43,11 @@ export class ArchiveRepository {
 			}
 		} else if (payload.startDate) {
 			dateOptions = {
-				lte: new Date(new Date(payload.startDate.setHours(0, 0, 0, 0)).setDate(payload.startDate.getDate() + 1)),
+				lte: new Date(
+					new Date(payload.startDate.setHours(0, 0, 0, 0)).setDate(
+						payload.startDate.getDate() + 1,
+					),
+				),
 				gte: new Date(payload.startDate.setHours(0, 0, 0, 0)),
 			}
 		}
@@ -64,8 +72,19 @@ export class ArchiveRepository {
 						maxAttempts: true,
 						givenMinutes: true,
 						amountInTest: true,
-						science: { select: { id: true, since_id: true, name: true, createdAt: true } },
-						admin: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
+						science: {
+							select: { id: true, since_id: true, name: true, createdAt: true },
+						},
+						admin: {
+							select: {
+								id: true,
+								createdAt: true,
+								fullName: true,
+								emailAddress: true,
+								image: true,
+								type: true,
+							},
+						},
 					},
 				},
 				course: { select: { id: true, stage: true, createdAt: true } },
@@ -74,7 +93,16 @@ export class ArchiveRepository {
 				// semestr: { select: { id: true, stage: true, createdAt: true } },
 				result: true,
 				testCount: true,
-				user: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
+				user: {
+					select: {
+						id: true,
+						createdAt: true,
+						fullName: true,
+						emailAddress: true,
+						image: true,
+						type: true,
+					},
+				},
 				createdAt: true,
 				startTime: true,
 				endTime: true,
@@ -106,8 +134,19 @@ export class ArchiveRepository {
 						maxAttempts: true,
 						givenMinutes: true,
 						amountInTest: true,
-						admin: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
-						science: { select: { id: true, name: true, since_id: true, createdAt: true } },
+						admin: {
+							select: {
+								id: true,
+								createdAt: true,
+								fullName: true,
+								emailAddress: true,
+								image: true,
+								type: true,
+							},
+						},
+						science: {
+							select: { id: true, name: true, since_id: true, createdAt: true },
+						},
 					},
 				},
 				course: { select: { id: true, stage: true, createdAt: true } },
@@ -116,7 +155,16 @@ export class ArchiveRepository {
 				// semestr: { select: { id: true, stage: true, createdAt: true } },
 				result: true,
 				testCount: true,
-				user: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
+				user: {
+					select: {
+						id: true,
+						createdAt: true,
+						fullName: true,
+						emailAddress: true,
+						image: true,
+						type: true,
+					},
+				},
 				createdAt: true,
 				startTime: true,
 				endTime: true,
@@ -150,8 +198,19 @@ export class ArchiveRepository {
 						maxAttempts: true,
 						givenMinutes: true,
 						amountInTest: true,
-						admin: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
-						science: { select: { id: true, name: true, since_id: true, createdAt: true } },
+						admin: {
+							select: {
+								id: true,
+								createdAt: true,
+								fullName: true,
+								emailAddress: true,
+								image: true,
+								type: true,
+							},
+						},
+						science: {
+							select: { id: true, name: true, since_id: true, createdAt: true },
+						},
 					},
 				},
 				course: { select: { id: true, stage: true, createdAt: true } },
@@ -160,7 +219,16 @@ export class ArchiveRepository {
 				result: true,
 				testCount: true,
 				// semestr: { select: { id: true, stage: true, createdAt: true } },
-				user: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
+				user: {
+					select: {
+						id: true,
+						createdAt: true,
+						fullName: true,
+						emailAddress: true,
+						image: true,
+						type: true,
+					},
+				},
 				createdAt: true,
 				startTime: true,
 				endTime: true,
@@ -201,8 +269,19 @@ export class ArchiveRepository {
 						maxAttempts: true,
 						givenMinutes: true,
 						amountInTest: true,
-						admin: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
-						science: { select: { id: true, name: true, since_id: true, createdAt: true } },
+						admin: {
+							select: {
+								id: true,
+								createdAt: true,
+								fullName: true,
+								emailAddress: true,
+								image: true,
+								type: true,
+							},
+						},
+						science: {
+							select: { id: true, name: true, since_id: true, createdAt: true },
+						},
 					},
 				},
 				course: { select: { id: true, stage: true, createdAt: true } },
@@ -211,7 +290,16 @@ export class ArchiveRepository {
 				group: { select: { id: true, name: true, createdAt: true } },
 				result: true,
 				testCount: true,
-				user: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
+				user: {
+					select: {
+						id: true,
+						createdAt: true,
+						fullName: true,
+						emailAddress: true,
+						image: true,
+						type: true,
+					},
+				},
 				createdAt: true,
 				startTime: true,
 				endTime: true,
@@ -296,16 +384,24 @@ export class ArchiveRepository {
 			})
 		})
 
-		return null
+		return archive
 	}
 
-	async update(payload: ArchiveFindOneRequest & ArchiveUpdateRequest): Promise<ArchiveUpdateRequest> {
-		await this.prisma.archive.update({ where: { id: payload.id, deletedAt: null }, data: { result: payload.result } })
+	async update(
+		payload: ArchiveFindOneRequest & ArchiveUpdateRequest,
+	): Promise<ArchiveUpdateRequest> {
+		return await this.prisma.archive.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { result: payload.result },
+		})
 		return null
 	}
 
 	async delete(payload: ArchiveDeleteRequest): Promise<ArchiveDeleteResponse> {
-		await this.prisma.archive.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.archive.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 		return null
 	}
 }

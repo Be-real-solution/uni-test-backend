@@ -88,7 +88,7 @@ export class QuestionController {
 	createQuestionsWithFile(
 		@Body() payload: QuestionsCreateWithAnswersDto,
 		@UploadedFile() file: UploadedTxtFile,
-	): Promise<QuestionsCreateWithAnswersResponse> {
+	): Promise<IResponse<[]>> {
 		return this.service.createManyWithAnswers(payload, file.buffer.toString('utf-8'))
 	}
 
@@ -119,7 +119,7 @@ export class QuestionController {
 	create(
 		@Body() payload: QuestionCreateRequestDto,
 		@UploadedFile() file: Express.Multer.File,
-	): Promise<QuestionCreateResponse> {
+	): Promise<IResponse<QuestionCreateResponse>> {
 		return this.service.create(payload, file)
 	}
 
@@ -191,13 +191,13 @@ export class QuestionController {
 		@Param() params: QuestionFindOneRequestDto,
 		@Body() payload: QuestionUpdateRequestDto,
 		@UploadedFile() file: Express.Multer.File,
-	): Promise<IResponse<{}>> {
+	): Promise<IResponse<[]>> {
 		return this.service.update(params, payload, file)
 	}
 
 	@Delete(':id')
 	@ApiResponse({ type: null })
-	delete(@Param() payload: QuestionDeleteRequestDto): Promise<QuestionDeleteResponse> {
+	delete(@Param() payload: QuestionDeleteRequestDto): Promise<IResponse<[]>> {
 		return this.service.delete(payload)
 	}
 }

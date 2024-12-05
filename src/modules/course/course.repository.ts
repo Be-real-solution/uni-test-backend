@@ -73,17 +73,25 @@ export class CourseRepository {
 	}
 
 	async create(payload: CourseCreateRequest): Promise<CourseCreateResponse> {
-		await this.prisma.course.create({ data: { stage: payload.stage } })
+		return await this.prisma.course.create({ data: { stage: payload.stage } })
 		return null
 	}
 
-	async update(payload: CourseFindOneRequest & CourseUpdateRequest): Promise<CourseUpdateRequest> {
-		await this.prisma.course.update({ where: { id: payload.id, deletedAt: null }, data: { stage: payload.stage } })
+	async update(
+		payload: CourseFindOneRequest & CourseUpdateRequest,
+	): Promise<CourseUpdateRequest> {
+		return await this.prisma.course.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { stage: payload.stage },
+		})
 		return null
 	}
 
 	async delete(payload: CourseDeleteRequest): Promise<CourseDeleteResponse> {
-		await this.prisma.course.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.course.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 		return null
 	}
 }

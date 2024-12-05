@@ -15,6 +15,7 @@ import {
 	FacultyUpdateRequest,
 	FacultyUpdateResponse,
 } from './interfaces'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class FacultyService {
@@ -49,23 +50,27 @@ export class FacultyService {
 		return faculty
 	}
 
-	async create(payload: FacultyCreateRequest): Promise<FacultyCreateResponse> {
+	async create(payload: FacultyCreateRequest): Promise<IResponse<FacultyCreateResponse>> {
 		await this.findOneByName({ name: payload.name })
-		return this.repository.create(payload)
+		const faculty = await this.repository.create(payload)
+		return { status_code: 201, data: faculty, message: 'created' }
 	}
 
-	async update(params: FacultyFindOneRequest, payload: FacultyUpdateRequest): Promise<FacultyUpdateResponse> {
+	async update(
+		params: FacultyFindOneRequest,
+		payload: FacultyUpdateRequest,
+	): Promise<IResponse<FacultyUpdateResponse>> {
 		await this.findOne({ id: params.id })
 		payload.name ? await this.findOneByName({ name: payload.name, id: params.id }) : null
 
-		await this.repository.update({ ...params, ...payload })
-		return null
+		const faculty = await this.repository.update({ ...params, ...payload })
+		return { status_code: 200, data: faculty, message: 'updated' }
 	}
 
-	async delete(payload: FacultyDeleteRequest): Promise<FacultyDeleteResponse> {
+	async delete(payload: FacultyDeleteRequest): Promise<IResponse<[]>> {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
-		return null
+		return { status_code: 200, data: [], message: 'deleted' }
 	}
 
 	async findAllForSetCollection(): Promise<FacultyFindFullForSetCollection[]> {

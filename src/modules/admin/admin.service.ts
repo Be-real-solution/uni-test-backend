@@ -18,6 +18,7 @@ import {
 	AdminUpdateResponse,
 } from './interfaces'
 import { JWTService } from '../jwt'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class AdminService {
@@ -47,7 +48,10 @@ export class AdminService {
 	}
 
 	async findOneByEmail(payload: Partial<AdminFindOneResponse>): Promise<AdminFindOneResponse> {
-		const admin = await this.repository.findByEmail({ emailAddress: payload.emailAddress, id: payload.id })
+		const admin = await this.repository.findByEmail({
+			emailAddress: payload.emailAddress,
+			id: payload.id,
+		})
 		if (admin) {
 			throw new BadRequestException('Admin already exists')
 		}
@@ -55,7 +59,10 @@ export class AdminService {
 	}
 
 	async findByEmail(payload: Partial<AdminFindOneResponse>): Promise<AdminFindOneResponse> {
-		const admin = await this.repository.findByEmail({ emailAddress: payload.emailAddress, id: payload.id })
+		const admin = await this.repository.findByEmail({
+			emailAddress: payload.emailAddress,
+			id: payload.id,
+		})
 		return admin
 	}
 
@@ -72,23 +79,32 @@ export class AdminService {
 		return { admin: admin, tokens: tokens }
 	}
 
-	async create(payload: AdminCreateRequest): Promise<AdminCreateResponse> {
+	async create(payload: AdminCreateRequest): Promise<IResponse<AdminFindOneResponse>> {
 		const password = await bcrypt.hash(payload.password, 7)
-		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress }) : null
-		return this.repository.create({ ...payload, password })
+		payload.emailAddress
+			? await this.findOneByEmail({ emailAddress: payload.emailAddress })
+			: null
+		const admin = await this.repository.create({ ...payload, password })
+
+		return { status_code: 201, data: admin, message: 'created' }
 	}
 
-	async update(params: AdminFindOneRequest, payload: AdminUpdateRequest): Promise<AdminUpdateResponse> {
+	async update(
+		params: AdminFindOneRequest,
+		payload: AdminUpdateRequest,
+	): Promise<IResponse<AdminUpdateResponse>> {
 		await this.findOne({ id: params.id })
-		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress, id: params.id }) : null
+		payload.emailAddress
+			? await this.findOneByEmail({ emailAddress: payload.emailAddress, id: params.id })
+			: null
 		const password = payload.password ? await bcrypt.hash(payload.password, 7) : undefined
-		await this.repository.update({ ...params, ...payload, password })
-		return null
+		const admin = await this.repository.update({ ...params, ...payload, password })
+		return { status_code: 200, data: admin, message: 'updated' }
 	}
 
-	async delete(payload: AdminDeleteRequest): Promise<AdminDeleteResponse> {
+	async delete(payload: AdminDeleteRequest): Promise<IResponse<[]>> {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
-		return null
+		return { status_code: 200, data: [], message: 'deleted' }
 	}
 }

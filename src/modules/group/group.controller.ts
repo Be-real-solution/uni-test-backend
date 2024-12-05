@@ -12,9 +12,17 @@ import {
 	GroupFindAllResponseDto,
 	GroupFindOneResponseDto,
 } from './dtos'
-import { GroupCreateResponse, GroupDeleteResponse, GroupFindAllResponse, GroupFindFullResponse, GroupFindOneResponse, GroupUpdateResponse } from './interfaces'
+import {
+	GroupCreateResponse,
+	GroupDeleteResponse,
+	GroupFindAllResponse,
+	GroupFindFullResponse,
+	GroupFindOneResponse,
+	GroupUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Group')
 @UseGuards(CheckAuthGuard)
@@ -47,19 +55,22 @@ export class GroupController {
 
 	@Post()
 	@ApiResponse({ type: null })
-	create(@Body() payload: GroupCreateRequestDto): Promise<GroupCreateResponse> {
+	create(@Body() payload: GroupCreateRequestDto): Promise<IResponse<GroupCreateResponse>> {
 		return this.service.create(payload)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: GroupFindOneRequestDto, @Body() payload: GroupUpdateRequestDto): Promise<GroupUpdateResponse> {
+	update(
+		@Param() params: GroupFindOneRequestDto,
+		@Body() payload: GroupUpdateRequestDto,
+	): Promise<IResponse<GroupUpdateResponse>> {
 		return this.service.update(params, payload)
 	}
 
 	@Delete(':id')
 	@ApiResponse({ type: null })
-	delete(@Param() payload: GroupDeleteRequestDto): Promise<GroupDeleteResponse> {
+	delete(@Param() payload: GroupDeleteRequestDto): Promise<IResponse<[]>> {
 		return this.service.delete(payload)
 	}
 }

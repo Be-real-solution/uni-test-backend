@@ -66,25 +66,41 @@ export class ScienceRepository {
 		return science
 	}
 
-	async findByNameOrSinceId(payload: Partial<ScienceFindOneResponse>): Promise<ScienceFindOneResponse> {
-		const science = await this.prisma.science.findFirst({ where: { OR: [{ name: payload.name }, { since_id: payload.since_id }], id: { not: payload.id }, deletedAt: null } })
+	async findByNameOrSinceId(
+		payload: Partial<ScienceFindOneResponse>,
+	): Promise<ScienceFindOneResponse> {
+		const science = await this.prisma.science.findFirst({
+			where: {
+				OR: [{ name: payload.name }, { since_id: payload.since_id }],
+				id: { not: payload.id },
+				deletedAt: null,
+			},
+		})
 		return science
 	}
 
 	async create(payload: ScienceCreateRequest): Promise<ScienceCreateResponse> {
 		const since = await this.prisma.science.findFirst({ where: { since_id: payload.since_id } })
 
-		await this.prisma.science.create({ data: { ...payload } })
+		return await this.prisma.science.create({ data: { ...payload } })
 		return null
 	}
 
-	async update(payload: ScienceFindOneRequest & ScienceUpdateRequest): Promise<ScienceUpdateRequest> {
-		await this.prisma.science.update({ where: { id: payload.id, deletedAt: null }, data: { ...payload } })
+	async update(
+		payload: ScienceFindOneRequest & ScienceUpdateRequest,
+	): Promise<ScienceUpdateRequest> {
+		return await this.prisma.science.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { ...payload },
+		})
 		return null
 	}
 
 	async delete(payload: ScienceDeleteRequest): Promise<ScienceDeleteResponse> {
-		await this.prisma.science.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.science.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 		return null
 	}
 
@@ -136,9 +152,24 @@ export class ScienceRepository {
 		return sciences
 	}
 
-	async findAllWithUserCollection(payload: ScienceFindOnwWithUserCollectionRequest): Promise<ScienceFindOneWithUserCollection[]> {
+	async findAllWithUserCollection(
+		payload: ScienceFindOnwWithUserCollectionRequest,
+	): Promise<ScienceFindOneWithUserCollection[]> {
 		const sciences = await this.prisma.science.findMany({
-			where: { deletedAt: null, collections: { some: { userCollectiona: { some: { userId: payload.userId, deletedAt: null, haveAttempt: { gt: 0 } } } } } },
+			where: {
+				deletedAt: null,
+				collections: {
+					some: {
+						userCollectiona: {
+							some: {
+								userId: payload.userId,
+								deletedAt: null,
+								haveAttempt: { gt: 0 },
+							},
+						},
+					},
+				},
+			},
 			select: {
 				id: true,
 				name: true,

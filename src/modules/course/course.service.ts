@@ -14,6 +14,7 @@ import {
 	CourseUpdateRequest,
 	CourseUpdateResponse,
 } from './interfaces'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class CourseService {
@@ -48,22 +49,26 @@ export class CourseService {
 		return course
 	}
 
-	async create(payload: CourseCreateRequest): Promise<CourseCreateResponse> {
+	async create(payload: CourseCreateRequest): Promise<IResponse<CourseCreateResponse>> {
 		await this.findOneByStage({ stage: payload.stage })
-		return this.repository.create(payload)
+		const course = await this.repository.create(payload)
+		return { status_code: 201, data: course, message: 'created' }
 	}
 
-	async update(params: CourseFindOneRequest, payload: CourseUpdateRequest): Promise<CourseUpdateResponse> {
+	async update(
+		params: CourseFindOneRequest,
+		payload: CourseUpdateRequest,
+	): Promise<IResponse<CourseUpdateResponse>> {
 		await this.findOne({ id: params.id })
 		payload.stage ? await this.findOneByStage({ stage: payload.stage, id: params.id }) : null
 
-		await this.repository.update({ ...params, ...payload })
-		return null
+		const course = await this.repository.update({ ...params, ...payload })
+		return { status_code: 200, data: course, message: 'updated' }
 	}
 
-	async delete(payload: CourseDeleteRequest): Promise<CourseDeleteResponse> {
+	async delete(payload: CourseDeleteRequest): Promise<IResponse<[]>> {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
-		return null
+		return { status_code: 200, data: [], message: 'deleted' }
 	}
 }

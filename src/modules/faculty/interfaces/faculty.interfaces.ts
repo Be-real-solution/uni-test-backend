@@ -70,8 +70,12 @@ export declare interface FacultyFindOneResponse {
 	createdAt: Date
 }
 
-export declare type FacultyCreateResponse = null
+export declare type FacultyCreateResponse = FacultyFindOneResponse
 
-export declare type FacultyUpdateResponse = null
+export declare type FacultyUpdateResponse = {
+	id?: string
+	name?: string
+	createdAt?: Date
+}
 
 export declare type FacultyDeleteResponse = null

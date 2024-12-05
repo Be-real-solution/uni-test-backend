@@ -12,9 +12,17 @@ import {
 	UserInfoFindAllResponseDto,
 	UserInfoFindOneResponseDto,
 } from './dtos'
-import { UserInfoCreateResponse, UserInfoDeleteResponse, UserInfoFindAllResponse, UserInfoFindFullResponse, UserInfoFindOneResponse, UserInfoUpdateResponse } from './interfaces'
+import {
+	UserInfoCreateResponse,
+	UserInfoDeleteResponse,
+	UserInfoFindAllResponse,
+	UserInfoFindFullResponse,
+	UserInfoFindOneResponse,
+	UserInfoUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('UserInfo')
 @UseGuards(CheckAuthGuard)
@@ -47,19 +55,22 @@ export class UserInfoController {
 
 	@Post()
 	@ApiResponse({ type: null })
-	create(@Body() payload: UserInfoCreateRequestDto): Promise<UserInfoCreateResponse> {
+	create(@Body() payload: UserInfoCreateRequestDto): Promise<IResponse<UserInfoCreateResponse>> {
 		return this.service.create(payload)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: UserInfoFindOneRequestDto, @Body() payload: UserInfoUpdateRequestDto): Promise<UserInfoUpdateResponse> {
+	update(
+		@Param() params: UserInfoFindOneRequestDto,
+		@Body() payload: UserInfoUpdateRequestDto,
+	): Promise<IResponse<UserInfoUpdateResponse>> {
 		return this.service.update(params, payload)
 	}
 
 	@Delete(':id')
 	@ApiResponse({ type: null })
-	delete(@Param() payload: UserInfoDeleteRequestDto): Promise<UserInfoDeleteResponse> {
+	delete(@Param() payload: UserInfoDeleteRequestDto): Promise<IResponse<[]>> {
 		return this.service.delete(payload)
 	}
 }

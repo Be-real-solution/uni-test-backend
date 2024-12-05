@@ -58,8 +58,15 @@ export declare interface GroupFindOneResponse {
 	createdAt: Date
 }
 
-export declare type GroupCreateResponse = null
+export declare type GroupCreateResponse = GroupFindOneResponse
 
-export declare type GroupUpdateResponse = null
+export declare type GroupUpdateResponse = {
+	id?: string
+	name?: string
+	course?: CourseFindOneResponse
+	faculty?: FacultyFindOneResponse
+	// semestr?: SemestrFindOneResponse
+	createdAt?: Date
+}
 
 export declare type GroupDeleteResponse = null

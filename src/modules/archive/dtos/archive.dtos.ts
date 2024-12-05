@@ -15,7 +15,16 @@ import {
 	CollectionQuestion,
 	QuestionAnswer,
 } from '../interfaces'
-import { IsArray, IsBoolean, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import {
+	IsArray,
+	IsBoolean,
+	IsDateString,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	IsUUID,
+} from 'class-validator'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
 import { FacultyFindOneResponse, FacultyFindOneResponseDto } from '../../faculty'
 import { GroupFindOneResponse, GroupFindOneResponseDto } from '../../group'
@@ -239,7 +248,9 @@ export class ArchiveFindFullResponseDto implements ArchiveFindOneResponse {
 	startTime: Date
 }
 
-export class ArchiveCollectionQuestionAnswerResponseDto implements ArchiveCollectionQuestionAnswerResponse {
+export class ArchiveCollectionQuestionAnswerResponseDto
+	implements ArchiveCollectionQuestionAnswerResponse
+{
 	@ApiProperty({ example: true })
 	isChecked: boolean
 

@@ -28,6 +28,7 @@ import {
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 import { UserIdInAccessToken } from '../../decorators'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Science')
 @UseGuards(CheckAuthGuard)
@@ -54,7 +55,10 @@ export class ScienceController {
 
 	@Get('with-collection')
 	@ApiResponse({ type: ScienceFindOneWithUserCollectionDto, isArray: true })
-	findAllWithUserCollection(@UserIdInAccessToken() id: string, @Query() payload: ScienceFindOnwWithUserCollectionRequestDto): Promise<ScienceFindOneWithUserCollection[]> {
+	findAllWithUserCollection(
+		@UserIdInAccessToken() id: string,
+		@Query() payload: ScienceFindOnwWithUserCollectionRequestDto,
+	): Promise<ScienceFindOneWithUserCollection[]> {
 		return this.service.findAllWithUserCollection({ ...payload, userId: payload.userId ?? id })
 	}
 
@@ -72,19 +76,22 @@ export class ScienceController {
 
 	@Post()
 	@ApiResponse({ type: null })
-	create(@Body() payload: ScienceCreateRequestDto): Promise<ScienceCreateResponse> {
+	create(@Body() payload: ScienceCreateRequestDto): Promise<IResponse<ScienceCreateResponse>> {
 		return this.service.create(payload)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: ScienceFindOneRequestDto, @Body() payload: ScienceUpdateRequestDto): Promise<ScienceUpdateResponse> {
+	update(
+		@Param() params: ScienceFindOneRequestDto,
+		@Body() payload: ScienceUpdateRequestDto,
+	): Promise<IResponse<ScienceUpdateResponse>> {
 		return this.service.update(params, payload)
 	}
 
 	@Delete(':id')
 	@ApiResponse({ type: null })
-	delete(@Param() payload: ScienceDeleteRequestDto): Promise<ScienceDeleteResponse> {
+	delete(@Param() payload: ScienceDeleteRequestDto): Promise<IResponse<[]>> {
 		return this.service.delete(payload)
 	}
 }

@@ -7,8 +7,8 @@ export interface ISettingResponse {
 }
 
 export interface ICreateSetting {
-  name: string
-  status?: boolean
+	name: string
+	status?: boolean
 }
 
 export interface IUpdateSetting {

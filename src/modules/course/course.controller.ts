@@ -12,9 +12,17 @@ import {
 	CourseFindAllResponseDto,
 	CourseFindOneResponseDto,
 } from './dtos'
-import { CourseCreateResponse, CourseDeleteResponse, CourseFindAllResponse, CourseFindFullResponse, CourseFindOneResponse, CourseUpdateResponse } from './interfaces'
+import {
+	CourseCreateResponse,
+	CourseDeleteResponse,
+	CourseFindAllResponse,
+	CourseFindFullResponse,
+	CourseFindOneResponse,
+	CourseUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
+import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Course')
 @UseGuards(CheckAuthGuard)
@@ -47,19 +55,22 @@ export class CourseController {
 
 	@Post()
 	@ApiResponse({ type: null })
-	create(@Body() payload: CourseCreateRequestDto): Promise<CourseCreateResponse> {
+	create(@Body() payload: CourseCreateRequestDto): Promise<IResponse<CourseCreateResponse>> {
 		return this.service.create(payload)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: CourseFindOneRequestDto, @Body() payload: CourseUpdateRequestDto): Promise<CourseUpdateResponse> {
+	update(
+		@Param() params: CourseFindOneRequestDto,
+		@Body() payload: CourseUpdateRequestDto,
+	): Promise<IResponse<CourseUpdateResponse>> {
 		return this.service.update(params, payload)
 	}
 
 	@Delete(':id')
 	@ApiResponse({ type: null })
-	delete(@Param() payload: CourseDeleteRequestDto): Promise<CourseDeleteResponse> {
+	delete(@Param() payload: CourseDeleteRequestDto): Promise<IResponse<[]>> {
 		return this.service.delete(payload)
 	}
 }

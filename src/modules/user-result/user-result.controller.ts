@@ -1,14 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query } from '@nestjs/common'
+import {
+	Controller,
+	Get,
+	Post,
+	Body,
+	Patch,
+	Param,
+	Delete,
+	UseGuards,
+	Req,
+	Query,
+} from '@nestjs/common'
 import { UserResultService } from './user-result.service'
-import { CreateUserResultDto, UserResultFindAllDto, UserResultFindAllResponseDto, UserResultResponseDto } from './dto/create-user-result.dto'
+import {
+	CreateUserResultDto,
+	UserResultFindAllDto,
+	UserResultFindAllResponseDto,
+	UserResultResponseDto,
+} from './dto/create-user-result.dto'
 import { UpdateUserResultDto } from './dto/update-user-result.dto'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CheckAuthGuard } from 'guards'
 import { Request } from 'express'
 // import userAgent from 'user-agents'
 
-import * as os from "os"
-
+import * as os from 'os'
 
 @ApiTags('UserResult')
 @UseGuards(CheckAuthGuard)

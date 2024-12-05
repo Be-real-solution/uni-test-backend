@@ -46,13 +46,19 @@ export declare interface AnswerFindAllResponse {
 export declare interface AnswerFindOneResponse {
 	id: string
 	text: string
-	question: QuestionFindOneResponse
+	question?: QuestionFindOneResponse
 	isCorrect: boolean
 	createdAt: Date
 }
 
-export declare type AnswerCreateResponse = null
+export declare type AnswerCreateResponse = AnswerFindOneResponse
 
-export declare type AnswerUpdateResponse = null
+export declare type AnswerUpdateResponse = {
+	id?: string
+	text?: string
+	question?: QuestionFindOneResponse
+	isCorrect?: boolean
+	createdAt?: Date
+}
 
 export declare type AnswerDeleteResponse = null

@@ -50,12 +50,18 @@ export declare interface UserInfoFindOneResponse {
 	id: string
 	user?: UserFindOneResponse
 	hemisId: string
-	group: GroupFindOneResponse
+	group?: GroupFindOneResponse
 	createdAt: Date
 }
 
-export declare type UserInfoCreateResponse = null
+export declare type UserInfoCreateResponse = UserInfoFindOneResponse
 
-export declare type UserInfoUpdateResponse = null
+export declare type UserInfoUpdateResponse = {
+	id?: string
+	user?: UserFindOneResponse
+	hemisId?: string
+	group?: GroupFindOneResponse
+	createdAt?: Date
+}
 
 export declare type UserInfoDeleteResponse = null

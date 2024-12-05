@@ -52,11 +52,10 @@ export class UserResultRepository {
 		// 	where_condition = {user: { fullName: { contains: query.search, mode: 'insensitive' }}
 		// }
 		if (query.hasFinished) {
-			query.hasFinished = String(query.hasFinished) === "false"? false : true
+			query.hasFinished = String(query.hasFinished) === 'false' ? false : true
 		}
 
-		console.log(query);
-		
+		console.log(query)
 
 		const userResult = await this.prisma.userResult.findMany({
 			skip: (query.pageNumber - 1) * query.pageSize,

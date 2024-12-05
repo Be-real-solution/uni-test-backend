@@ -40,8 +40,8 @@ export declare interface CourseFindOneResponse {
 	createdAt: Date
 }
 
-export declare type CourseCreateResponse = null
+export declare type CourseCreateResponse = CourseFindOneResponse
 
-export declare type CourseUpdateResponse = null
+export declare type CourseUpdateResponse = { id?: string; stage?: number; createdAt?: Date }
 
 export declare type CourseDeleteResponse = null

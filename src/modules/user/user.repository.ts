@@ -191,20 +191,34 @@ export class UserRepository {
 	}
 
 	async findByEmail(payload: Partial<UserFindOneResponse>): Promise<UserFindOneResponse> {
-		const user = await this.prisma.user.findFirst({ where: { emailAddress: payload.emailAddress, id: { not: payload.id }, deletedAt: null } })
+		const user = await this.prisma.user.findFirst({
+			where: { emailAddress: payload.emailAddress, id: { not: payload.id }, deletedAt: null },
+		})
 		return user
 	}
 
 	async create(payload: UserCreateRequest): Promise<UserCreateResponse> {
 		await this.prisma.user.create({
-			data: { fullName: payload.fullName, emailAddress: payload.emailAddress, password: payload.password, type: payload.type, image: payload.image ?? '' },
+			data: {
+				fullName: payload.fullName,
+				emailAddress: payload.emailAddress,
+				password: payload.password,
+				type: payload.type,
+				image: payload.image ?? '',
+			},
 		})
 		return null
 	}
 
 	async createWithReturningId(payload: UserCreateRequest): Promise<string> {
 		const user = await this.prisma.user.create({
-			data: { fullName: payload.fullName, emailAddress: payload.emailAddress, password: payload.password, type: payload.type, image: payload.image ?? '' },
+			data: {
+				fullName: payload.fullName,
+				emailAddress: payload.emailAddress,
+				password: payload.password,
+				type: payload.type,
+				image: payload.image ?? '',
+			},
 		})
 		return user.id
 	}
@@ -227,9 +241,14 @@ export class UserRepository {
 			if (facultyNames.includes(u.faculty)) {
 				faculty = faculties.find((f) => f.name == u.faculty)
 			} else {
-				faculty = await this.prisma.faculty.findFirst({ where: { name: u.faculty, deletedAt: null } })
+				faculty = await this.prisma.faculty.findFirst({
+					where: { name: u.faculty, deletedAt: null },
+				})
 				if (!faculty) {
-					faculty = await this.prisma.faculty.create({ data: { name: u.faculty }, select: { id: true, name: true, createdAt: true } })
+					faculty = await this.prisma.faculty.create({
+						data: { name: u.faculty },
+						select: { id: true, name: true, createdAt: true },
+					})
 				}
 				facultyNames.push(faculty.name)
 				faculties.push(faculty)
@@ -240,9 +259,14 @@ export class UserRepository {
 			if (courseStages.includes(u.course)) {
 				course = courses.find((c) => c.stage === u.course)
 			} else {
-				course = await this.prisma.course.findFirst({ where: { stage: u.course, deletedAt: null } })
+				course = await this.prisma.course.findFirst({
+					where: { stage: u.course, deletedAt: null },
+				})
 				if (!course) {
-					course = await this.prisma.course.create({ data: { stage: u.course }, select: { id: true, stage: true, createdAt: true } })
+					course = await this.prisma.course.create({
+						data: { stage: u.course },
+						select: { id: true, stage: true, createdAt: true },
+					})
 				}
 				courseStages.push(course.stage)
 				courses.push(course)
@@ -265,8 +289,11 @@ export class UserRepository {
 			let group: GroupFindOneResponse
 			if (groupNames.includes(u.group)) {
 				group = groups.find((g) => g.name === u.group)
-				if (group.course.id !== course.id || group.faculty.id !== faculty.id ) {
-					throw new BadRequestException(`Fileni o'qishda xatolik. Talaba ma'lumotlarida xatolik mavjud.` + u.full_name)
+				if (group.course.id !== course.id || group.faculty.id !== faculty.id) {
+					throw new BadRequestException(
+						`Fileni o'qishda xatolik. Talaba ma'lumotlarida xatolik mavjud.` +
+							u.full_name,
+					)
 				}
 			} else {
 				group = await this.prisma.group.findFirst({
@@ -294,13 +321,19 @@ export class UserRepository {
 					})
 				}
 				if (group.course.id !== course.id || group.faculty.id !== faculty.id) {
-					throw new BadRequestException(`Fileni o'qishda xatolik. Talaba ma'lumotlarida xatolik mavjud.` + u.full_name)
+					throw new BadRequestException(
+						`Fileni o'qishda xatolik. Talaba ma'lumotlarida xatolik mavjud.` +
+							u.full_name,
+					)
 				}
 				groupNames.push(group.name)
 				groups.push(group)
 			}
 
-			const user_info = await this.prisma.userInfo.findFirst({ where: { hemisId: u.hemis_id }, include: { group: true } })
+			const user_info = await this.prisma.userInfo.findFirst({
+				where: { hemisId: u.hemis_id },
+				include: { group: true },
+			})
 
 			let userPromise
 			if (user_info) {
@@ -365,13 +398,22 @@ export class UserRepository {
 	async update(payload: UserFindOneRequest & UserUpdateRequest): Promise<UserUpdateRequest> {
 		await this.prisma.user.update({
 			where: { id: payload.id, deletedAt: null },
-			data: { fullName: payload.fullName, emailAddress: payload.emailAddress, password: payload.password, type: payload.type, image: payload.image },
+			data: {
+				fullName: payload.fullName,
+				emailAddress: payload.emailAddress,
+				password: payload.password,
+				type: payload.type,
+				image: payload.image,
+			},
 		})
 		return null
 	}
 
 	async delete(payload: UserDeleteRequest): Promise<UserDeleteResponse> {
-		await this.prisma.user.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.user.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 		return null
 	}
 

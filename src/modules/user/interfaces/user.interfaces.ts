@@ -1,5 +1,9 @@
 import { UserTypeEnum } from '@prisma/client'
-import { UserInfoCreateRequest, UserInfoFindOneResponse, UserInfoUpdateRequest } from '../../user-info'
+import {
+	UserInfoCreateRequest,
+	UserInfoFindOneResponse,
+	UserInfoUpdateRequest,
+} from '../../user-info'
 import { ISettingResponse } from 'modules/setting/interfaces/setting.interface'
 
 export declare interface UserFindFullRequest {
@@ -33,7 +37,8 @@ export declare interface UserCreateRequest {
 	emailAddress?: string
 }
 
-export declare type UserCreateWithInfoRequest = UserCreateRequest & Omit<UserInfoCreateRequest, 'userId'>
+export declare type UserCreateWithInfoRequest = UserCreateRequest &
+	Omit<UserInfoCreateRequest, 'userId'>
 
 export declare interface UserCreateWithJsonFileRequest {
 	full_name: string
@@ -54,7 +59,8 @@ export declare interface UserUpdateRequest {
 	emailAddress?: string
 }
 
-export declare type UserUpdateWithInfoRequest = UserUpdateRequest & Omit<UserInfoUpdateRequest, 'userId'>
+export declare type UserUpdateWithInfoRequest = UserUpdateRequest &
+	Omit<UserInfoUpdateRequest, 'userId'>
 
 export declare interface UserDeleteRequest {
 	id: string
@@ -93,8 +99,8 @@ export declare interface SignInTokenDefinition {
 	refreshToken: string
 }
 
-export declare type UserCreateResponse = null
+export declare type UserCreateResponse = UserFindOneResponse
 
-export declare type UserUpdateResponse = null
+export declare type UserUpdateResponse = UserFindOneResponse
 
 export declare type UserDeleteResponse = null
