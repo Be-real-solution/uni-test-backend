@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { IResponse } from 'interfaces/response.interfaces'
 import { AnswerRepository } from './answer.repository'
 import {
 	AnswerCreateRequest,
 	AnswerCreateResponse,
 	AnswerDeleteRequest,
-	AnswerDeleteResponse,
 	AnswerFindAllRequest,
 	AnswerFindAllResponse,
 	AnswerFindFullRequest,
@@ -14,7 +14,6 @@ import {
 	AnswerUpdateRequest,
 	AnswerUpdateResponse,
 } from './interfaces'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class AnswerService {
@@ -23,22 +22,22 @@ export class AnswerService {
 		this.repository = repository
 	}
 
-	async findFull(payload: AnswerFindFullRequest): Promise<AnswerFindFullResponse> {
-		const answers = this.repository.findFull(payload)
-		return answers
+	async findFull(payload: AnswerFindFullRequest): Promise<IResponse<AnswerFindFullResponse>> {
+		const answers = await this.repository.findFull(payload)
+		return { status_code: 200, data: answers, message: 'success' }
 	}
 
-	async findAll(payload: AnswerFindAllRequest): Promise<AnswerFindAllResponse> {
-		const answers = this.repository.findAll(payload)
-		return answers
+	async findAll(payload: AnswerFindAllRequest): Promise<IResponse<AnswerFindAllResponse>> {
+		const answers = await this.repository.findAll(payload)
+		return { status_code: 200, data: answers, message: 'success' }
 	}
 
-	async findOne(payload: AnswerFindOneRequest): Promise<AnswerFindOneResponse> {
+	async findOne(payload: AnswerFindOneRequest): Promise<IResponse<AnswerFindOneResponse>> {
 		const answer = await this.repository.findOne(payload)
 		if (!answer) {
 			throw new BadRequestException('Answer not found')
 		}
-		return answer
+		return { status_code: 200, data: answer, message: 'success' }
 	}
 
 	async findOneByTextWithQuestionId(

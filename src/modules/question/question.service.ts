@@ -1,10 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { QuestionRepository } from './question.repository'
+import { IResponse } from 'interfaces/response.interfaces'
+import { deleteFile } from 'libs/fileService'
+import { AnswerService } from 'modules/answer/answer.service'
+import { CollectionBeforeCreateResponse } from '../collection'
 import {
 	QuestionCreateRequest,
 	QuestionCreateResponse,
 	QuestionDeleteRequest,
-	QuestionDeleteResponse,
 	QuestionFindAllRequest,
 	QuestionFindAllResponse,
 	QuestionFindFullRequest,
@@ -12,14 +14,10 @@ import {
 	QuestionFindOneRequest,
 	QuestionFindOneResponse,
 	QuestionUpdateRequest,
-	QuestionUpdateResponse,
 	QuestionsCreateWithAnswersRequest,
 	QuestionsCreateWithAnswersResponse,
 } from './interfaces'
-import { CollectionBeforeCreateResponse } from '../collection'
-import { deleteFile } from 'libs/fileService'
-import { AnswerService } from 'modules/answer/answer.service'
-import { IResponse } from 'interfaces/response.interfaces'
+import { QuestionRepository } from './question.repository'
 
 @Injectable()
 export class QuestionService {
@@ -31,22 +29,22 @@ export class QuestionService {
 		this.answerSerive = answerService
 	}
 
-	async findFull(payload: QuestionFindFullRequest): Promise<QuestionFindFullResponse> {
-		const questions = this.repository.findFull(payload)
-		return questions
+	async findFull(payload: QuestionFindFullRequest): Promise<IResponse<QuestionFindFullResponse>> {
+		const questions = await this.repository.findFull(payload)
+		return { status_code: 200, data: questions, message: 'success' }
 	}
 
-	async findAll(payload: QuestionFindAllRequest): Promise<QuestionFindAllResponse> {
-		const questions = this.repository.findAll(payload)
-		return questions
+	async findAll(payload: QuestionFindAllRequest): Promise<IResponse<QuestionFindAllResponse>> {
+		const questions = await this.repository.findAll(payload)
+		return { status_code: 200, data: questions, message: 'success' }
 	}
 
-	async findOne(payload: QuestionFindOneRequest): Promise<QuestionFindOneResponse> {
+	async findOne(payload: QuestionFindOneRequest): Promise<IResponse<QuestionFindOneResponse>> {
 		const question = await this.repository.findOne(payload)
 		if (!question) {
 			throw new BadRequestException('Question not found')
 		}
-		return question
+		return { status_code: 200, data: question, message: 'success' }
 	}
 
 	async findOneByTextWithCollectionId(
@@ -272,7 +270,7 @@ export class QuestionService {
 		file: any,
 	): Promise<IResponse<[]>> {
 		try {
-			const question = await this.findOne({ id: params.id })
+			const { data: question } = await this.findOne({ id: params.id })
 
 			const imageUrl = question.imageUrl
 			payload.text
@@ -288,7 +286,9 @@ export class QuestionService {
 			await this.repository.update({ ...params, ...payload })
 
 			if (payload.answers) {
-				const answers = await this.answerSerive.findFull({ questionId: params.id })
+				const { data: answers } = await this.answerSerive.findFull({
+					questionId: params.id,
+				})
 
 				const new_answers = payload.answers.filter(
 					(item) => !answers.some((value) => value.id == item.id),

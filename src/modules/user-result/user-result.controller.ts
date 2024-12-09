@@ -1,29 +1,21 @@
-import {
-	Controller,
-	Get,
-	Post,
-	Body,
-	Patch,
-	Param,
-	Delete,
-	UseGuards,
-	Req,
-	Query,
-} from '@nestjs/common'
-import { UserResultService } from './user-result.service'
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common'
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { Request } from 'express'
+import { CheckAuthGuard } from 'guards'
 import {
 	CreateUserResultDto,
 	UserResultFindAllDto,
 	UserResultFindAllResponseDto,
 	UserResultResponseDto,
 } from './dto/create-user-result.dto'
-import { UpdateUserResultDto } from './dto/update-user-result.dto'
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { CheckAuthGuard } from 'guards'
-import { Request } from 'express'
+import { UserResultService } from './user-result.service'
 // import userAgent from 'user-agents'
 
-import * as os from 'os'
+import { IResponse } from 'interfaces/response.interfaces'
+import {
+	IUserResultFindAllResponse,
+	IUserResultResponse,
+} from './interfaces/user-result.interfaces'
 
 @ApiTags('UserResult')
 @UseGuards(CheckAuthGuard)
@@ -40,13 +32,13 @@ export class UserResultController {
 
 	@ApiResponse({ type: UserResultFindAllResponseDto, isArray: true })
 	@Get()
-	findAll(@Query() query: UserResultFindAllDto) {
+	findAll(@Query() query: UserResultFindAllDto): Promise<IResponse<IUserResultFindAllResponse>> {
 		return this.studentResultService.findAll(query)
 	}
 
 	@ApiResponse({ type: UserResultResponseDto })
 	@Get(':id')
-	findOne(@Param('id') id: string) {
+	findOne(@Param('id') id: string): Promise<IResponse<IUserResultResponse>> {
 		return this.studentResultService.findOne(id)
 	}
 

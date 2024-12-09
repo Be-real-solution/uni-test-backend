@@ -13,37 +13,36 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiBearerAuth, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { Response } from 'express'
+import { IResponse } from 'interfaces/response.interfaces'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAuthGuard } from '../../guards'
+import { UploadedTxtFile } from '../../interfaces'
 import { CollectionService } from './collection.service'
 import {
+	CollectionBeforeCreateRequestDto,
+	CollectionBeforeCreateResponseDto,
 	CollectionCreateRequestDto,
-	CollectionFindFullResponseDto,
 	CollectionDeleteRequestDto,
 	CollectionFindAllRequestDto,
-	CollectionFindFullRequestDto,
-	CollectionFindOneRequestDto,
-	CollectionUpdateRequestDto,
 	CollectionFindAllResponseDto,
+	CollectionFindFullRequestDto,
+	CollectionFindFullResponseDto,
+	CollectionFindOneRequestDto,
 	CollectionFindOneResponseDto,
-	CollectionBeforeCreateResponseDto,
-	CollectionBeforeCreateRequestDto,
+	CollectionUpdateRequestDto,
 } from './dtos'
 import {
 	CollectionBeforeCreateResponse,
 	CollectionCreateResponse,
-	CollectionDeleteResponse,
 	CollectionFindAllResponse,
 	CollectionFindFullResponse,
 	CollectionFindOneResponse,
 	CollectionFindOneWithQuestionAnswers,
 	CollectionUpdateResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { FileInterceptor } from '@nestjs/platform-express'
-import { UploadedTxtFile } from '../../interfaces'
-import { CheckAuthGuard } from '../../guards'
-import { Response } from 'express'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Collection')
 @UseGuards(CheckAuthGuard)
@@ -58,13 +57,17 @@ export class CollectionController {
 
 	@Get('full')
 	@ApiResponse({ type: CollectionFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: CollectionFindFullRequestDto): Promise<CollectionFindFullResponse> {
+	findFull(
+		@Query() payload: CollectionFindFullRequestDto,
+	): Promise<IResponse<CollectionFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('all')
 	@ApiResponse({ type: CollectionFindAllResponseDto })
-	findAll(@Query() payload: CollectionFindAllRequestDto): Promise<CollectionFindAllResponse> {
+	findAll(
+		@Query() payload: CollectionFindAllRequestDto,
+	): Promise<IResponse<CollectionFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
@@ -72,7 +75,7 @@ export class CollectionController {
 	@ApiResponse({ type: CollectionFindOneResponseDto })
 	findOneWithQA(
 		@Param() payload: CollectionFindOneRequestDto,
-	): Promise<CollectionFindOneWithQuestionAnswers> {
+	): Promise<IResponse<CollectionFindOneWithQuestionAnswers>> {
 		return this.service.findOneWithQuestions(payload)
 	}
 
@@ -80,7 +83,7 @@ export class CollectionController {
 	@ApiResponse({ type: CollectionFindOneResponseDto })
 	findOneWithQuestionAnswers(
 		@Param() payload: CollectionFindOneRequestDto,
-	): Promise<CollectionFindOneWithQuestionAnswers> {
+	): Promise<IResponse<CollectionFindOneWithQuestionAnswers>> {
 		return this.service.findOneWithQuestionAnswers(payload)
 	}
 
@@ -99,7 +102,9 @@ export class CollectionController {
 
 	@Get(':id')
 	@ApiResponse({ type: CollectionFindOneResponseDto })
-	findOne(@Param() payload: CollectionFindOneRequestDto): Promise<CollectionFindOneResponse> {
+	findOne(
+		@Param() payload: CollectionFindOneRequestDto,
+	): Promise<IResponse<CollectionFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 

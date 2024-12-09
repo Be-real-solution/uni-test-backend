@@ -12,37 +12,35 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiBearerAuth, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { AdminService } from './admin.service'
-import {
-	AdminCreateRequestDto,
-	AdminFindFullResponseDto,
-	AdminDeleteRequestDto,
-	AdminFindAllRequestDto,
-	AdminFindFullRequestDto,
-	AdminFindOneRequestDto,
-	AdminUpdateRequestDto,
-	AdminFindAllResponseDto,
-	AdminFindOneResponseDto,
-	AdminSignInRequestDto,
-	AdminSignInResponseDto,
-} from './dtos'
+import { IResponse } from 'interfaces/response.interfaces'
 import { diskStorage } from 'multer'
 import { extname, join } from 'path'
 import { v4 as uuidv4 } from 'uuid'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAuthGuard } from '../../guards'
+import { AdminService } from './admin.service'
 import {
-	AdminCreateResponse,
-	AdminDeleteResponse,
+	AdminCreateRequestDto,
+	AdminDeleteRequestDto,
+	AdminFindAllRequestDto,
+	AdminFindAllResponseDto,
+	AdminFindFullRequestDto,
+	AdminFindFullResponseDto,
+	AdminFindOneRequestDto,
+	AdminFindOneResponseDto,
+	AdminSignInRequestDto,
+	AdminSignInResponseDto,
+	AdminUpdateRequestDto,
+} from './dtos'
+import {
 	AdminFindAllResponse,
 	AdminFindFullResponse,
 	AdminFindOneResponse,
 	AdminSignInResponse,
 	AdminUpdateResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAuthGuard } from '../../guards'
-import { FileInterceptor } from '@nestjs/platform-express'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Admin')
 @UseGuards(CheckAuthGuard)
@@ -57,21 +55,21 @@ export class AdminController {
 	@Get('full')
 	@ApiBearerAuth()
 	@ApiResponse({ type: AdminFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: AdminFindFullRequestDto): Promise<AdminFindFullResponse> {
+	findFull(@Query() payload: AdminFindFullRequestDto): Promise<IResponse<AdminFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('all')
 	@ApiBearerAuth()
 	@ApiResponse({ type: AdminFindAllResponseDto })
-	findAll(@Query() payload: AdminFindAllRequestDto): Promise<AdminFindAllResponse> {
+	findAll(@Query() payload: AdminFindAllRequestDto): Promise<IResponse<AdminFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
 	@Get(':id')
 	@ApiBearerAuth()
 	@ApiResponse({ type: AdminFindOneResponseDto })
-	findOne(@Param() payload: AdminFindOneRequestDto): Promise<AdminFindOneResponse> {
+	findOne(@Param() payload: AdminFindOneRequestDto): Promise<IResponse<AdminFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 
@@ -108,7 +106,7 @@ export class AdminController {
 
 	@Post('sign-in')
 	@ApiResponse({ type: AdminSignInResponseDto })
-	signIn(@Body() payload: AdminSignInRequestDto): Promise<AdminSignInResponse> {
+	signIn(@Body() payload: AdminSignInRequestDto): Promise<IResponse<AdminSignInResponse>> {
 		return this.service.singIn(payload)
 	}
 

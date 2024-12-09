@@ -1,4 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { IResponse } from 'interfaces/response.interfaces'
+import { QuestionService } from '../question'
 import { CollectionRepository } from './collection.repository'
 import {
 	CollectionBeforeCreateRequest,
@@ -6,7 +8,6 @@ import {
 	CollectionCreateRequest,
 	CollectionCreateResponse,
 	CollectionDeleteRequest,
-	CollectionDeleteResponse,
 	CollectionFindAllRequest,
 	CollectionFindAllResponse,
 	CollectionFindFullRequest,
@@ -17,8 +18,6 @@ import {
 	CollectionUpdateRequest,
 	CollectionUpdateResponse,
 } from './interfaces'
-import { QuestionService } from '../question'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class CollectionService {
@@ -29,37 +28,43 @@ export class CollectionService {
 		this.questionService = questionService
 	}
 
-	async findFull(payload: CollectionFindFullRequest): Promise<CollectionFindFullResponse> {
-		const collections = this.repository.findFull(payload)
-		return collections
+	async findFull(
+		payload: CollectionFindFullRequest,
+	): Promise<IResponse<CollectionFindFullResponse>> {
+		const collections = await this.repository.findFull(payload)
+		return { status_code: 200, data: collections, message: 'success' }
 	}
 
-	async findAll(payload: CollectionFindAllRequest): Promise<CollectionFindAllResponse> {
-		const collections = this.repository.findAll(payload)
-		return collections
+	async findAll(
+		payload: CollectionFindAllRequest,
+	): Promise<IResponse<CollectionFindAllResponse>> {
+		const collections = await this.repository.findAll(payload)
+		return { status_code: 200, data: collections, message: 'success' }
 	}
 
-	async findOne(payload: CollectionFindOneRequest): Promise<CollectionFindOneResponse> {
+	async findOne(
+		payload: CollectionFindOneRequest,
+	): Promise<IResponse<CollectionFindOneResponse>> {
 		const collection = await this.repository.findOne(payload)
 		if (!collection) {
 			throw new BadRequestException('Collection not found')
 		}
-		return collection
+		return { status_code: 200, data: collection, message: 'success' }
 	}
 
 	async findOneWithQuestionAnswers(
 		payload: CollectionFindOneRequest,
-	): Promise<CollectionFindOneWithQuestionAnswers> {
+	): Promise<IResponse<CollectionFindOneWithQuestionAnswers>> {
 		const collection = await this.repository.findOneWithQuestionAnswers(payload)
 		if (!collection) {
 			throw new BadRequestException('Collection not found')
 		}
-		return collection
+		return { status_code: 200, data: collection, message: 'success' }
 	}
 
 	async findOneWithQuestions(
 		payload: CollectionFindOneRequest,
-	): Promise<CollectionFindOneWithQuestionAnswers> {
+	): Promise<IResponse<CollectionFindOneWithQuestionAnswers>> {
 		const collection = await this.repository.findOneWithQuestionAnswers(payload)
 		if (!collection) {
 			throw new BadRequestException('Collection not found')
@@ -95,8 +100,12 @@ export class CollectionService {
 		}))
 
 		return {
-			...collection,
-			questions: shuffledQuestionsWithAnswers,
+			status_code: 200,
+			data: {
+				...collection,
+				questions: shuffledQuestionsWithAnswers,
+			},
+			message: 'success',
 		}
 	}
 

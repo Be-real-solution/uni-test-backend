@@ -13,41 +13,39 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { UserService } from './user.service'
+import { isEmail } from 'class-validator'
+import { IResponse } from 'interfaces/response.interfaces'
+import { diskStorage } from 'multer'
+import { extname, join } from 'path'
+import { v4 as uuidv4 } from 'uuid'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAuthGuard } from '../../guards'
+import { AdminService } from '../admin'
 import {
-	UserFindFullResponseDto,
+	UserCreateManyWithJsonFileDto,
+	UserCreateWithInfoRequestDto,
 	UserDeleteRequestDto,
 	UserFindAllRequestDto,
-	UserFindFullRequestDto,
-	UserFindOneRequestDto,
 	UserFindAllResponseDto,
+	UserFindFullRequestDto,
+	UserFindFullResponseDto,
+	UserFindOneRequestDto,
 	UserFindOneResponseDto,
 	UserSignInRequestDto,
 	UserSignInResponseDto,
-	UserCreateWithInfoRequestDto,
-	UserCreateManyWithJsonFileDto,
 	UserUpdateWithInfoRequestDto,
 } from './dtos'
 import {
 	UserCreateResponse,
-	UserDeleteResponse,
 	UserFindAllResponse,
 	UserFindFullResponse,
 	UserFindOneResponse,
 	UserSignInResponse,
 	UserUpdateResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAuthGuard } from '../../guards'
-import { FileInterceptor } from '@nestjs/platform-express'
-import { isEmail } from 'class-validator'
-import { AdminService } from '../admin'
-import { diskStorage } from 'multer'
-import { extname, join } from 'path'
-import { v4 as uuidv4 } from 'uuid'
-import { SettingService } from 'modules/setting/setting.service'
-import { IResponse } from 'interfaces/response.interfaces'
+import { UserService } from './user.service'
 
 @ApiTags('User')
 @UseGuards(CheckAuthGuard)
@@ -64,21 +62,21 @@ export class UserController {
 	@Get('full')
 	@ApiBearerAuth()
 	@ApiResponse({ type: UserFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: UserFindFullRequestDto): Promise<UserFindFullResponse> {
+	findFull(@Query() payload: UserFindFullRequestDto): Promise<IResponse<UserFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('all')
 	@ApiBearerAuth()
 	@ApiResponse({ type: UserFindAllResponseDto })
-	findAll(@Query() payload: UserFindAllRequestDto): Promise<UserFindAllResponse> {
+	findAll(@Query() payload: UserFindAllRequestDto): Promise<IResponse<UserFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
 	@Get(':id')
 	@ApiBearerAuth()
 	@ApiResponse({ type: UserFindOneResponseDto })
-	findOne(@Param() payload: UserFindOneRequestDto): Promise<UserFindOneResponse> {
+	findOne(@Param() payload: UserFindOneRequestDto): Promise<IResponse<UserFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 
@@ -144,11 +142,15 @@ export class UserController {
 
 	@Post('sign-in')
 	@ApiResponse({ type: UserSignInResponseDto })
-	async signIn(@Body() payload: UserSignInRequestDto): Promise<UserSignInResponse> {
+	async signIn(@Body() payload: UserSignInRequestDto): Promise<IResponse<UserSignInResponse>> {
 		const isemail = isEmail(payload.hemisId)
 		if (isemail) {
-			const adminResponse = await this.adminService.singIn(payload)
-			return { user: adminResponse.admin, tokens: adminResponse.tokens }
+			const { data: adminResponse } = await this.adminService.singIn(payload)
+			return {
+				status_code: 200,
+				data: { user: adminResponse.admin, tokens: adminResponse.tokens },
+				message: 'success',
+			}
 		} else {
 			return this.service.singIn(payload)
 		}

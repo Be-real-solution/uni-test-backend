@@ -12,36 +12,32 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { QuestionService } from './question.service'
+import { IResponse } from 'interfaces/response.interfaces'
+import { multerImageUpload } from 'libs/fileService'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAuthGuard } from '../../guards'
+import { UploadedTxtFile } from '../../interfaces'
 import {
 	QuestionCreateRequestDto,
-	QuestionFindFullResponseDto,
 	QuestionDeleteRequestDto,
 	QuestionFindAllRequestDto,
-	QuestionFindFullRequestDto,
-	QuestionFindOneRequestDto,
-	QuestionUpdateRequestDto,
 	QuestionFindAllResponseDto,
+	QuestionFindFullRequestDto,
+	QuestionFindFullResponseDto,
+	QuestionFindOneRequestDto,
 	QuestionFindOneResponseDto,
+	QuestionUpdateRequestDto,
 	QuestionsCreateWithAnswersDto,
-	AnswerUpdateForQuestionDto,
 } from './dtos'
 import {
 	QuestionCreateResponse,
-	QuestionDeleteResponse,
 	QuestionFindAllResponse,
 	QuestionFindFullResponse,
 	QuestionFindOneResponse,
-	QuestionUpdateResponse,
-	QuestionsCreateWithAnswersResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { FileInterceptor } from '@nestjs/platform-express'
-import { UploadedTxtFile } from '../../interfaces'
-import { CheckAuthGuard } from '../../guards'
-import { multerImageUpload } from 'libs/fileService'
-import { IResponse } from 'interfaces/response.interfaces'
+import { QuestionService } from './question.service'
 
 @ApiTags('Question')
 @UseGuards(CheckAuthGuard)
@@ -56,19 +52,25 @@ export class QuestionController {
 
 	@Get('full')
 	@ApiResponse({ type: QuestionFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: QuestionFindFullRequestDto): Promise<QuestionFindFullResponse> {
+	findFull(
+		@Query() payload: QuestionFindFullRequestDto,
+	): Promise<IResponse<QuestionFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('all')
 	@ApiResponse({ type: QuestionFindAllResponseDto })
-	findAll(@Query() payload: QuestionFindAllRequestDto): Promise<QuestionFindAllResponse> {
+	findAll(
+		@Query() payload: QuestionFindAllRequestDto,
+	): Promise<IResponse<QuestionFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
 	@Get(':id')
 	@ApiResponse({ type: QuestionFindOneResponseDto })
-	findOne(@Param() payload: QuestionFindOneRequestDto): Promise<QuestionFindOneResponse> {
+	findOne(
+		@Param() payload: QuestionFindOneRequestDto,
+	): Promise<IResponse<QuestionFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 

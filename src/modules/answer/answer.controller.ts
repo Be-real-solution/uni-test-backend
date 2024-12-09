@@ -1,28 +1,27 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { IResponse } from 'interfaces/response.interfaces'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAuthGuard } from '../../guards'
 import { AnswerService } from './answer.service'
 import {
 	AnswerCreateRequestDto,
-	AnswerFindFullResponseDto,
 	AnswerDeleteRequestDto,
 	AnswerFindAllRequestDto,
-	AnswerFindFullRequestDto,
-	AnswerFindOneRequestDto,
-	AnswerUpdateRequestDto,
 	AnswerFindAllResponseDto,
+	AnswerFindFullRequestDto,
+	AnswerFindFullResponseDto,
+	AnswerFindOneRequestDto,
 	AnswerFindOneResponseDto,
+	AnswerUpdateRequestDto,
 } from './dtos'
 import {
 	AnswerCreateResponse,
-	AnswerDeleteResponse,
 	AnswerFindAllResponse,
 	AnswerFindFullResponse,
 	AnswerFindOneResponse,
 	AnswerUpdateResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAuthGuard } from '../../guards'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Answer')
 @ApiBearerAuth()
@@ -37,19 +36,21 @@ export class AnswerController {
 
 	@Get('full')
 	@ApiResponse({ type: AnswerFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: AnswerFindFullRequestDto): Promise<AnswerFindFullResponse> {
+	findFull(
+		@Query() payload: AnswerFindFullRequestDto,
+	): Promise<IResponse<AnswerFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('all')
 	@ApiResponse({ type: AnswerFindAllResponseDto })
-	findAll(@Query() payload: AnswerFindAllRequestDto): Promise<AnswerFindAllResponse> {
+	findAll(@Query() payload: AnswerFindAllRequestDto): Promise<IResponse<AnswerFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
 	@Get(':id')
 	@ApiResponse({ type: AnswerFindOneResponseDto })
-	findOne(@Param() payload: AnswerFindOneRequestDto): Promise<AnswerFindOneResponse> {
+	findOne(@Param() payload: AnswerFindOneRequestDto): Promise<IResponse<AnswerFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 

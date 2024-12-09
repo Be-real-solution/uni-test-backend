@@ -4,8 +4,7 @@ import {
 	Injectable,
 	NotFoundException,
 } from '@nestjs/common'
-import { CreateDirectoryDto } from './dto/create-directory.dto'
-import { UpdateDirectoryDto } from './dto/update-directory.dto'
+import { IResponse } from 'interfaces/response.interfaces'
 import { DirectoryRepository } from './directory.repository'
 import {
 	ICreateDirectory,
@@ -13,7 +12,6 @@ import {
 	IFindOneDirectoryResponse,
 	IUpdateDirectory,
 } from './interfaces'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class DirectoryService {
@@ -44,24 +42,25 @@ export class DirectoryService {
 		return { status_code: 201, data: new_direct, message: 'success' }
 	}
 
-	async findAll(): Promise<IFindOneDirectoryResponse[]> {
-		return this.repository.findAll()
+	async findAll(): Promise<IResponse<IFindOneDirectoryResponse[]>> {
+		const directory = await this.repository.findAll()
+		return { status_code: 200, data: directory, message: 'success' }
 	}
 
-	async findOne(id: string): Promise<IFindOneDirectoryResponse> {
+	async findOne(id: string): Promise<IResponse<IFindOneDirectoryResponse>> {
 		const directory: IFindOneDirectoryResponse = await this.repository.findOne(id)
 
 		if (!directory) {
 			throw new NotFoundException('Bunday directory mavjud emas')
 		}
-		return directory
+		return { status_code: 200, data: directory, message: 'success' }
 	}
 
 	async update(
 		id: string,
 		payload: IUpdateDirectory,
 	): Promise<IResponse<IFindOneDirectoryResponse>> {
-		const old_directory = await this.findOne(id)
+		const old_directory = (await this.findOne(id)).data
 
 		let new_directory: IFindOneDirectoryResponse | null
 
@@ -96,7 +95,7 @@ export class DirectoryService {
 	}
 
 	async remove(id: string): Promise<IResponse<[]>> {
-		const directory = await this.findOne(id)
+		const directory = await (await this.findOne(id)).data
 
 		if (directory.children.length) {
 			throw new BadRequestException("directoryda ma'lumotlar mavjud")

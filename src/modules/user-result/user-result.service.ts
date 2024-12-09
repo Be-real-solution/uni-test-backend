@@ -1,16 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { CreateUserResultDto } from './dto/create-user-result.dto'
-import { UpdateUserResultDto } from './dto/update-user-result.dto'
+import { Request } from 'express'
+import { IResponse } from 'interfaces/response.interfaces'
+import { QuestionService } from 'modules/question'
+import { UserService } from 'modules/user'
 import {
 	ICreateUserResultService,
 	IUserResultFindAll,
 	IUserResultFindAllResponse,
 	IUserResultResponse,
 } from './interfaces/user-result.interfaces'
-import { QuestionService } from 'modules/question'
-import { UserService } from 'modules/user'
 import { UserResultRepository } from './user-result.repository'
-import { Request } from 'express'
 
 @Injectable()
 export class UserResultService {
@@ -29,8 +28,8 @@ export class UserResultService {
 	}
 
 	async create(payload: ICreateUserResultService, request: Request) {
-		const question = await this.questionService.findOne({ id: payload.questionId })
-		const user = await this.userService.findOne({ id: payload.userId })
+		const { data: question } = await this.questionService.findOne({ id: payload.questionId })
+		const { data: user } = await this.userService.findOne({ id: payload.userId })
 
 		let userResult: IUserResultResponse = await this.repository.findOneByUserIdCollectionId({
 			id: '',
@@ -63,18 +62,18 @@ export class UserResultService {
 		return { status_code: 200, data: userResult, message: 'updated' }
 	}
 
-	async findAll(query: IUserResultFindAll): Promise<IUserResultFindAllResponse> {
+	async findAll(query: IUserResultFindAll): Promise<IResponse<IUserResultFindAllResponse>> {
 		const userResult = await this.repository.findAllPagination(query)
-		return userResult
+		return { status_code: 200, data: userResult, message: 'success' }
 	}
 
-	async findOne(id: string): Promise<IUserResultResponse> {
+	async findOne(id: string): Promise<IResponse<IUserResultResponse>> {
 		const userResult = await this.repository.findOne(id)
 
 		if (!userResult) {
 			throw new NotFoundException('User result not found')
 		}
 
-		return userResult
+		return { status_code: 200, data: userResult, message: 'success' }
 	}
 }

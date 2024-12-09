@@ -1,10 +1,9 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
-import { UserInfoRepository } from './user-info.repository'
+import { IResponse } from 'interfaces/response.interfaces'
 import {
 	UserInfoCreateRequest,
 	UserInfoCreateResponse,
 	UserInfoDeleteRequest,
-	UserInfoDeleteResponse,
 	UserInfoFindAllRequest,
 	UserInfoFindAllResponse,
 	UserInfoFindFullRequest,
@@ -14,7 +13,7 @@ import {
 	UserInfoUpdateRequest,
 	UserInfoUpdateResponse,
 } from './interfaces'
-import { IResponse } from 'interfaces/response.interfaces'
+import { UserInfoRepository } from './user-info.repository'
 
 @Injectable()
 export class UserInfoService {
@@ -23,22 +22,22 @@ export class UserInfoService {
 		this.repository = repository
 	}
 
-	async findFull(payload: UserInfoFindFullRequest): Promise<UserInfoFindFullResponse> {
-		const userInfos = this.repository.findFull(payload)
-		return userInfos
+	async findFull(payload: UserInfoFindFullRequest): Promise<IResponse<UserInfoFindFullResponse>> {
+		const userInfos = await this.repository.findFull(payload)
+		return { status_code: 200, data: userInfos, message: 'success' }
 	}
 
-	async findAll(payload: UserInfoFindAllRequest): Promise<UserInfoFindAllResponse> {
-		const userInfos = this.repository.findAll(payload)
-		return userInfos
+	async findAll(payload: UserInfoFindAllRequest): Promise<IResponse<UserInfoFindAllResponse>> {
+		const userInfos = await this.repository.findAll(payload)
+		return { status_code: 200, data: userInfos, message: 'success' }
 	}
 
-	async findOne(payload: UserInfoFindOneRequest): Promise<UserInfoFindOneResponse> {
+	async findOne(payload: UserInfoFindOneRequest): Promise<IResponse<UserInfoFindOneResponse>> {
 		const userInfo = await this.repository.findOne(payload)
 		if (!userInfo) {
 			throw new BadRequestException('UserInfo not found')
 		}
-		return userInfo
+		return { status_code: 200, data: userInfo, message: 'success' }
 	}
 
 	async findOneByUser(payload: Partial<UserInfoCreateRequest>): Promise<UserInfoFindOneResponse> {

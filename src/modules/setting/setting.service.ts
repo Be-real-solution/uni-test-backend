@@ -17,18 +17,19 @@ export class SettingService {
 		return { status_code: 201, data: setting, message: 'created' }
 	}
 
-	async findAll(): Promise<ISettingResponse[]> {
-		return this.repository.findAll()
+	async findAll(): Promise<IResponse<ISettingResponse[]>> {
+		const settings = await this.repository.findAll()
+		return { status_code: 200, data: settings, message: 'success' }
 	}
 
-	async findOne(id: string): Promise<ISettingResponse> {
+	async findOne(id: string): Promise<IResponse<ISettingResponse>> {
 		const setting = await this.repository.findOne(id)
 
 		if (!setting) {
 			throw new NotFoundException('setting not found')
 		}
 
-		return setting
+		return { status_code: 200, data: setting, message: 'success' }
 	}
 
 	async update(id: string, payload: IUpdateSetting): Promise<IResponse<ISettingResponse>> {

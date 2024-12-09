@@ -1,30 +1,29 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { UserCollectionService } from './user-collection.service'
+import { IResponse } from 'interfaces/response.interfaces'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { UserIdInAccessToken } from '../../decorators'
+import { CheckAuthGuard } from '../../guards'
 import {
+	UserCollectionCreateManyRequestDto,
 	UserCollectionCreateRequestDto,
-	UserCollectionFindFullResponseDto,
 	UserCollectionDeleteRequestDto,
 	UserCollectionFindAllRequestDto,
-	UserCollectionFindFullRequestDto,
-	UserCollectionFindOneRequestDto,
-	UserCollectionUpdateRequestDto,
 	UserCollectionFindAllResponseDto,
+	UserCollectionFindFullRequestDto,
+	UserCollectionFindFullResponseDto,
+	UserCollectionFindOneRequestDto,
 	UserCollectionFindOneResponseDto,
-	UserCollectionCreateManyRequestDto,
+	UserCollectionUpdateRequestDto,
 } from './dtos'
 import {
 	UserCollectionCreateResponse,
-	UserCollectionDeleteResponse,
 	UserCollectionFindAllResponse,
 	UserCollectionFindFullResponse,
 	UserCollectionFindOneResponse,
 	UserCollectionUpdateResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAuthGuard } from '../../guards'
-import { UserIdInAccessToken } from '../../decorators'
-import { IResponse } from 'interfaces/response.interfaces'
+import { UserCollectionService } from './user-collection.service'
 
 @ApiTags('UserCollection')
 @UseGuards(CheckAuthGuard)
@@ -41,7 +40,7 @@ export class UserCollectionController {
 	@ApiResponse({ type: UserCollectionFindFullResponseDto, isArray: true })
 	findFull(
 		@Query() payload: UserCollectionFindFullRequestDto,
-	): Promise<UserCollectionFindFullResponse> {
+	): Promise<IResponse<UserCollectionFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
@@ -50,7 +49,7 @@ export class UserCollectionController {
 	findFullForUser(
 		@UserIdInAccessToken() id: string,
 		@Query() payload: UserCollectionFindFullRequestDto,
-	): Promise<UserCollectionFindFullResponse> {
+	): Promise<IResponse<UserCollectionFindFullResponse>> {
 		return this.service.findFull({ ...payload, userId: id })
 	}
 
@@ -58,7 +57,7 @@ export class UserCollectionController {
 	@ApiResponse({ type: UserCollectionFindAllResponseDto })
 	findAll(
 		@Query() payload: UserCollectionFindAllRequestDto,
-	): Promise<UserCollectionFindAllResponse> {
+	): Promise<IResponse<UserCollectionFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
@@ -66,7 +65,7 @@ export class UserCollectionController {
 	@ApiResponse({ type: UserCollectionFindOneResponseDto })
 	findOne(
 		@Param() payload: UserCollectionFindOneRequestDto,
-	): Promise<UserCollectionFindOneResponse> {
+	): Promise<IResponse<UserCollectionFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 
@@ -95,9 +94,7 @@ export class UserCollectionController {
 
 	@Delete(':id')
 	@ApiResponse({ type: null })
-	delete(
-		@Param() payload: UserCollectionDeleteRequestDto,
-	): Promise<IResponse<[]>> {
+	delete(@Param() payload: UserCollectionDeleteRequestDto): Promise<IResponse<[]>> {
 		return this.service.delete(payload)
 	}
 }

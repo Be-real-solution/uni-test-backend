@@ -1,11 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { UserCollectionRepository } from './user-collection.repository'
+import { IResponse } from 'interfaces/response.interfaces'
 import {
 	UserCollectionCreateManyRequest,
 	UserCollectionCreateRequest,
 	UserCollectionCreateResponse,
 	UserCollectionDeleteRequest,
-	UserCollectionDeleteResponse,
 	UserCollectionFindAllRequest,
 	UserCollectionFindAllResponse,
 	UserCollectionFindFullRequest,
@@ -15,7 +14,7 @@ import {
 	UserCollectionUpdateRequest,
 	UserCollectionUpdateResponse,
 } from './interfaces'
-import { IResponse } from 'interfaces/response.interfaces'
+import { UserCollectionRepository } from './user-collection.repository'
 
 @Injectable()
 export class UserCollectionService {
@@ -26,22 +25,26 @@ export class UserCollectionService {
 
 	async findFull(
 		payload: UserCollectionFindFullRequest,
-	): Promise<UserCollectionFindFullResponse> {
-		const userCollections = this.repository.findFull(payload)
-		return userCollections
+	): Promise<IResponse<UserCollectionFindFullResponse>> {
+		const userCollections = await this.repository.findFull(payload)
+		return { status_code: 200, data: userCollections, message: 'success' }
 	}
 
-	async findAll(payload: UserCollectionFindAllRequest): Promise<UserCollectionFindAllResponse> {
-		const userCollections = this.repository.findAll(payload)
-		return userCollections
+	async findAll(
+		payload: UserCollectionFindAllRequest,
+	): Promise<IResponse<UserCollectionFindAllResponse>> {
+		const userCollections = await this.repository.findAll(payload)
+		return { status_code: 200, data: userCollections, message: 'success' }
 	}
 
-	async findOne(payload: UserCollectionFindOneRequest): Promise<UserCollectionFindOneResponse> {
+	async findOne(
+		payload: UserCollectionFindOneRequest,
+	): Promise<IResponse<UserCollectionFindOneResponse>> {
 		const userCollection = await this.repository.findOne(payload)
 		if (!userCollection) {
 			throw new BadRequestException('UserCollection not found')
 		}
-		return userCollection
+		return { status_code: 200, data: userCollection, message: 'success' }
 	}
 
 	async findOneByUserCollection(

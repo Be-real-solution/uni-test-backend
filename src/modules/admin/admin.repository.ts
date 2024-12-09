@@ -159,7 +159,6 @@ export class AdminRepository {
 				image: payload.image,
 			},
 		})
-
 	}
 
 	async delete(payload: AdminDeleteRequest): Promise<AdminDeleteResponse> {

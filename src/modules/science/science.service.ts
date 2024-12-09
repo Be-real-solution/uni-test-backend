@@ -1,10 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { ScienceRepository } from './science.repository'
+import { IResponse } from 'interfaces/response.interfaces'
 import {
 	ScienceCreateRequest,
 	ScienceCreateResponse,
 	ScienceDeleteRequest,
-	ScienceDeleteResponse,
 	ScienceFindAllRequest,
 	ScienceFindAllResponse,
 	ScienceFindFullForArchive,
@@ -17,7 +16,7 @@ import {
 	ScienceUpdateRequest,
 	ScienceUpdateResponse,
 } from './interfaces'
-import { IResponse } from 'interfaces/response.interfaces'
+import { ScienceRepository } from './science.repository'
 
 @Injectable()
 export class ScienceService {
@@ -26,27 +25,27 @@ export class ScienceService {
 		this.repository = repository
 	}
 
-	async findFull(payload: ScienceFindFullRequest): Promise<ScienceFindFullResponse> {
-		const sciences = this.repository.findFull(payload)
-		return sciences
+	async findFull(payload: ScienceFindFullRequest): Promise<IResponse<ScienceFindFullResponse>> {
+		const sciences = await this.repository.findFull(payload)
+		return { status_code: 200, data: sciences, message: 'success' }
 	}
 
-	async findAll(payload: ScienceFindAllRequest): Promise<ScienceFindAllResponse> {
-		const sciences = this.repository.findAll(payload)
-		return sciences
+	async findAll(payload: ScienceFindAllRequest): Promise<IResponse<ScienceFindAllResponse>> {
+		const sciences = await this.repository.findAll(payload)
+		return { status_code: 200, data: sciences, message: 'success' }
 	}
 
-	async findAllForArchive(id: string): Promise<ScienceFindFullForArchive[]> {
-		const sciences = this.repository.findAllForArchivePage(id)
-		return sciences
+	async findAllForArchive(id: string): Promise<IResponse<ScienceFindFullForArchive[]>> {
+		const sciences = await this.repository.findAllForArchivePage(id)
+		return { status_code: 200, data: sciences, message: 'success' }
 	}
 
-	async findOne(payload: ScienceFindOneRequest): Promise<ScienceFindOneResponse> {
+	async findOne(payload: ScienceFindOneRequest): Promise<IResponse<ScienceFindOneResponse>> {
 		const science = await this.repository.findOne(payload)
 		if (!science) {
 			throw new BadRequestException('Science not found')
 		}
-		return science
+		return { status_code: 200, data: science, message: 'success' }
 	}
 
 	async findOneBySinceId(
@@ -87,7 +86,8 @@ export class ScienceService {
 
 	async findAllWithUserCollection(
 		payload: ScienceFindOnwWithUserCollectionRequest,
-	): Promise<ScienceFindOneWithUserCollection[]> {
-		return this.repository.findAllWithUserCollection(payload)
+	): Promise<IResponse<ScienceFindOneWithUserCollection[]>> {
+		const since = await this.repository.findAllWithUserCollection(payload)
+		return { status_code: 200, data: since, message: 'success' }
 	}
 }

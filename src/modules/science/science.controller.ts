@@ -1,23 +1,25 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { ScienceService } from './science.service'
+import { IResponse } from 'interfaces/response.interfaces'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { UserIdInAccessToken } from '../../decorators'
+import { CheckAuthGuard } from '../../guards'
 import {
 	ScienceCreateRequestDto,
-	ScienceFindFullResponseDto,
 	ScienceDeleteRequestDto,
 	ScienceFindAllRequestDto,
-	ScienceFindFullRequestDto,
-	ScienceFindOneRequestDto,
-	ScienceUpdateRequestDto,
 	ScienceFindAllResponseDto,
-	ScienceFindOneResponseDto,
 	ScienceFindFullForArchiveDto,
+	ScienceFindFullRequestDto,
+	ScienceFindFullResponseDto,
+	ScienceFindOneRequestDto,
+	ScienceFindOneResponseDto,
 	ScienceFindOneWithUserCollectionDto,
 	ScienceFindOnwWithUserCollectionRequestDto,
+	ScienceUpdateRequestDto,
 } from './dtos'
 import {
 	ScienceCreateResponse,
-	ScienceDeleteResponse,
 	ScienceFindAllResponse,
 	ScienceFindFullForArchive,
 	ScienceFindFullResponse,
@@ -25,10 +27,7 @@ import {
 	ScienceFindOneWithUserCollection,
 	ScienceUpdateResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAuthGuard } from '../../guards'
-import { UserIdInAccessToken } from '../../decorators'
-import { IResponse } from 'interfaces/response.interfaces'
+import { ScienceService } from './science.service'
 
 @ApiTags('Science')
 @UseGuards(CheckAuthGuard)
@@ -43,13 +42,17 @@ export class ScienceController {
 
 	@Get('full')
 	@ApiResponse({ type: ScienceFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: ScienceFindFullRequestDto): Promise<ScienceFindFullResponse> {
+	findFull(
+		@Query() payload: ScienceFindFullRequestDto,
+	): Promise<IResponse<ScienceFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('all')
 	@ApiResponse({ type: ScienceFindAllResponseDto })
-	findAll(@Query() payload: ScienceFindAllRequestDto): Promise<ScienceFindAllResponse> {
+	findAll(
+		@Query() payload: ScienceFindAllRequestDto,
+	): Promise<IResponse<ScienceFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
@@ -58,19 +61,23 @@ export class ScienceController {
 	findAllWithUserCollection(
 		@UserIdInAccessToken() id: string,
 		@Query() payload: ScienceFindOnwWithUserCollectionRequestDto,
-	): Promise<ScienceFindOneWithUserCollection[]> {
+	): Promise<IResponse<ScienceFindOneWithUserCollection[]>> {
 		return this.service.findAllWithUserCollection({ ...payload, userId: payload.userId ?? id })
 	}
 
 	@Get('for-archive')
 	@ApiResponse({ type: ScienceFindFullForArchiveDto, isArray: true })
-	findAllForArchive(@UserIdInAccessToken() id: string): Promise<ScienceFindFullForArchive[]> {
+	findAllForArchive(
+		@UserIdInAccessToken() id: string,
+	): Promise<IResponse<ScienceFindFullForArchive[]>> {
 		return this.service.findAllForArchive(id)
 	}
 
 	@Get(':id')
 	@ApiResponse({ type: ScienceFindOneResponseDto })
-	findOne(@Param() payload: ScienceFindOneRequestDto): Promise<ScienceFindOneResponse> {
+	findOne(
+		@Param() payload: ScienceFindOneRequestDto,
+	): Promise<IResponse<ScienceFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 

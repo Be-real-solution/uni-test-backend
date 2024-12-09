@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { IResponse } from 'interfaces/response.interfaces'
 import { CourseRepository } from './course.repository'
 import {
 	CourseCreateRequest,
 	CourseCreateResponse,
 	CourseDeleteRequest,
-	CourseDeleteResponse,
 	CourseFindAllRequest,
 	CourseFindAllResponse,
 	CourseFindFullRequest,
@@ -14,7 +14,6 @@ import {
 	CourseUpdateRequest,
 	CourseUpdateResponse,
 } from './interfaces'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class CourseService {
@@ -23,22 +22,22 @@ export class CourseService {
 		this.repository = repository
 	}
 
-	async findFull(payload: CourseFindFullRequest): Promise<CourseFindFullResponse> {
-		const courses = this.repository.findFull(payload)
-		return courses
+	async findFull(payload: CourseFindFullRequest): Promise<IResponse<CourseFindFullResponse>> {
+		const courses = await this.repository.findFull(payload)
+		return { status_code: 200, data: courses, message: 'success' }
 	}
 
-	async findAll(payload: CourseFindAllRequest): Promise<CourseFindAllResponse> {
-		const courses = this.repository.findAll(payload)
-		return courses
+	async findAll(payload: CourseFindAllRequest): Promise<IResponse<CourseFindAllResponse>> {
+		const courses = await this.repository.findAll(payload)
+		return { status_code: 200, data: courses, message: 'success' }
 	}
 
-	async findOne(payload: CourseFindOneRequest): Promise<CourseFindOneResponse> {
+	async findOne(payload: CourseFindOneRequest): Promise<IResponse<CourseFindOneResponse>> {
 		const course = await this.repository.findOne(payload)
 		if (!course) {
 			throw new BadRequestException('Course not found')
 		}
-		return course
+		return { status_code: 200, data: course, message: 'success' }
 	}
 
 	async findOneByStage(payload: Partial<CourseFindOneResponse>): Promise<CourseFindOneResponse> {

@@ -1,13 +1,15 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
-import { UserRepository } from './user.repository'
+import { IResponse } from 'interfaces/response.interfaces'
+import { SettingService } from 'modules/setting/setting.service'
+import { JWTService } from '../jwt'
+import { UserInfoService } from '../user-info'
 import {
 	UserCreateRequest,
 	UserCreateResponse,
 	UserCreateWithInfoRequest,
 	UserCreateWithJsonFileRequest,
 	UserDeleteRequest,
-	UserDeleteResponse,
 	UserFindAllRequest,
 	UserFindAllResponse,
 	UserFindFullRequest,
@@ -20,10 +22,7 @@ import {
 	UserUpdateResponse,
 	UserUpdateWithInfoRequest,
 } from './interfaces'
-import { UserInfoService } from '../user-info'
-import { JWTService } from '../jwt'
-import { SettingService } from 'modules/setting/setting.service'
-import { IResponse } from 'interfaces/response.interfaces'
+import { UserRepository } from './user.repository'
 
 @Injectable()
 export class UserService {
@@ -44,25 +43,25 @@ export class UserService {
 		this.settingService = settingService
 	}
 
-	async findFull(payload: UserFindFullRequest): Promise<UserFindFullResponse> {
-		const users = this.repository.findFull(payload)
-		return users
+	async findFull(payload: UserFindFullRequest): Promise<IResponse<UserFindFullResponse>> {
+		const users = await this.repository.findFull(payload)
+		return { status_code: 200, data: users, message: 'success' }
 	}
 
-	async findAll(payload: UserFindAllRequest): Promise<UserFindAllResponse> {
-		const users = this.repository.findAll(payload)
-		return users
+	async findAll(payload: UserFindAllRequest): Promise<IResponse<UserFindAllResponse>> {
+		const users = await this.repository.findAll(payload)
+		return { status_code: 200, data: users, message: 'success' }
 	}
 
-	async findOne(payload: UserFindOneRequest): Promise<UserFindOneResponse> {
+	async findOne(payload: UserFindOneRequest): Promise<IResponse<UserFindOneResponse>> {
 		const user = await this.repository.findOne(payload)
 		if (!user) {
 			throw new BadRequestException('User not found')
 		}
-		const setting = await this.settingService.findAll()
+		const { data: setting } = await this.settingService.findAll()
 		user.setting = setting
 
-		return user
+		return { status_code: 200, data: user, message: 'success' }
 	}
 
 	async findOneByEmail(payload: Partial<UserFindOneResponse>): Promise<UserFindOneResponse> {
@@ -84,7 +83,7 @@ export class UserService {
 		return user
 	}
 
-	async singIn(payload: UserSignInRequest): Promise<UserSignInResponse> {
+	async singIn(payload: UserSignInRequest): Promise<IResponse<UserSignInResponse>> {
 		const userInfo = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
 
 		const user = await this.repository.findOneWithPassword({ id: userInfo?.user.id })
@@ -96,7 +95,7 @@ export class UserService {
 
 		const tokens = await this.jwtService.getTokens({ id: user.id })
 
-		return { user: user, tokens: tokens }
+		return { status_code: 200, data: { user: user, tokens: tokens }, message: 'success' }
 	}
 
 	async create(payload: UserCreateRequest): Promise<UserCreateResponse> {

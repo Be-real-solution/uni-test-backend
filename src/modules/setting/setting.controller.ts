@@ -1,12 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common'
-import { SettingService } from './setting.service'
-import { CreateSettingDto } from './dto/create-setting.dto'
-import { UpdateSettingDto } from './dto/update-setting.dto'
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { SwaggerSettingResponseDto } from './dto/intex'
-import { IResponse } from 'interfaces/response.interfaces'
-import { ISettingResponse } from './interfaces/setting.interface'
 import { CheckAuthGuard } from 'guards'
+import { IResponse } from 'interfaces/response.interfaces'
+import { CreateSettingDto } from './dto/create-setting.dto'
+import { SwaggerSettingResponseDto } from './dto/intex'
+import { UpdateSettingDto } from './dto/update-setting.dto'
+import { ISettingResponse } from './interfaces/setting.interface'
+import { SettingService } from './setting.service'
 
 @ApiTags('Setting')
 @UseGuards(CheckAuthGuard)
@@ -23,13 +23,13 @@ export class SettingController {
 
 	@Get()
 	@ApiResponse({ type: [SwaggerSettingResponseDto] })
-	findAll(): Promise<ISettingResponse[]> {
+	findAll(): Promise<IResponse<ISettingResponse[]>> {
 		return this.settingService.findAll()
 	}
 
 	@Get(':id')
 	@ApiResponse({ type: SwaggerSettingResponseDto })
-	findOne(@Param('id') id: string): Promise<ISettingResponse> {
+	findOne(@Param('id') id: string): Promise<IResponse<ISettingResponse>> {
 		return this.settingService.findOne(id)
 	}
 

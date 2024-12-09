@@ -340,8 +340,10 @@ export class ArchiveRepository {
 	}
 
 	async create(payload: ArchiveCreateRequest): Promise<ArchiveCreateResponse> {
-		const user = await this.userService.findOne({ id: payload.userId })
-		const collection = await this.collectionService.findOne({ id: payload.collectionId })
+		const { data: user } = await this.userService.findOne({ id: payload.userId })
+		const { data: collection } = await this.collectionService.findOne({
+			id: payload.collectionId,
+		})
 		const archive = await this.prisma.archive.create({
 			data: {
 				result: payload.result,

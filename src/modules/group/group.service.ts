@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { IResponse } from 'interfaces/response.interfaces'
 import { GroupRepository } from './group.repository'
 import {
 	GroupCreateRequest,
 	GroupCreateResponse,
 	GroupDeleteRequest,
-	GroupDeleteResponse,
 	GroupFindAllRequest,
 	GroupFindAllResponse,
 	GroupFindFullRequest,
@@ -14,7 +14,6 @@ import {
 	GroupUpdateRequest,
 	GroupUpdateResponse,
 } from './interfaces'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class GroupService {
@@ -23,22 +22,22 @@ export class GroupService {
 		this.repository = repository
 	}
 
-	async findFull(payload: GroupFindFullRequest): Promise<GroupFindFullResponse> {
-		const groups = this.repository.findFull(payload)
-		return groups
+	async findFull(payload: GroupFindFullRequest): Promise<IResponse<GroupFindFullResponse>> {
+		const groups = await this.repository.findFull(payload)
+		return { status_code: 200, data: groups, message: 'success' }
 	}
 
-	async findAll(payload: GroupFindAllRequest): Promise<GroupFindAllResponse> {
-		const groups = this.repository.findAll(payload)
-		return groups
+	async findAll(payload: GroupFindAllRequest): Promise<IResponse<GroupFindAllResponse>> {
+		const groups = await this.repository.findAll(payload)
+		return { status_code: 200, data: groups, message: 'success' }
 	}
 
-	async findOne(payload: GroupFindOneRequest): Promise<GroupFindOneResponse> {
+	async findOne(payload: GroupFindOneRequest): Promise<IResponse<GroupFindOneResponse>> {
 		const group = await this.repository.findOne(payload)
 		if (!group) {
 			throw new BadRequestException('Group not found')
 		}
-		return group
+		return { status_code: 200, data: group, message: 'success' }
 	}
 
 	async findOneByName(payload: Partial<GroupFindOneResponse>): Promise<GroupFindOneResponse> {

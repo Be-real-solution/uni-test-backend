@@ -1,10 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
+import * as ExcelJs from 'exceljs'
+import { Response } from 'express'
+import * as fs from 'fs'
+import { IResponse } from 'interfaces/response.interfaces'
+import * as path from 'path'
+import { UserCollectionRepository } from '../user-collection'
 import { ArchiveRepository } from './archive.repository'
 import {
 	ArchiveCreateRequest,
 	ArchiveCreateResponse,
 	ArchiveDeleteRequest,
-	ArchiveDeleteResponse,
 	ArchiveFindAllRequest,
 	ArchiveFindAllResponse,
 	ArchiveFindFullRequest,
@@ -14,12 +19,6 @@ import {
 	ArchiveUpdateRequest,
 	ArchiveUpdateResponse,
 } from './interfaces'
-import { UserCollectionRepository } from '../user-collection'
-import * as ExcelJs from 'exceljs'
-import { Response } from 'express'
-import * as path from 'path'
-import * as fs from 'fs'
-import { IResponse } from 'interfaces/response.interfaces'
 @Injectable()
 export class ArchiveService {
 	private readonly repository: ArchiveRepository
@@ -30,22 +29,22 @@ export class ArchiveService {
 		this.userCollectionRepository = userCollectionRepository
 	}
 
-	async findFull(payload: ArchiveFindFullRequest): Promise<ArchiveFindFullResponse> {
-		const Archives = this.repository.findFull(payload)
-		return Archives
+	async findFull(payload: ArchiveFindFullRequest): Promise<IResponse<ArchiveFindFullResponse>> {
+		const Archives = await this.repository.findFull(payload)
+		return { status_code: 200, data: Archives, message: 'success' }
 	}
 
-	async findAll(payload: ArchiveFindAllRequest): Promise<ArchiveFindAllResponse> {
-		const Archives = this.repository.findAll(payload)
-		return Archives
+	async findAll(payload: ArchiveFindAllRequest): Promise<IResponse<ArchiveFindAllResponse>> {
+		const Archives = await this.repository.findAll(payload)
+		return { status_code: 200, data: Archives, message: 'success' }
 	}
 
-	async findOne(payload: ArchiveFindOneRequest): Promise<ArchiveFindOneResponse> {
+	async findOne(payload: ArchiveFindOneRequest): Promise<IResponse<ArchiveFindOneResponse>> {
 		const Archive = await this.repository.findOne(payload)
 		if (!Archive) {
 			throw new BadRequestException('Archive not found')
 		}
-		return Archive
+		return { status_code: 200, data: Archive, message: 'success' }
 	}
 
 	async create(payload: ArchiveCreateRequest): Promise<IResponse<ArchiveCreateResponse>> {
@@ -87,7 +86,7 @@ export class ArchiveService {
 		return { status_code: 200, data: [], message: 'deleted' }
 	}
 
-	async downloadInExcel1(payload: ArchiveFindFullRequest, res: Response): Promise<void> {
+	async downloadInExcel1(payload: ArchiveFindFullRequest, res: Response): Promise<IResponse<[]>> {
 		console.log(path.join(__dirname, '..', '..', '..', 'files', 'archives.xlsx'))
 		const archives = await this.repository.findFullForExcel(payload)
 
@@ -180,9 +179,10 @@ export class ArchiveService {
 		)
 		res.write(buffer)
 		res.end()
+		return { status_code: 200, data: [], message: 'success' }
 	}
 
-	async downloadInExcel(payload: ArchiveFindFullRequest): Promise<{ url: string }> {
+	async downloadInExcel(payload: ArchiveFindFullRequest): Promise<IResponse<{ url: string }>> {
 		const archives = await this.repository.findFullForExcel(payload)
 
 		const workbook = new ExcelJs.Workbook()
@@ -272,7 +272,7 @@ export class ArchiveService {
 		fs.writeFileSync(filePath, Buffer.from(buffer))
 		console.log(`File saved to ${filePath}`)
 
-		return { url: `/files/${filename}` }
+		return { status_code: 200, data: { url: `/files/${filename}` }, message: 'success' }
 	}
 
 	formatDate(date: any) {

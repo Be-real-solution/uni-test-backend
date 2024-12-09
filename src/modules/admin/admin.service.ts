@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
+import { IResponse } from 'interfaces/response.interfaces'
+import { JWTService } from '../jwt'
 import { AdminRepository } from './admin.repository'
 import {
 	AdminCreateRequest,
-	AdminCreateResponse,
 	AdminDeleteRequest,
-	AdminDeleteResponse,
 	AdminFindAllRequest,
 	AdminFindAllResponse,
 	AdminFindFullRequest,
@@ -17,8 +17,6 @@ import {
 	AdminUpdateRequest,
 	AdminUpdateResponse,
 } from './interfaces'
-import { JWTService } from '../jwt'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class AdminService {
@@ -29,25 +27,27 @@ export class AdminService {
 		this.jwtService = jwtService
 	}
 
-	async findFull(payload: AdminFindFullRequest): Promise<AdminFindFullResponse> {
-		const admins = this.repository.findFull(payload)
-		return admins
+	async findFull(payload: AdminFindFullRequest): Promise<IResponse<AdminFindFullResponse>> {
+		const admins = await this.repository.findFull(payload)
+		return { status_code: 200, data: admins, message: 'success' }
 	}
 
-	async findAll(payload: AdminFindAllRequest): Promise<AdminFindAllResponse> {
-		const admins = this.repository.findAll(payload)
-		return admins
+	async findAll(payload: AdminFindAllRequest): Promise<IResponse<AdminFindAllResponse>> {
+		const admins = await this.repository.findAll(payload)
+		return { status_code: 200, data: admins, message: 'success' }
 	}
 
-	async findOne(payload: AdminFindOneRequest): Promise<AdminFindOneResponse> {
+	async findOne(payload: AdminFindOneRequest): Promise<IResponse<AdminFindOneResponse>> {
 		const admin = await this.repository.findOne(payload)
 		if (!admin) {
 			throw new BadRequestException('Admin not found')
 		}
-		return admin
+		return { status_code: 200, data: admin, message: 'success' }
 	}
 
-	async findOneByEmail(payload: Partial<AdminFindOneResponse>): Promise<AdminFindOneResponse> {
+	async findOneByEmail(
+		payload: Partial<AdminFindOneResponse>,
+	): Promise<IResponse<AdminFindOneResponse>> {
 		const admin = await this.repository.findByEmail({
 			emailAddress: payload.emailAddress,
 			id: payload.id,
@@ -55,7 +55,7 @@ export class AdminService {
 		if (admin) {
 			throw new BadRequestException('Admin already exists')
 		}
-		return admin
+		return { status_code: 200, data: admin, message: 'success' }
 	}
 
 	async findByEmail(payload: Partial<AdminFindOneResponse>): Promise<AdminFindOneResponse> {
@@ -66,7 +66,7 @@ export class AdminService {
 		return admin
 	}
 
-	async singIn(payload: AdminSignInRequest): Promise<AdminSignInResponse> {
+	async singIn(payload: AdminSignInRequest): Promise<IResponse<AdminSignInResponse>> {
 		const admin = await this.findByEmail({ emailAddress: payload.hemisId })
 		if (!admin) {
 			throw new UnauthorizedException('User not found')
@@ -76,7 +76,7 @@ export class AdminService {
 			throw new UnauthorizedException('User not found')
 		}
 		const tokens = await this.jwtService.getTokens({ id: admin.id })
-		return { admin: admin, tokens: tokens }
+		return { status_code: 200, data: { admin: admin, tokens: tokens }, message: 'success' }
 	}
 
 	async create(payload: AdminCreateRequest): Promise<IResponse<AdminFindOneResponse>> {

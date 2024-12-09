@@ -11,32 +11,31 @@ import {
 	UseGuards,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { Response } from 'express'
+import { IResponse } from 'interfaces/response.interfaces'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { Roles } from '../../decorators'
+import { CheckAuthGuard } from '../../guards'
 import { ArchiveService } from './archive.service'
 import {
 	ArchiveCreateRequestDto,
-	ArchiveFindFullResponseDto,
 	ArchiveDeleteRequestDto,
-	ArchiveFindAllRequestDto,
-	ArchiveFindFullRequestDto,
-	ArchiveFindOneRequestDto,
-	ArchiveUpdateRequestDto,
-	ArchiveFindAllResponseDto,
-	ArchiveFindOneResponseDto,
 	ArchiveExcelResponseDto,
+	ArchiveFindAllRequestDto,
+	ArchiveFindAllResponseDto,
+	ArchiveFindFullRequestDto,
+	ArchiveFindFullResponseDto,
+	ArchiveFindOneRequestDto,
+	ArchiveFindOneResponseDto,
+	ArchiveUpdateRequestDto,
 } from './dtos'
 import {
 	ArchiveCreateResponse,
-	ArchiveDeleteResponse,
 	ArchiveFindAllResponse,
 	ArchiveFindFullResponse,
 	ArchiveFindOneResponse,
 	ArchiveUpdateResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAuthGuard } from '../../guards'
-import { Roles } from '../../decorators'
-import { Response } from 'express'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Archive')
 @UseGuards(CheckAuthGuard)
@@ -52,7 +51,9 @@ export class ArchiveController {
 	@Get('full')
 	@Roles('admin', 'student')
 	@ApiResponse({ type: ArchiveFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: ArchiveFindFullRequestDto): Promise<ArchiveFindFullResponse> {
+	findFull(
+		@Query() payload: ArchiveFindFullRequestDto,
+	): Promise<IResponse<ArchiveFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
@@ -62,26 +63,32 @@ export class ArchiveController {
 	findFullInExcel1(
 		@Query() payload: ArchiveFindFullRequestDto,
 		@Res() res: Response,
-	): Promise<void> {
+	): Promise<IResponse<[]>> {
 		return this.service.downloadInExcel1(payload, res)
 	}
 
 	@Get('excel')
 	@Roles('admin', 'student')
 	@ApiResponse({ type: ArchiveExcelResponseDto })
-	findFullInExcel(@Query() payload: ArchiveFindFullRequestDto): Promise<{ url: string }> {
+	findFullInExcel(
+		@Query() payload: ArchiveFindFullRequestDto,
+	): Promise<IResponse<{ url: string }>> {
 		return this.service.downloadInExcel(payload)
 	}
 
 	@Get('all')
 	@ApiResponse({ type: ArchiveFindAllResponseDto })
-	findAll(@Query() payload: ArchiveFindAllRequestDto): Promise<ArchiveFindAllResponse> {
+	findAll(
+		@Query() payload: ArchiveFindAllRequestDto,
+	): Promise<IResponse<ArchiveFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
 	@Get(':id')
 	@ApiResponse({ type: ArchiveFindOneResponseDto })
-	findOne(@Param() payload: ArchiveFindOneRequestDto): Promise<ArchiveFindOneResponse> {
+	findOne(
+		@Param() payload: ArchiveFindOneRequestDto,
+	): Promise<IResponse<ArchiveFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 

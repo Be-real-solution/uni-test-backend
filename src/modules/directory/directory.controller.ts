@@ -1,12 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common'
-import { DirectoryService } from './directory.service'
-import { CreateDirectoryDto } from './dto/create-directory.dto'
-import { UpdateDirectoryDto } from './dto/update-directory.dto'
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CheckAuthGuard } from 'guards'
 import { IResponse } from 'interfaces/response.interfaces'
-import { ICreateDirectoryResponse, IFindOneDirectoryResponse } from './interfaces'
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { DirectoryService } from './directory.service'
 import { SwaggerDirectoryDto } from './dto'
+import { CreateDirectoryDto } from './dto/create-directory.dto'
+import { UpdateDirectoryDto } from './dto/update-directory.dto'
+import { ICreateDirectoryResponse, IFindOneDirectoryResponse } from './interfaces'
 
 @UseGuards(CheckAuthGuard)
 @ApiBearerAuth()
@@ -23,13 +23,13 @@ export class DirectoryController {
 
 	@ApiResponse({ type: [SwaggerDirectoryDto] })
 	@Get()
-	findAll(): Promise<IFindOneDirectoryResponse[]> {
+	findAll(): Promise<IResponse<IFindOneDirectoryResponse[]>> {
 		return this.directoryService.findAll()
 	}
 
 	@ApiResponse({ type: SwaggerDirectoryDto })
 	@Get(':id')
-	findOne(@Param('id') id: string): Promise<IFindOneDirectoryResponse> {
+	findOne(@Param('id') id: string): Promise<IResponse<IFindOneDirectoryResponse>> {
 		return this.directoryService.findOne(id)
 	}
 

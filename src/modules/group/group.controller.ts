@@ -1,28 +1,27 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { GroupService } from './group.service'
+import { IResponse } from 'interfaces/response.interfaces'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAuthGuard } from '../../guards'
 import {
 	GroupCreateRequestDto,
-	GroupFindFullResponseDto,
 	GroupDeleteRequestDto,
 	GroupFindAllRequestDto,
-	GroupFindFullRequestDto,
-	GroupFindOneRequestDto,
-	GroupUpdateRequestDto,
 	GroupFindAllResponseDto,
+	GroupFindFullRequestDto,
+	GroupFindFullResponseDto,
+	GroupFindOneRequestDto,
 	GroupFindOneResponseDto,
+	GroupUpdateRequestDto,
 } from './dtos'
+import { GroupService } from './group.service'
 import {
 	GroupCreateResponse,
-	GroupDeleteResponse,
 	GroupFindAllResponse,
 	GroupFindFullResponse,
 	GroupFindOneResponse,
 	GroupUpdateResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAuthGuard } from '../../guards'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Group')
 @UseGuards(CheckAuthGuard)
@@ -37,19 +36,19 @@ export class GroupController {
 
 	@Get('full')
 	@ApiResponse({ type: GroupFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: GroupFindFullRequestDto): Promise<GroupFindFullResponse> {
+	findFull(@Query() payload: GroupFindFullRequestDto): Promise<IResponse<GroupFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('all')
 	@ApiResponse({ type: GroupFindAllResponseDto })
-	findAll(@Query() payload: GroupFindAllRequestDto): Promise<GroupFindAllResponse> {
+	findAll(@Query() payload: GroupFindAllRequestDto): Promise<IResponse<GroupFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageNumber: PAGE_NUMBER, pageSize: PAGE_SIZE })
 	}
 
 	@Get(':id')
 	@ApiResponse({ type: GroupFindOneResponseDto })
-	findOne(@Param() payload: GroupFindOneRequestDto): Promise<GroupFindOneResponse> {
+	findOne(@Param() payload: GroupFindOneRequestDto): Promise<IResponse<GroupFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 

@@ -1,28 +1,27 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { UserInfoService } from './user-info.service'
+import { IResponse } from 'interfaces/response.interfaces'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAuthGuard } from '../../guards'
 import {
 	UserInfoCreateRequestDto,
-	UserInfoFindFullResponseDto,
 	UserInfoDeleteRequestDto,
 	UserInfoFindAllRequestDto,
-	UserInfoFindFullRequestDto,
-	UserInfoFindOneRequestDto,
-	UserInfoUpdateRequestDto,
 	UserInfoFindAllResponseDto,
+	UserInfoFindFullRequestDto,
+	UserInfoFindFullResponseDto,
+	UserInfoFindOneRequestDto,
 	UserInfoFindOneResponseDto,
+	UserInfoUpdateRequestDto,
 } from './dtos'
 import {
 	UserInfoCreateResponse,
-	UserInfoDeleteResponse,
 	UserInfoFindAllResponse,
 	UserInfoFindFullResponse,
 	UserInfoFindOneResponse,
 	UserInfoUpdateResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAuthGuard } from '../../guards'
-import { IResponse } from 'interfaces/response.interfaces'
+import { UserInfoService } from './user-info.service'
 
 @ApiTags('UserInfo')
 @UseGuards(CheckAuthGuard)
@@ -37,19 +36,25 @@ export class UserInfoController {
 
 	@Get('full')
 	@ApiResponse({ type: UserInfoFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: UserInfoFindFullRequestDto): Promise<UserInfoFindFullResponse> {
+	findFull(
+		@Query() payload: UserInfoFindFullRequestDto,
+	): Promise<IResponse<UserInfoFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('all')
 	@ApiResponse({ type: UserInfoFindAllResponseDto })
-	findAll(@Query() payload: UserInfoFindAllRequestDto): Promise<UserInfoFindAllResponse> {
+	findAll(
+		@Query() payload: UserInfoFindAllRequestDto,
+	): Promise<IResponse<UserInfoFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
 	@Get(':id')
 	@ApiResponse({ type: UserInfoFindOneResponseDto })
-	findOne(@Param() payload: UserInfoFindOneRequestDto): Promise<UserInfoFindOneResponse> {
+	findOne(
+		@Param() payload: UserInfoFindOneRequestDto,
+	): Promise<IResponse<UserInfoFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 

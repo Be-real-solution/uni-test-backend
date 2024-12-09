@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { IResponse } from 'interfaces/response.interfaces'
 import { FacultyRepository } from './faculty.repository'
 import {
 	FacultyCreateRequest,
 	FacultyCreateResponse,
 	FacultyDeleteRequest,
-	FacultyDeleteResponse,
 	FacultyFindAllRequest,
 	FacultyFindAllResponse,
 	FacultyFindFullForSetCollection,
@@ -15,7 +15,6 @@ import {
 	FacultyUpdateRequest,
 	FacultyUpdateResponse,
 } from './interfaces'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @Injectable()
 export class FacultyService {
@@ -24,22 +23,22 @@ export class FacultyService {
 		this.repository = repository
 	}
 
-	async findFull(payload: FacultyFindFullRequest): Promise<FacultyFindFullResponse> {
-		const facultys = this.repository.findFull(payload)
-		return facultys
+	async findFull(payload: FacultyFindFullRequest): Promise<IResponse<FacultyFindFullResponse>> {
+		const facultys = await this.repository.findFull(payload)
+		return { status_code: 200, data: facultys, message: 'success' }
 	}
 
-	async findAll(payload: FacultyFindAllRequest): Promise<FacultyFindAllResponse> {
-		const facultys = this.repository.findAll(payload)
-		return facultys
+	async findAll(payload: FacultyFindAllRequest): Promise<IResponse<FacultyFindAllResponse>> {
+		const facultys = await this.repository.findAll(payload)
+		return { status_code: 200, data: facultys, message: 'success' }
 	}
 
-	async findOne(payload: FacultyFindOneRequest): Promise<FacultyFindOneResponse> {
+	async findOne(payload: FacultyFindOneRequest): Promise<IResponse<FacultyFindOneResponse>> {
 		const faculty = await this.repository.findOne(payload)
 		if (!faculty) {
 			throw new BadRequestException('Faculty not found')
 		}
-		return faculty
+		return { status_code: 200, data: faculty, message: 'success' }
 	}
 
 	async findOneByName(payload: Partial<FacultyFindOneResponse>): Promise<FacultyFindOneResponse> {
@@ -73,7 +72,8 @@ export class FacultyService {
 		return { status_code: 200, data: [], message: 'deleted' }
 	}
 
-	async findAllForSetCollection(): Promise<FacultyFindFullForSetCollection[]> {
-		return this.repository.getAllForSetCollections()
+	async findAllForSetCollection(): Promise<IResponse<FacultyFindFullForSetCollection[]>> {
+		const collection = await this.repository.getAllForSetCollections()
+		return { status_code: 200, data: collection, message: 'success' }
 	}
 }

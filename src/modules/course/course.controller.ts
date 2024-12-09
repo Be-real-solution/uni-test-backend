@@ -1,28 +1,27 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { IResponse } from 'interfaces/response.interfaces'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAuthGuard } from '../../guards'
 import { CourseService } from './course.service'
 import {
 	CourseCreateRequestDto,
-	CourseFindFullResponseDto,
 	CourseDeleteRequestDto,
 	CourseFindAllRequestDto,
-	CourseFindFullRequestDto,
-	CourseFindOneRequestDto,
-	CourseUpdateRequestDto,
 	CourseFindAllResponseDto,
+	CourseFindFullRequestDto,
+	CourseFindFullResponseDto,
+	CourseFindOneRequestDto,
 	CourseFindOneResponseDto,
+	CourseUpdateRequestDto,
 } from './dtos'
 import {
 	CourseCreateResponse,
-	CourseDeleteResponse,
 	CourseFindAllResponse,
 	CourseFindFullResponse,
 	CourseFindOneResponse,
 	CourseUpdateResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAuthGuard } from '../../guards'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Course')
 @UseGuards(CheckAuthGuard)
@@ -37,19 +36,21 @@ export class CourseController {
 
 	@Get('full')
 	@ApiResponse({ type: CourseFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: CourseFindFullRequestDto): Promise<CourseFindFullResponse> {
+	findFull(
+		@Query() payload: CourseFindFullRequestDto,
+	): Promise<IResponse<CourseFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('all')
 	@ApiResponse({ type: CourseFindAllResponseDto })
-	findAll(@Query() payload: CourseFindAllRequestDto): Promise<CourseFindAllResponse> {
+	findAll(@Query() payload: CourseFindAllRequestDto): Promise<IResponse<CourseFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageNumber: PAGE_NUMBER, pageSize: PAGE_SIZE })
 	}
 
 	@Get(':id')
 	@ApiResponse({ type: CourseFindOneResponseDto })
-	findOne(@Param() payload: CourseFindOneRequestDto): Promise<CourseFindOneResponse> {
+	findOne(@Param() payload: CourseFindOneRequestDto): Promise<IResponse<CourseFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 

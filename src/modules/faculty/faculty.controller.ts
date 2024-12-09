@@ -1,30 +1,29 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { FacultyService } from './faculty.service'
+import { IResponse } from 'interfaces/response.interfaces'
+import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAuthGuard } from '../../guards'
 import {
 	FacultyCreateRequestDto,
-	FacultyFindFullResponseDto,
 	FacultyDeleteRequestDto,
 	FacultyFindAllRequestDto,
-	FacultyFindFullRequestDto,
-	FacultyFindOneRequestDto,
-	FacultyUpdateRequestDto,
 	FacultyFindAllResponseDto,
-	FacultyFindOneResponseDto,
 	FacultyFindFullForSetCollectionDto,
+	FacultyFindFullRequestDto,
+	FacultyFindFullResponseDto,
+	FacultyFindOneRequestDto,
+	FacultyFindOneResponseDto,
+	FacultyUpdateRequestDto,
 } from './dtos'
+import { FacultyService } from './faculty.service'
 import {
 	FacultyCreateResponse,
-	FacultyDeleteResponse,
 	FacultyFindAllResponse,
 	FacultyFindFullForSetCollection,
 	FacultyFindFullResponse,
 	FacultyFindOneResponse,
 	FacultyUpdateResponse,
 } from './interfaces'
-import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAuthGuard } from '../../guards'
-import { IResponse } from 'interfaces/response.interfaces'
 
 @ApiTags('Faculty')
 @UseGuards(CheckAuthGuard)
@@ -39,25 +38,31 @@ export class FacultyController {
 
 	@Get('full')
 	@ApiResponse({ type: FacultyFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: FacultyFindFullRequestDto): Promise<FacultyFindFullResponse> {
+	findFull(
+		@Query() payload: FacultyFindFullRequestDto,
+	): Promise<IResponse<FacultyFindFullResponse>> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('with-details')
 	@ApiResponse({ type: FacultyFindFullForSetCollectionDto, isArray: true })
-	findFullWithDetails(): Promise<FacultyFindFullForSetCollection[]> {
+	findFullWithDetails(): Promise<IResponse<FacultyFindFullForSetCollection[]>> {
 		return this.service.findAllForSetCollection()
 	}
 
 	@Get('all')
 	@ApiResponse({ type: FacultyFindAllResponseDto })
-	findAll(@Query() payload: FacultyFindAllRequestDto): Promise<FacultyFindAllResponse> {
+	findAll(
+		@Query() payload: FacultyFindAllRequestDto,
+	): Promise<IResponse<FacultyFindAllResponse>> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
 	@Get(':id')
 	@ApiResponse({ type: FacultyFindOneResponseDto })
-	findOne(@Param() payload: FacultyFindOneRequestDto): Promise<FacultyFindOneResponse> {
+	findOne(
+		@Param() payload: FacultyFindOneRequestDto,
+	): Promise<IResponse<FacultyFindOneResponse>> {
 		return this.service.findOne(payload)
 	}
 
