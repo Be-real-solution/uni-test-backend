@@ -1,4 +1,18 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
+import {
+	BadRequestException,
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query,
+	Res,
+	UploadedFile,
+	UseGuards,
+	UseInterceptors,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CollectionService } from './collection.service'
 import {
@@ -56,19 +70,26 @@ export class CollectionController {
 
 	@Get(':id/with-qa')
 	@ApiResponse({ type: CollectionFindOneResponseDto })
-	findOneWithQA(@Param() payload: CollectionFindOneRequestDto): Promise<CollectionFindOneWithQuestionAnswers> {
+	findOneWithQA(
+		@Param() payload: CollectionFindOneRequestDto,
+	): Promise<CollectionFindOneWithQuestionAnswers> {
 		return this.service.findOneWithQuestions(payload)
 	}
 
 	@Get(':id/with-question')
 	@ApiResponse({ type: CollectionFindOneResponseDto })
-	findOneWithQuestionAnswers(@Param() payload: CollectionFindOneRequestDto): Promise<CollectionFindOneWithQuestionAnswers> {
+	findOneWithQuestionAnswers(
+		@Param() payload: CollectionFindOneRequestDto,
+	): Promise<CollectionFindOneWithQuestionAnswers> {
 		return this.service.findOneWithQuestionAnswers(payload)
 	}
 
 	@Get(':id/in-txt')
 	@ApiResponse({ type: null })
-	async findOneInTxt(@Param() payload: CollectionFindOneRequestDto, @Res() response: Response): Promise<void> {
+	async findOneInTxt(
+		@Param() payload: CollectionFindOneRequestDto,
+		@Res() response: Response,
+	): Promise<void> {
 		const collection = await this.service.findOneAndReturnTxt(payload)
 
 		response.setHeader('Content-Disposition', `attachment; filename=${collection.filename}.txt`)
@@ -84,7 +105,7 @@ export class CollectionController {
 
 	@Post()
 	@ApiResponse({ type: null })
-	create(@Body() payload: CollectionCreateRequestDto): Promise<IResponse<CollectionCreateResponse>> {
+	create(@Body() payload: CollectionCreateRequestDto): Promise<CollectionCreateResponse> {
 		return this.service.create(payload)
 	}
 
@@ -101,7 +122,10 @@ export class CollectionController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
-	createWithQuestions(@Body() payload: CollectionCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<IResponse<CollectionCreateResponse>> {
+	createWithQuestions(
+		@Body() payload: CollectionCreateRequestDto,
+		@UploadedFile() file: UploadedTxtFile,
+	): Promise<CollectionCreateResponse> {
 		return this.service.createWithQuestions(payload, file.buffer.toString('utf-8'))
 	}
 
@@ -118,19 +142,27 @@ export class CollectionController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: CollectionBeforeCreateResponseDto })
-	returnWithQuestions(@Body() payload: CollectionBeforeCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<IResponse<CollectionBeforeCreateResponse>> {
+	returnWithQuestions(
+		@Body() payload: CollectionBeforeCreateRequestDto,
+		@UploadedFile() file: UploadedTxtFile,
+	): Promise<CollectionBeforeCreateResponse> {
 		return this.service.returnWithQuestions(payload, file.buffer.toString('utf-8'))
 	}
 
 	@Post('confirm-with-questions')
 	@ApiResponse({ type: null })
-	confirmWithQuestions(@Body() payload: CollectionBeforeCreateResponseDto): Promise<IResponse<CollectionCreateResponse>> {
+	confirmWithQuestions(
+		@Body() payload: CollectionBeforeCreateResponseDto,
+	): Promise<CollectionCreateResponse> {
 		return this.service.confirmCreateWithQuestions(payload)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: CollectionFindOneRequestDto, @Body() payload: CollectionUpdateRequestDto): Promise<IResponse<CollectionUpdateResponse>> {
+	update(
+		@Param() params: CollectionFindOneRequestDto,
+		@Body() payload: CollectionUpdateRequestDto,
+	): Promise<CollectionUpdateResponse> {
 		return this.service.update(params, payload)
 	}
 

@@ -103,6 +103,7 @@ export declare interface CollectionQuestion {
 	id: string
 	text: string
 	createdAt: Date
+	imageUrl: string,
 	multipleChoice?: boolean
 	answers: QuestionAnswer[]
 }

@@ -47,7 +47,9 @@ export class CollectionService {
 		return collection
 	}
 
-	async findOneWithQuestionAnswers(payload: CollectionFindOneRequest): Promise<CollectionFindOneWithQuestionAnswers> {
+	async findOneWithQuestionAnswers(
+		payload: CollectionFindOneRequest,
+	): Promise<CollectionFindOneWithQuestionAnswers> {
 		const collection = await this.repository.findOneWithQuestionAnswers(payload)
 		if (!collection) {
 			throw new BadRequestException('Collection not found')
@@ -55,7 +57,9 @@ export class CollectionService {
 		return collection
 	}
 
-	async findOneWithQuestions(payload: CollectionFindOneRequest): Promise<CollectionFindOneWithQuestionAnswers> {
+	async findOneWithQuestions(
+		payload: CollectionFindOneRequest,
+	): Promise<CollectionFindOneWithQuestionAnswers> {
 		const collection = await this.repository.findOneWithQuestionAnswers(payload)
 		if (!collection) {
 			throw new BadRequestException('Collection not found')
@@ -69,6 +73,7 @@ export class CollectionService {
 				id: q.id,
 				text: q.text,
 				answers: q.answers,
+				imageUrl: q.imageUrl,
 				createdAt: q.createdAt,
 				multipleChoice: q.answers.filter((a) => a.isCorrect === true).length > 1,
 			}
@@ -81,7 +86,9 @@ export class CollectionService {
 			repeatedQuestions = repeatedQuestions.concat(mappedQuestions)
 		}
 
-		const shuffledQuestions = repeatedQuestions.sort(() => 0.5 - Math.random()).slice(0, amountInTest)
+		const shuffledQuestions = repeatedQuestions
+			.sort(() => 0.5 - Math.random())
+			.slice(0, amountInTest)
 
 		const shuffledQuestionsWithAnswers = shuffledQuestions.map((question) => ({
 			...question,
@@ -94,7 +101,9 @@ export class CollectionService {
 		}
 	}
 
-	async findOneAndReturnTxt(payload: CollectionFindOneRequest): Promise<{ filename: string; content: string }> {
+	async findOneAndReturnTxt(
+		payload: CollectionFindOneRequest,
+	): Promise<{ filename: string; content: string }> {
 		const collection = await this.repository.findOneWithQuestionAnswers(payload)
 
 		let content = ''
@@ -109,7 +118,9 @@ export class CollectionService {
 		return { filename: collection.name, content: content }
 	}
 
-	async findOneByName(payload: Partial<CollectionFindOneResponse>): Promise<CollectionFindOneResponse> {
+	async findOneByName(
+		payload: Partial<CollectionFindOneResponse>,
+	): Promise<CollectionFindOneResponse> {
 		const collection = await this.repository.findByName({ name: payload.name, id: payload.id })
 		if (collection) {
 			throw new BadRequestException('Collection already exists')
@@ -117,25 +128,32 @@ export class CollectionService {
 		return collection
 	}
 
-	async create(payload: CollectionCreateRequest): Promise<IResponse<CollectionCreateResponse>> {
+	async create(payload: CollectionCreateRequest): Promise<CollectionCreateResponse> {
 		await this.findOneByName({ name: payload.name })
 		const collection = await this.repository.create(payload)
 
-		return { status_code: 201, data: collection, message: 'created' }
+		return collection
 	}
 
-	async createWithQuestions(payload: CollectionCreateRequest, text: string): Promise<IResponse<CollectionCreateResponse>> {
+	async createWithQuestions(
+		payload: CollectionCreateRequest,
+		text: string,
+	): Promise<CollectionCreateResponse> {
 		await this.findOneByName({ name: payload.name })
 		const collection = await this.repository.create(payload)
-		await this.questionService.createManyWithAnswers({ collectionId: collection.id }, text).catch(async (e) => {
-			await this.repository.HardDelete({ id: collection.id })
-			console.log(e)
-			throw new BadRequestException(e)
-		})
-		return { status_code: 201, data: collection, message: 'created' }
+		await this.questionService
+			.createManyWithAnswers({ collectionId: collection.id }, text)
+			.catch(async (e) => {
+				await this.repository.HardDelete({ id: collection.id })
+				console.log(e)
+				throw new BadRequestException(e)
+			})
+		return collection
 	}
 
-	async confirmCreateWithQuestions(payload: CollectionBeforeCreateResponse): Promise<IResponse<CollectionCreateResponse>> {
+	async confirmCreateWithQuestions(
+		payload: CollectionBeforeCreateResponse,
+	): Promise<CollectionCreateResponse> {
 		await this.findOneByName({ name: payload.name })
 		const collection = await this.repository.create({
 			adminId: payload.adminId,
@@ -147,16 +165,24 @@ export class CollectionService {
 			scienceId: payload.science.id,
 			directoryId: payload.directoryId,
 		})
-		await this.questionService.confirmCreateManyWithAnswers({ collectionId: collection.id }, { questions: payload.questions }).catch(async (e) => {
-			await this.repository.HardDelete({ id: collection.id })
-			console.log(e)
+		await this.questionService
+			.confirmCreateManyWithAnswers(
+				{ collectionId: collection.id },
+				{ questions: payload.questions },
+			)
+			.catch(async (e) => {
+				await this.repository.HardDelete({ id: collection.id })
+				console.log(e)
 
-			throw new BadRequestException(e)
-		})
-		return { status_code: 201, data: collection, message: 'created' }
+				throw new BadRequestException(e)
+			})
+		return collection
 	}
 
-	async returnWithQuestions(payload: CollectionBeforeCreateRequest, text: string): Promise<IResponse<CollectionBeforeCreateResponse>> {
+	async returnWithQuestions(
+		payload: CollectionBeforeCreateRequest,
+		text: string,
+	): Promise<CollectionBeforeCreateResponse> {
 		payload.name ? await this.findOneByName({ name: payload.name }) : null
 		const ques = await this.questionService.returnManyWithAnswers(text)
 		let s: any
@@ -164,29 +190,28 @@ export class CollectionService {
 			s = await this.repository.scienceFindOne({ id: payload.scienceId })
 		}
 		return {
-			status_code: 201,
-			data: {
-				amountInTest: payload.amountInTest,
-				givenMinutes: payload.givenMinutes,
-				language: payload.language,
-				maxAttempts: payload.maxAttempts,
-				name: payload.name,
-				science: s,
-				questions: ques.questions,
-				adminId: payload.adminId,
-				directoryId: payload.directoryId,
-			},
-			message: 'created',
+			amountInTest: payload.amountInTest,
+			givenMinutes: payload.givenMinutes,
+			language: payload.language,
+			maxAttempts: payload.maxAttempts,
+			name: payload.name,
+			science: s,
+			questions: ques.questions,
+			adminId: payload.adminId,
+			directoryId: payload.directoryId,
 		}
 	}
 
-	async update(params: CollectionFindOneRequest, payload: CollectionUpdateRequest): Promise<IResponse<CollectionUpdateResponse>> {
+	async update(
+		params: CollectionFindOneRequest,
+		payload: CollectionUpdateRequest,
+	): Promise<CollectionUpdateResponse> {
 		await this.findOne({ id: params.id })
 		payload.name ? await this.findOneByName({ name: payload.name, id: params.id }) : null
 
 		const collection = await this.repository.update({ ...params, ...payload })
 
-		return { status_code: 200, data: collection, message: 'updated' }
+		return collection
 	}
 
 	async delete(payload: CollectionDeleteRequest): Promise<CollectionDeleteResponse> {
