@@ -6,72 +6,106 @@ import { QuestionService } from 'modules/question'
 import { UserService } from 'modules/user'
 import { UserResultRepository } from './user-result.repository'
 import { Request } from 'express'
+import { AnswerService } from 'modules/answer'
 
 @Injectable()
 export class UserResultService {
-	private readonly repository: UserResultRepository
-	private readonly questionService: QuestionService
-	private readonly userService: UserService
+    private readonly repository: UserResultRepository
+    private readonly questionService: QuestionService
+    private readonly answerService: AnswerService
+    private readonly userService: UserService
 
-	constructor(
-		repository: UserResultRepository,
-		questionService: QuestionService,
-		userService: UserService,
-	) {
-		this.repository = repository
-		this.questionService = questionService
-		this.userService = userService
-	}
+    constructor(
+        repository: UserResultRepository,
+        questionService: QuestionService,
+        userService: UserService,
+        answerService: AnswerService,
+    ) {
+        this.repository = repository
+        this.questionService = questionService
+        this.userService = userService
+        this.answerService = answerService
+    }
 
-	async create(payload: ICreateUserResultService, request: Request) {
-		const question = await this.questionService.findOne({ id: payload.questionId })
-		const user = await this.userService.findOne({ id: payload.userId })
+    async create(payload: ICreateUserResultService): Promise<IUserResultResponse> {
 
-		let userResult: IUserResultResponse = await this.repository.findOneByUserIdCollectionId({
-			id: '',
-			userId: user.id,
-			collectionId: question.collection.id,
-		})
+        const user = await this.userService.findOne({ id: payload.userId })
 
-		if (!userResult) {
-			userResult = await this.repository.create({
-				userFullName: user.fullName,
-				grade: 0,
-				userId: user.id,
-				groupId: user.userInfo.group.id,
-				questionId: question.id,
-				questionCount: payload.number,
-				compyuterName: request.headers['user-agent'],
-				collectionId: question.collection.id,
-			})
-			return { status_code: 200, data: userResult, message: 'created' }
-		} else {
-			userResult = await this.repository.update({
-				id: userResult.id,
-				questionId: question.id,
-				compyuterName: request.headers['user-agent'],
-				hasFinished: payload.hasFinished,
-				questionCount: payload.number,
-			})
-		}
+        const question = await this.questionService.findOne({ id: payload.questionId })
 
-		return { status_code: 200, data: userResult, message: 'updated' }
-	}
+        const correct_answer_count = question.answers.filter((a) => a.isCorrect).length
+        let find_answer_count = 0
+        payload.answer.forEach(async (a) => {
+            if (question.answers.some(value => value.id == a.answerId)) {
+                const answer = await this.answerService.findOne({ id: a.answerId })
+                find_answer_count = answer.isCorrect ? find_answer_count + 1 : find_answer_count
+            } else {
+                throw new NotFoundException('Answer not found')
+            }
+        })
 
-	async findAll(query: IUserResultFindAll): Promise<IUserResultFindAllResponse> {
-		const userResult = await this.repository.findAllPagination(query)
-		return userResult
-	}
+        let userResult: IUserResultResponse = await this.repository.findOneByUserId({
+            id: '',
+            userId: user.id,
+        })
 
-	async findOne(id: string): Promise<IUserResultResponse> {
-		const userResult = await this.repository.findOne(id)
+        if (userResult) {
 
-		if (!userResult) {
-			throw new NotFoundException('User result not found')
-		}
+            await this.repository.createUserResultAnswerData({
+                userResultId: userResult.id,
+                correctAnswerCount: find_answer_count,
+                findAnswerCount: correct_answer_count,
+                questionNumber: payload.questionNumber,
+                getTime: payload.getTime
+            })
 
-		return userResult
-	}
+            await this.repository.update({
+                id: userResult.id,
+                findQuestionCount: correct_answer_count > 0 ? userResult.findQuestionCount + 1 : userResult.findQuestionCount,
+            })
+
+        } else {
+
+            userResult = await this.repository.create({
+                userFullName: user.fullName,
+                grade: 0,
+                userId: user.id,
+                allQuestionCount: question.collection.amountInTest,
+                findQuestionCount: correct_answer_count > 0 ? 1 : 0,
+                compyuterName: payload.computerName,
+                collectionId: question.collection.id,
+                groupName: user.userInfo.group.name,
+                course: user.userInfo.group.course.stage,
+                facultyName: user.userInfo.group.faculty.name
+            })
+
+            await this.repository.createUserResultAnswerData({
+                userResultId: userResult.id,
+                correctAnswerCount: find_answer_count,
+                findAnswerCount: correct_answer_count,
+                questionNumber: payload.questionNumber,
+                getTime: payload.getTime
+            })
+
+        }
+        
+        return userResult
+    }
+
+    async findAll(query: IUserResultFindAll): Promise<IUserResultFindAllResponse> {
+        const userResult = await this.repository.findAllPagination(query)
+        return userResult
+    }
+
+    async findOne(id: string): Promise<IUserResultResponse> {
+        const userResult = await this.repository.findOne(id)
+
+        if (!userResult) {
+            throw new NotFoundException('User result not found')
+        }
+
+        return userResult
+    }
 
 
 }

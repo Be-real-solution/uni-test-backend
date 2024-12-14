@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+	IUserResultAnswerDataResponse,
 	IUserResultFindAll,
 	IUserResultFindAllResponse,
 	IUserResultResponse,
@@ -17,68 +18,125 @@ import {
 	IsOptional,
 	IsString,
 	IsUUID,
+	ValidateNested,
 } from 'class-validator'
+import { Type } from 'class-transformer'
+
+export class UserResultAnswerDataDto {
+	@ApiProperty({ example: 'UUID' })
+	@IsNotEmpty()
+	@IsUUID('4')
+	answerId: string
+}
 
 export class CreateUserResultDto {
-	@ApiPropertyOptional({ example: 'UUID' })
+	@ApiProperty({ example: 'UUID' })
 	@IsOptional()
 	@IsUUID('4')
 	questionId: string
 
-	@ApiPropertyOptional({ example: 'UUID' })
+	@ApiProperty({ example: 'UUID' })
 	@IsNotEmpty()
 	@IsUUID('4')
 	userId: string
 
-	@ApiPropertyOptional({ example: false })
+	@ApiProperty({ example: false })
 	@IsNotEmpty()
 	@IsBoolean()
 	hasFinished: boolean
 
-	@ApiPropertyOptional({ example: 2 })
+	@ApiProperty({ example: 2 })
 	@IsNotEmpty()
 	@IsNumber()
-	number: number
+	questionNumber: number
+
+	@ApiProperty({ type: UserResultAnswerDataDto, isArray: true })
+	@IsNotEmpty()
+	@ValidateNested({ each: true })
+	@Type(() => UserResultAnswerDataDto)
+	answer: UserResultAnswerDataDto[]
+
+	@ApiProperty({ example: '00:00' })
+	@IsNotEmpty()
+	@IsString()
+	getTime: string
+
+	@ApiProperty({ example: 'PC14' })
+	@IsNotEmpty()
+	@IsString()
+	computerName: string
+
 }
 
+/** for swagger */
+export class UserResultAnswerDataResponseDto implements IUserResultAnswerDataResponse {
+	@ApiProperty({ example: 'UUID' })
+	id: string
+
+	@ApiProperty({ example: 1 })
+	correctAnswerCount: number
+
+	@ApiProperty({ example: 1 })
+	findAnswerCount: number
+
+	@ApiProperty({ example: '00:00' })
+	getTime: string
+
+	@ApiProperty({ example: 'UUID' })
+	userResultId: string
+
+	@ApiProperty({ example: new Date() })
+	createdAt?: Date
+
+}
+
+/** for swagger */
 export class UserResultResponseDto implements IUserResultResponse {
 	@ApiProperty({ example: 'UUID' })
-  id: string
-  
+	id: string
+
 	@ApiProperty({ example: 'computer name' })
-  compyuterName: string
-  
+	compyuterName: string
+
 	@ApiProperty({ example: 'ALI Akmalov' })
 	userFullName: string
+
+	@ApiProperty({ example: '41 gurux' })
+	groupName: string
+
+	@ApiProperty({ example: 'Axborot texnologiyalari' })
+	facultyName: string
+
+	@ApiProperty({ example: 2 })
+	course: number
 
 	@ApiProperty({ example: 4 })
 	grade: number
 
 	@ApiProperty({ example: 10 })
-	questionFindCount: number
+	allQuestionCount: number
 
 	@ApiProperty({ example: 30 })
-	questionCount: number
+	findQuestionCount: number
 
 	@ApiProperty({ example: true })
 	hasFinished: boolean
 
-	@ApiProperty({ example: '' })
+
+	@ApiProperty({ example: new Date() })
 	createdAt: Date
 
 	@ApiPropertyOptional({ example: {} })
-  user?: UserFindOneResponse
-  
+	user?: UserFindOneResponse
+
 	@ApiPropertyOptional({ example: {} })
-  collection?: CollectionFindOneResponse
-  
-	@ApiPropertyOptional({ example: {} })
-  question?: QuestionFindOneResponse
-  
-	@ApiPropertyOptional({ example: {} })
-	group?: GroupFindOneResponse
+	collection?: CollectionFindOneResponse
+
+	@ApiProperty({ type: UserResultAnswerDataResponseDto, isArray: true })
+	userResultAnswerData: UserResultAnswerDataResponseDto[]
 }
 
+/** for swagger */
 export class UserResultFindAllResponseDto implements IUserResultFindAllResponse {
 	@ApiProperty({ example: 10 })
 	totalCount: number

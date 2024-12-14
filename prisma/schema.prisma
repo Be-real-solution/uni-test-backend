@@ -8,48 +8,45 @@ datasource db {
 }
 
 enum UserTypeEnum {
-  student  @map("student")
+  student @map("student")
 }
-
 
 enum AdminTypeEnum {
-  admin  @map("admin")
-  super  @map("super")
+  admin @map("admin")
+  super @map("super")
 }
 
-
 enum CollectionLanguageEnum {
-  uz    @map("uz")
-  ru    @map("ru")
-  en    @map("en")
+  uz @map("uz")
+  ru @map("ru")
+  en @map("en")
 }
 
 model Course {
-  id         String     @map("id")          @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  stage      Int        @map("stage")       @db.Integer 
-  createdAt  DateTime   @map("created_at")  @db.Timestamp     @default(now())
-  updatedAt  DateTime   @map("updated_at")  @db.Timestamp     @updatedAt
-  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamp
+  id        String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  stage     Int       @map("stage") @db.Integer
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  groups    Group[] 
-  archives  Archive[]
+  groups   Group[]
+  archives Archive[]
 
-  @@id([ id ])
+  @@id([id])
   @@map("course")
 }
 
-
 model Faculty {
-  id         String     @map("id")          @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  name       String     @map("name")        @db.VarChar(255) 
-  createdAt  DateTime   @map("created_at")  @db.Timestamp     @default(now())
-  updatedAt  DateTime   @map("updated_at")  @db.Timestamp     @updatedAt
-  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamp
-   
-  groups    Group[] 
-  archives  Archive[]
+  id        String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  name      String    @map("name") @db.VarChar(255)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  @@id([ id ])
+  groups   Group[]
+  archives Archive[]
+
+  @@id([id])
   @@map("faculty")
 }
 
@@ -67,341 +64,338 @@ model Faculty {
 //   @@map("semestr")
 // }
 
-
 model Group {
-  id         String     @map("id")          @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  name       String     @map("name")        @db.VarChar(255) 
-  courseId   String     @map("course_id")   @db.Uuid
+  id        String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  name      String    @map("name") @db.VarChar(255)
+  courseId  String    @map("course_id") @db.Uuid
   // semestrId  String     @map("semestr_id")  @db.Uuid          
-  facultyId  String     @map("faculty_id")  @db.Uuid
-  createdAt  DateTime   @map("created_at")  @db.Timestamp     @default(now())
-  updatedAt  DateTime   @map("updated_at")  @db.Timestamp     @updatedAt
-  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamp
+  facultyId String    @map("faculty_id") @db.Uuid
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  course   Course   @relation(fields: [ courseId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   // semestr  Semestr  @relation(fields: [ semestrId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  faculty  Faculty  @relation(fields: [ facultyId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  faculty Faculty @relation(fields: [facultyId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  archives    Archive[]
-  userInfos  UserInfo[]
-  userLogs   UserLog[]
-  userResults UserResult[]
+  archives  Archive[]
+  userInfos UserInfo[]
+  userLogs  UserLog[]
 
-  @@id([ id ])
+  @@id([id])
   @@map("group")
 }
 
-
 model Science {
-  id         String     @map("id")          @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  name       String     @map("name")        @db.VarChar(255) 
-  since_id   Int?       @map("since_id")    @db.Integer
-  createdAt  DateTime   @map("created_at")  @db.Timestamp     @default(now())
-  updatedAt  DateTime   @map("updated_at")  @db.Timestamp     @updatedAt
-  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamp
-   
-  collections  Collection[] 
-  archiveCollections  ArchiveCollection[]
+  id        String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  name      String    @map("name") @db.VarChar(255)
+  since_id  Int?      @map("since_id") @db.Integer
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  @@id([ id ])
+  collections        Collection[]
+  archiveCollections ArchiveCollection[]
+
+  @@id([id])
   @@map("science")
 }
 
 model User {
-  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  image         String     @map("image")          @db.VarChar(255)  @default("")
-  type          UserTypeEnum                      @default(student)
-  password      String     @map("password")       @db.VarChar(255)
-  fullName      String     @map("full_name")      @db.VarChar(255) 
-  emailAddress  String?    @map("email_address")  @db.VarChar(255)
-  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
-  deletedAt     DateTime?  @map("deleted_at")     @db.Timestamp
+  id           String       @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  image        String       @default("") @map("image") @db.VarChar(255)
+  type         UserTypeEnum @default(student)
+  password     String       @map("password") @db.VarChar(255)
+  fullName     String       @map("full_name") @db.VarChar(255)
+  emailAddress String?      @map("email_address") @db.VarChar(255)
+  createdAt    DateTime     @default(now()) @map("created_at") @db.Timestamp
+  updatedAt    DateTime     @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt    DateTime?    @map("deleted_at") @db.Timestamp
 
-  userInfo         UserInfo?
-  archives         Archive[]
-  userCollections  UserCollection[]
-  userResults    UserResult[]
+  userInfo        UserInfo?
+  archives        Archive[]
+  userCollections UserCollection[]
+  userResults     UserResult[]
 
-
-  @@id([ id ])
+  @@id([id])
   @@map("user")
 }
 
-
 model Admin {
-  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  image         String     @map("image")          @db.VarChar(255)  @default("")
-  type          AdminTypeEnum                     @default(admin)
-  password      String     @map("password")       @db.VarChar(255)
-  fullName      String     @map("full_name")      @db.VarChar(255) 
-  emailAddress  String     @map("email_address")  @db.VarChar(255)
-  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
-  deletedAt     DateTime?  @map("deleted_at")     @db.Timestamp
+  id           String        @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  image        String        @default("") @map("image") @db.VarChar(255)
+  type         AdminTypeEnum @default(admin)
+  password     String        @map("password") @db.VarChar(255)
+  fullName     String        @map("full_name") @db.VarChar(255)
+  emailAddress String        @map("email_address") @db.VarChar(255)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamp
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt    DateTime?     @map("deleted_at") @db.Timestamp
 
-  collections  Collection[]
-  archiveCollections  ArchiveCollection[]
+  collections        Collection[]
+  archiveCollections ArchiveCollection[]
 
-  @@id([ id ])
+  @@id([id])
   @@map("admin")
 }
 
-
 model UserInfo {
-  id         String     @map("id")          @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  userId     String     @map("user_id")     @db.Uuid
-  hemisId    String     @map("hemis_id")    @db.VarChar(255) 
-  groupId    String     @map("group_id")    @db.Uuid
-  createdAt  DateTime   @map("created_at")  @db.Timestamp     @default(now())
-  updatedAt  DateTime   @map("updated_at")  @db.Timestamp     @updatedAt
-  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamp
+  id        String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  hemisId   String    @map("hemis_id") @db.VarChar(255)
+  groupId   String    @map("group_id") @db.Uuid
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  user   User   @relation(fields: [ userId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  group  Group  @relation(fields: [ groupId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@id([ id ])
-  @@unique([ userId ])
+  @@id([id])
+  @@unique([userId])
   @@map("user_info")
 }
 
-
 model Collection {
-  id            String     @map("id")              @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  name          String     @map("name")            @db.VarChar(255) 
-  adminId       String?    @map("admin_id")        @db.Uuid
-  directoryId   String?    @map("directory_id")    @db.Uuid
-  language      CollectionLanguageEnum
-  scienceId     String     @map("science_id")      @db.Uuid
-  maxAttempts   Int        @map("max_attempts")    @db.Integer
-  givenMinutes  Int        @map("givenMinutes")    @db.Integer
-  amountInTest  Int        @map("amount_in_test")  @db.Integer
-  createdAt     DateTime   @map("created_at")      @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")      @db.Timestamp     @updatedAt
-  deletedAt     DateTime?  @map("deleted_at")      @db.Timestamp
+  id           String                 @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  name         String                 @map("name") @db.VarChar(255)
+  adminId      String?                @map("admin_id") @db.Uuid
+  directoryId  String?                @map("directory_id") @db.Uuid
+  language     CollectionLanguageEnum
+  scienceId    String                 @map("science_id") @db.Uuid
+  maxAttempts  Int                    @map("max_attempts") @db.Integer
+  givenMinutes Int                    @map("givenMinutes") @db.Integer
+  amountInTest Int                    @map("amount_in_test") @db.Integer
+  createdAt    DateTime               @default(now()) @map("created_at") @db.Timestamp
+  updatedAt    DateTime               @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt    DateTime?              @map("deleted_at") @db.Timestamp
 
-  admin      Admin?      @relation(fields: [ adminId   ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  science    Science     @relation(fields: [ scienceId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  directory  Directory?  @relation(fields: [ directoryId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  admin     Admin?     @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  science   Science    @relation(fields: [scienceId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  directory Directory? @relation(fields: [directoryId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  archives         Archive[]
-  questions        Question[]
-  userCollectiona  UserCollection[]
-  userResults    UserResult[]
+  archives        Archive[]
+  questions       Question[]
+  userCollectiona UserCollection[]
+  userResults     UserResult[]
 
-  @@id([ id ])
+  @@id([id])
   @@map("collection")
 }
 
-
 model Question {
-  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  text          String     @map("text")           @db.VarChar(255) 
-  collectionId  String     @map("collection_id")  @db.Uuid 
-  imageUrl      String?    @map("image_url")      @db.VarChar(255)
-  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
-  deletedAt     DateTime?  @map("deleted_at")     @db.Timestamp
-   
-  collection  Collection  @relation(fields: [ collectionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  id           String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  text         String    @map("text") @db.VarChar(255)
+  collectionId String    @map("collection_id") @db.Uuid
+  imageUrl     String?   @map("image_url") @db.VarChar(255)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamp
 
-  answers  Answer[]
-  userResults UserResult[]
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@id([ id ])
+  answers Answer[]
+
+  @@id([id])
   @@map("question")
 }
 
-
 model Answer {
-  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  text          String     @map("text")           @db.VarChar(255) 
-  isCorrect     Boolean    @map("is_correct")     @db.Boolean
-  questionId    String     @map("question_id")    @db.Uuid 
-  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
-  deletedAt     DateTime?  @map("deleted_at")     @db.Timestamp
-   
-  question  Question  @relation(fields: [ questionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  id         String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  text       String    @map("text") @db.VarChar(255)
+  isCorrect  Boolean   @map("is_correct") @db.Boolean
+  questionId String    @map("question_id") @db.Uuid
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt  DateTime  @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt  DateTime? @map("deleted_at") @db.Timestamp
 
-  @@id([ id ])
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id])
   @@map("answer")
 }
 
-
 model Archive {
-  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  result        Int        @map("result")         @db.Integer 
-  userId        String     @map("user_id")        @db.Uuid 
-  groupId       String     @map("group_id")       @db.Uuid 
-  courseId      String     @map("course_id")      @db.Uuid
+  id           String   @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  result       Int      @map("result") @db.Integer
+  userId       String   @map("user_id") @db.Uuid
+  groupId      String   @map("group_id") @db.Uuid
+  courseId     String   @map("course_id") @db.Uuid
   // semestrId     String     @map("semestr_id")     @db.Uuid    
-  testCount     Int        @map("test_count")     @db.Integer 
-  facultyId     String     @map("faculty_id")     @db.Uuid 
-  collectionId  String     @map("collection_id")  @db.Uuid 
-  startTime     DateTime   @map("start_time")     @db.Timestamp     @default(now())
-  endTime       DateTime   @map("end_time")       @db.Timestamp     @default(now())
+  testCount    Int      @map("test_count") @db.Integer
+  facultyId    String   @map("faculty_id") @db.Uuid
+  collectionId String   @map("collection_id") @db.Uuid
+  startTime    DateTime @default(now()) @map("start_time") @db.Timestamp
+  endTime      DateTime @default(now()) @map("end_time") @db.Timestamp
 
-  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
-  deletedAt     DateTime?  @map("deleted_at")     @db.Timestamp
-   
-  user        User        @relation(fields: [ userId       ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  group       Group       @relation(fields: [ groupId      ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  course      Course      @relation(fields: [ courseId     ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  group      Group      @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  course     Course     @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   // semestr     Semestr     @relation(fields: [ semestrId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  faculty     Faculty     @relation(fields: [ facultyId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  collection  Collection  @relation(fields: [ collectionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  faculty    Faculty    @relation(fields: [facultyId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  archiveCollection  ArchiveCollection? 
+  archiveCollection ArchiveCollection?
 
-  @@id([ id ])
+  @@id([id])
   @@map("archive")
 }
 
-
 model UserCollection {
-  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  userId        String     @map("user_id")        @db.Uuid 
-  haveAttempt   Int        @map("have_attempt")   @db.Integer       @default(1)
-  collectionId  String     @map("collection_id")  @db.Uuid 
-  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
-  deletedAt     DateTime?  @map("deleted_at")     @db.Timestamp
-   
-  user        User        @relation(fields: [ userId       ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  collection  Collection  @relation(fields: [ collectionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  id           String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  userId       String    @map("user_id") @db.Uuid
+  haveAttempt  Int       @default(1) @map("have_attempt") @db.Integer
+  collectionId String    @map("collection_id") @db.Uuid
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamp
 
-  @@id([ id ])
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id])
   @@map("user_collection")
 }
 
-
-
-
 model ArchiveCollection {
-  id            String     @map("id")              @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  name          String     @map("name")            @db.VarChar(255) 
-  adminId       String?    @map("admin_id")        @db.Uuid
-  language      CollectionLanguageEnum
-  scienceId     String     @map("science_id")      @db.Uuid
-  archiveId     String     @map("archive_id")      @db.Uuid         
-  maxAttempts   Int        @map("max_attempts")    @db.Integer
-  givenMinutes  Int        @map("givenMinutes")    @db.Integer
-  amountInTest  Int        @map("amount_in_test")  @db.Integer
-  createdAt     DateTime   @map("created_at")      @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")      @db.Timestamp     @updatedAt
-  deletedAt     DateTime?  @map("deleted_at")      @db.Timestamp
+  id           String                 @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  name         String                 @map("name") @db.VarChar(255)
+  adminId      String?                @map("admin_id") @db.Uuid
+  language     CollectionLanguageEnum
+  scienceId    String                 @map("science_id") @db.Uuid
+  archiveId    String                 @map("archive_id") @db.Uuid
+  maxAttempts  Int                    @map("max_attempts") @db.Integer
+  givenMinutes Int                    @map("givenMinutes") @db.Integer
+  amountInTest Int                    @map("amount_in_test") @db.Integer
+  createdAt    DateTime               @default(now()) @map("created_at") @db.Timestamp
+  updatedAt    DateTime               @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt    DateTime?              @map("deleted_at") @db.Timestamp
 
-  admin    Admin?   @relation(fields: [ adminId   ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  science  Science  @relation(fields: [ scienceId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  archive  Archive  @relation(fields: [ archiveId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  admin   Admin?  @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  science Science @relation(fields: [scienceId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  archive Archive @relation(fields: [archiveId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  questions  ArchiveQuestion[]
+  questions ArchiveQuestion[]
 
-
-  @@unique([ archiveId ])
-  @@id([ id ])
+  @@id([id])
+  @@unique([archiveId])
   @@map("archive_collection")
 }
 
-
 model ArchiveQuestion {
-  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  text          String     @map("text")           @db.VarChar(255) 
-  collectionId  String     @map("collection_id")  @db.Uuid 
-  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
-  deletedAt     DateTime?  @map("deleted_at")     @db.Timestamp
-   
-  collection  ArchiveCollection  @relation(fields: [ collectionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  id           String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  text         String    @map("text") @db.VarChar(255)
+  collectionId String    @map("collection_id") @db.Uuid
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamp
 
-  answers  ArchiveAnswer[]
+  collection ArchiveCollection @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@id([ id ])
+  answers ArchiveAnswer[]
+
+  @@id([id])
   @@map("archive_question")
 }
 
-
 model ArchiveAnswer {
-  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  text          String     @map("text")           @db.VarChar(255) 
-  isCorrect     Boolean    @map("is_correct")     @db.Boolean
-  isChecked     Boolean    @map("is_checked")     @db.Boolean
-  questionId    String     @map("question_id")    @db.Uuid 
-  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
-  deletedAt     DateTime?  @map("deleted_at")     @db.Timestamp
-   
-  question  ArchiveQuestion  @relation(fields: [ questionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  id         String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  text       String    @map("text") @db.VarChar(255)
+  isCorrect  Boolean   @map("is_correct") @db.Boolean
+  isChecked  Boolean   @map("is_checked") @db.Boolean
+  questionId String    @map("question_id") @db.Uuid
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt  DateTime  @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt  DateTime? @map("deleted_at") @db.Timestamp
 
-  @@id([ id ])
+  question ArchiveQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id])
   @@map("archive_answer")
 }
 
 model UserLog {
-  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  hemisId       String     @map("hemis_id")       @db.VarChar(128)
-  fullname      String     @map("fullname")       @db.VarChar(64)
-  groupId       String     @map("group_id")       @db.Uuid
-  course        Int        @map("course")         @db.SmallInt
+  id        String   @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  hemisId   String   @map("hemis_id") @db.VarChar(128)
+  fullname  String   @map("fullname") @db.VarChar(64)
+  groupId   String   @map("group_id") @db.Uuid
+  course    Int      @map("course") @db.SmallInt
   // semester      Int        @map("semester")       @db.SmallInt
-  groupName     String     @map("group_name")     @db.VarChar(128)
-  faculty       String     @map("faculty")        @db.VarChar(255)
-  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
+  groupName String   @map("group_name") @db.VarChar(128)
+  faculty   String   @map("faculty") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp
 
-  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
-  @@id([ id ])
+  @@id([id])
   @@map("user_log")
 }
 
 model Directory {
-  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  name          String     @map("name")           @db.VarChar(128)
-  parentId      String?    @map("parent_id")      @db.Uuid
-  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
-  
-  parent   Directory?  @relation("parent_id", fields: [parentId], references: [id], onDelete: Cascade)
-  children Directory[] @relation("parent_id")
+  id        String   @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  name      String   @map("name") @db.VarChar(128)
+  parentId  String?  @map("parent_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp
+
+  parent      Directory?   @relation("parent_id", fields: [parentId], references: [id], onDelete: Cascade)
+  children    Directory[]  @relation("parent_id")
   collections Collection[]
 
-  @@id([ id ])
+  @@id([id])
   @@map("directory")
 }
 
 model Setting {
-  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  name          String     @map("name")           @db.VarChar(128)
-  status        Boolean    @map("status")         @db.Boolean       @default(false)
-  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
-  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
+  id        String   @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  name      String   @map("name") @db.VarChar(128)
+  status    Boolean  @default(false) @map("status") @db.Boolean
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp
 
-  @@id([ id ])
+  @@id([id])
   @@map("setting")
 }
 
 model UserResult {
-  id                  String     @map("id")                    @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  userId              String     @map("user_id")               @db.Uuid
-  collectionId        String     @map("collection_id")         @db.Uuid 
-  groupId             String     @map("group_id")              @db.Uuid 
-  questionId          String?    @map("question_id")           @db.Uuid 
-  compyuterName       String     @map("compyuter_name")        @db.VarChar(255)
-  grade               Int        @map("grade")                 @db.Integer
-  userFullName        String     @map("user_fullname")         @db.VarChar(255)
-  questionCount       Int        @map("question_count")        @db.SmallInt      @default(0)
-  questionFindCount   Int        @map("question_find_count")   @db.SmallInt      @default(0)
-  hasFinished         Boolean    @map("hash_finished")         @db.Boolean       @default(false)
-  createdAt           DateTime   @map("created_at")            @db.Timestamp     @default(now())
-  updatedAt           DateTime   @map("updated_at")            @db.Timestamp     @updatedAt
+  id                String   @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  userId            String   @map("user_id") @db.Uuid
+  collectionId      String   @map("collection_id") @db.Uuid
+  compyuterName     String   @map("compyuter_name") @db.VarChar(255)
+  grade             Int      @map("grade") @db.Integer
+  userFullName      String   @map("user_fullname") @db.VarChar(255)
+  groupName         String   @map("group_name") @db.VarChar(255)
+  facultyName       String   @map("faculty_name") @db.VarChar(255)
+  course            Int      @map("course") @db.SmallInt
+  allQuestionCount  Int      @map("all_question_count") @db.SmallInt
+  findQuestionCount Int      @default(0) @map("find_question_count") @db.SmallInt
+  hasFinished       Boolean  @default(false) @map("has_finished") @db.Boolean
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamp
 
-  user        User        @relation(fields: [ userId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  collection  Collection  @relation(fields: [ collectionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  group       Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  question    Question?   @relation(fields: [ questionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
-  
-  @@id([ id ])
+  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  collection           Collection?            @relation(fields: [collectionId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  userResultAnswerData UserResultAnswerData[]
+
+  @@id([id])
   @@map("user_result")
+}
+
+model UserResultAnswerData {
+  id                 String   @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
+  userResultId       String   @map("user_result_id") @db.Uuid
+  correctAnswerCount Int      @map("correct_answer_count") @db.Integer
+  findAnswerCount    Int      @map("all_answer_count") @db.Integer
+  questionNumber     Int      @map("question_number") @db.Integer
+  getTime            String   @map("get_time") @db.VarChar(10)
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamp
+
+  userResult UserResult @relation(fields: [userResultId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id])
+  @@map("user_result_answer_data")
 }

@@ -66,10 +66,18 @@ export declare interface QuestionFindAllResponse {
 	data: QuestionFindOneResponse[]
 }
 
+export declare interface AnswerFindOneForQuestionResponse {
+	id: string
+	text: string
+	isCorrect: boolean
+	createdAt: Date
+}
+
 export declare interface QuestionFindOneResponse {
 	id: string
 	text: string
 	imageUrl: string
+	answers?: AnswerFindOneForQuestionResponse[]
 	collection?: CollectionFindOneResponse
 	createdAt: Date
 }

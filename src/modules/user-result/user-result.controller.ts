@@ -8,6 +8,7 @@ import { Request } from 'express'
 // import userAgent from 'user-agents'
 
 import * as os from "os"
+import { IUserResultResponse } from './interfaces/user-result.interfaces'
 
 
 @ApiTags('UserResult')
@@ -19,8 +20,8 @@ export class UserResultController {
 
 	@ApiResponse({ type: UserResultResponseDto })
 	@Post()
-	create(@Body() payload: CreateUserResultDto, @Req() request: Request) {
-		return this.studentResultService.create(payload, request)
+	create(@Body() payload: CreateUserResultDto): Promise<IUserResultResponse> {
+		return this.studentResultService.create(payload)
 	}
 
 	@ApiResponse({ type: UserResultFindAllResponseDto, isArray: true })

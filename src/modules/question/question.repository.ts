@@ -95,7 +95,14 @@ export class QuestionRepository {
 				text: true,
 				imageUrl: true,
 				createdAt: true,
-				answers: true,
+				answers: {
+					select: {
+						id: true,
+						text: true,
+						isCorrect: true,
+						createdAt: true,
+					},
+				},
 				collection: {
 					select: {
 						id: true,

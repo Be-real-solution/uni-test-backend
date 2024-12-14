@@ -3,6 +3,8 @@ import { PrismaService } from 'modules/prisma'
 import {
 	ICreateUserResultRepository,
 	IUpdateUserResultRepository,
+	IUserResultAnswerDataCreate,
+	IUserResultAnswerDataResponse,
 	IUserResultFindAll,
 	IUserResultFindAllResponse,
 	IUserResultResponse,
@@ -23,13 +25,13 @@ export class UserResultRepository {
 		return this.prisma.userResult.update({ where: { id: payload.id }, data: payload })
 	}
 
-	async findOneByUserIdCollectionId(payload: IUpdateUserResultRepository) {
+	async findOneByUserId(payload: IUpdateUserResultRepository): Promise<IUserResultResponse> {
 		return await this.prisma.userResult.findFirst({
 			where: {
 				userId: payload.userId,
-				collectionId: payload.collectionId,
 				hasFinished: false,
 			},
+			include: { userResultAnswerData: true }
 		})
 	}
 
@@ -37,10 +39,9 @@ export class UserResultRepository {
 		return this.prisma.userResult.findFirst({
 			where: { id },
 			include: {
+				userResultAnswerData: true,
 				user: true,
-				collection: true,
-				question: true,
-				group: true,
+				collection: true
 			},
 		})
 	}
@@ -52,11 +53,11 @@ export class UserResultRepository {
 		// 	where_condition = {user: { fullName: { contains: query.search, mode: 'insensitive' }}
 		// }
 		if (query.hasFinished) {
-			query.hasFinished = String(query.hasFinished) === "false"? false : true
+			query.hasFinished = String(query.hasFinished) === "false" ? false : true
 		}
 
 		console.log(query);
-		
+
 
 		const userResult = await this.prisma.userResult.findMany({
 			skip: (query.pageNumber - 1) * query.pageSize,
@@ -66,7 +67,7 @@ export class UserResultRepository {
 				collectionId: query.collectionId,
 				user: { fullName: { contains: query.search, mode: 'insensitive' } },
 			},
-			include: { user: true, group: true, collection: true, question: true },
+			include: { user: true, collection: true },
 			orderBy: [{ createdAt: 'desc' }],
 		})
 
@@ -84,5 +85,13 @@ export class UserResultRepository {
 			pageCount: Math.ceil(userResultCount / query.pageSize),
 			data: userResult,
 		}
+	}
+
+	async removeUserResult(id: string): Promise<IUserResultResponse> {
+		return this.prisma.userResult.delete({ where: { id } })
+	}
+
+	async createUserResultAnswerData(payload: IUserResultAnswerDataCreate): Promise<IUserResultAnswerDataResponse> {
+		return this.prisma.userResultAnswerData.create({ data: payload })
 	}
 }
