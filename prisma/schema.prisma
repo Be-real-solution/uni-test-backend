@@ -115,7 +115,7 @@ model User {
   userInfo        UserInfo?
   archives        Archive[]
   userCollections UserCollection[]
-  userResults     UserResult[]
+  // userResults     UserResult[]
 
   @@id([id])
   @@map("user")
@@ -177,7 +177,7 @@ model Collection {
   archives        Archive[]
   questions       Question[]
   userCollectiona UserCollection[]
-  userResults     UserResult[]
+  // userResults     UserResult[]
 
   @@id([id])
   @@map("collection")
@@ -365,6 +365,7 @@ model UserResult {
   id                String   @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
   userId            String   @map("user_id") @db.Uuid
   collectionId      String   @map("collection_id") @db.Uuid
+  hemisId           String   @map("hemis_id") @db.VarChar(64)
   compyuterName     String   @map("compyuter_name") @db.VarChar(255)
   grade             Int      @map("grade") @db.Integer
   userFullName      String   @map("user_fullname") @db.VarChar(255)
@@ -375,11 +376,11 @@ model UserResult {
   findQuestionCount Int      @default(0) @map("find_question_count") @db.SmallInt
   hasFinished       Boolean  @default(false) @map("has_finished") @db.Boolean
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamp
+  startTime         DateTime @default(now()) @map("start_time") @db.Timestamp
+  endTime           DateTime @default(now()) @map("end_time") @db.Timestamp
   updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamp
 
-  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  collection           Collection?            @relation(fields: [collectionId], references: [id], onDelete: SetNull, onUpdate: NoAction)
-  userResultAnswerData UserResultAnswerData[]
+userResultAnswerData UserResultAnswerData[]
 
   @@id([id])
   @@map("user_result")
@@ -389,7 +390,7 @@ model UserResultAnswerData {
   id                 String   @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
   userResultId       String   @map("user_result_id") @db.Uuid
   correctAnswerCount Int      @map("correct_answer_count") @db.Integer
-  findAnswerCount    Int      @map("all_answer_count") @db.Integer
+  findAnswerCount    Int      @map("find_answer_count") @db.Integer
   questionNumber     Int      @map("question_number") @db.Integer
   getTime            String   @map("get_time") @db.VarChar(10)
   createdAt          DateTime @default(now()) @map("created_at") @db.Timestamp

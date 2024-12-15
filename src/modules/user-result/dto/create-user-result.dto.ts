@@ -35,15 +35,6 @@ export class CreateUserResultDto {
 	@IsUUID('4')
 	questionId: string
 
-	@ApiProperty({ example: 'UUID' })
-	@IsNotEmpty()
-	@IsUUID('4')
-	userId: string
-
-	@ApiProperty({ example: false })
-	@IsNotEmpty()
-	@IsBoolean()
-	hasFinished: boolean
 
 	@ApiProperty({ example: 2 })
 	@IsNotEmpty()
@@ -66,6 +57,15 @@ export class CreateUserResultDto {
 	@IsString()
 	computerName: string
 
+	@ApiProperty({ example: '2024-01-01T00:00:00.000Z' })
+	@IsNotEmpty()
+	@IsString()
+	startTime: Date
+
+	@ApiProperty({ example: '2024-01-01T00:00:00.000Z' })
+	@IsNotEmpty()
+	@IsString()
+	endTime: Date
 }
 
 /** for swagger */
@@ -98,6 +98,9 @@ export class UserResultResponseDto implements IUserResultResponse {
 	@ApiProperty({ example: 'computer name' })
 	compyuterName: string
 
+	@ApiProperty({ example: '1233242' })
+	hemisId: string
+
 	@ApiProperty({ example: 'ALI Akmalov' })
 	userFullName: string
 
@@ -126,11 +129,17 @@ export class UserResultResponseDto implements IUserResultResponse {
 	@ApiProperty({ example: new Date() })
 	createdAt: Date
 
-	@ApiPropertyOptional({ example: {} })
-	user?: UserFindOneResponse
+	@ApiProperty({ example: new Date() })
+	startTime: Date
+	
+	@ApiProperty({ example: new Date() })
+	endTime: Date
 
-	@ApiPropertyOptional({ example: {} })
-	collection?: CollectionFindOneResponse
+	@ApiPropertyOptional({ example: "UUID" })
+	userId: string
+
+	@ApiPropertyOptional({ example: "UUID" })
+	collectionId: string
 
 	@ApiProperty({ type: UserResultAnswerDataResponseDto, isArray: true })
 	userResultAnswerData: UserResultAnswerDataResponseDto[]
@@ -167,13 +176,48 @@ export class UserResultFindAllDto implements IUserResultFindAll {
 	@IsUUID('4')
 	collectionId?: string
 
+	@ApiPropertyOptional({ example: 'uuid' })
+	@IsOptional()
+	@IsUUID('4')
+	userId?: string
+
 	@ApiPropertyOptional({ example: 'text' })
 	@IsOptional()
 	@IsString()
-	search?: string
+	fullName?: string
+
+	@ApiPropertyOptional({ example: 'text' })
+	@IsOptional()
+	@IsString()
+	faculty?: string
+
+	@ApiPropertyOptional({ example: 'text' })
+	@IsOptional()
+	@IsString()
+	group?: string
+
+	@ApiPropertyOptional({ example: 'text' })
+	@IsOptional()
+	@IsString()
+	hemisId?: string
+
+	@ApiPropertyOptional({ example: 'text' })
+	@IsOptional()
+	@IsString()
+	computerName?: string
+
+	@ApiPropertyOptional({ example: '2' })
+	@IsOptional()
+	@IsNumberString()
+	course?: number
+
+	@ApiPropertyOptional({ example: '5' })
+	@IsOptional()
+	@IsNumberString()
+	grade?: number
 
 	@ApiPropertyOptional({ example: false })
 	@IsOptional()
 	@IsBooleanString()
-	hasFinished: boolean
+	hasFinished?: boolean
 }

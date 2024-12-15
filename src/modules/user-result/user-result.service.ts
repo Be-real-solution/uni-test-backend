@@ -1,12 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { CreateUserResultDto } from './dto/create-user-result.dto'
-import { UpdateUserResultDto } from './dto/update-user-result.dto'
-import { ICreateUserResultService, IUserResultFindAll, IUserResultFindAllResponse, IUserResultResponse } from './interfaces/user-result.interfaces'
+import { AnswerService } from 'modules/answer'
 import { QuestionService } from 'modules/question'
 import { UserService } from 'modules/user'
+import { ICreateUserResultService, IUserResultFindAll, IUserResultFindAllResponse, IUserResultResponse } from './interfaces/user-result.interfaces'
 import { UserResultRepository } from './user-result.repository'
-import { Request } from 'express'
-import { AnswerService } from 'modules/answer'
 
 @Injectable()
 export class UserResultService {
@@ -27,9 +24,9 @@ export class UserResultService {
         this.answerService = answerService
     }
 
-    async create(payload: ICreateUserResultService): Promise<IUserResultResponse> {
+    async create(payload: ICreateUserResultService, userId: string): Promise<IUserResultResponse> {
 
-        const user = await this.userService.findOne({ id: payload.userId })
+        const user = await this.userService.findOne({ id: userId })
 
         const question = await this.questionService.findOne({ id: payload.questionId })
 
@@ -50,45 +47,54 @@ export class UserResultService {
         })
 
         if (userResult) {
-
             await this.repository.createUserResultAnswerData({
                 userResultId: userResult.id,
-                correctAnswerCount: find_answer_count,
-                findAnswerCount: correct_answer_count,
+                correctAnswerCount: correct_answer_count,
+                findAnswerCount: find_answer_count,
                 questionNumber: payload.questionNumber,
                 getTime: payload.getTime
             })
 
-            await this.repository.update({
-                id: userResult.id,
-                findQuestionCount: correct_answer_count > 0 ? userResult.findQuestionCount + 1 : userResult.findQuestionCount,
-            })
-
+            if (question.collection.amountInTest == payload.questionNumber || userResult.endTime <= new Date()) {
+                await this.repository.update({
+                    id: userResult.id,
+                    hasFinished: true,
+                    findQuestionCount: find_answer_count > 0 ? userResult.findQuestionCount + 1 : userResult.findQuestionCount,
+                })
+            } else {
+                await this.repository.update({
+                    id: userResult.id,
+                    findQuestionCount: find_answer_count > 0 ? userResult.findQuestionCount + 1 : userResult.findQuestionCount,
+                })
+            }
         } else {
 
             userResult = await this.repository.create({
                 userFullName: user.fullName,
+                hemisId: user.userInfo.hemisId,
                 grade: 0,
                 userId: user.id,
                 allQuestionCount: question.collection.amountInTest,
-                findQuestionCount: correct_answer_count > 0 ? 1 : 0,
+                findQuestionCount: find_answer_count > 0 ? 1 : 0,
                 compyuterName: payload.computerName,
                 collectionId: question.collection.id,
                 groupName: user.userInfo.group.name,
                 course: user.userInfo.group.course.stage,
-                facultyName: user.userInfo.group.faculty.name
+                facultyName: user.userInfo.group.faculty.name,
+                startTime: payload.startTime,
+                endTime: payload.endTime
             })
 
             await this.repository.createUserResultAnswerData({
                 userResultId: userResult.id,
-                correctAnswerCount: find_answer_count,
-                findAnswerCount: correct_answer_count,
+                correctAnswerCount: correct_answer_count,
+                findAnswerCount: find_answer_count,
                 questionNumber: payload.questionNumber,
                 getTime: payload.getTime
             })
 
         }
-        
+
         return userResult
     }
 
@@ -105,6 +111,16 @@ export class UserResultService {
         }
 
         return userResult
+    }
+
+    async remove(id: string): Promise<IUserResultResponse> {
+        const userResult = await this.repository.findOne(id)
+
+        if (!userResult) {
+            throw new NotFoundException('User result not found')
+        }
+
+        return await this.repository.removeUserResult(id)
     }
 
 

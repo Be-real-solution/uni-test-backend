@@ -9,6 +9,7 @@ import { Request } from 'express'
 
 import * as os from "os"
 import { IUserResultResponse } from './interfaces/user-result.interfaces'
+import { UserIdInAccessToken } from 'decorators'
 
 
 @ApiTags('UserResult')
@@ -20,8 +21,8 @@ export class UserResultController {
 
 	@ApiResponse({ type: UserResultResponseDto })
 	@Post()
-	create(@Body() payload: CreateUserResultDto): Promise<IUserResultResponse> {
-		return this.studentResultService.create(payload)
+	create(@Body() payload: CreateUserResultDto, @UserIdInAccessToken() userId: string): Promise<IUserResultResponse> {
+		return this.studentResultService.create(payload, userId)
 	}
 
 	@ApiResponse({ type: UserResultFindAllResponseDto, isArray: true })
@@ -41,8 +42,9 @@ export class UserResultController {
 	// 	return this.studentResultService.update(+id, updateUserResultDto)
 	// }
 
-	// @Delete(':id')
-	// remove(@Param('id') id: string) {
-	// 	return this.studentResultService.remove(+id)
-	// }
+	@ApiResponse({ type: UserResultResponseDto })
+	@Delete(':id')
+	remove(@Param('id') id: string) {
+		return this.studentResultService.remove(id)
+	}
 }

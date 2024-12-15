@@ -40,42 +40,47 @@ export class UserResultRepository {
 			where: { id },
 			include: {
 				userResultAnswerData: true,
-				user: true,
-				collection: true
 			},
 		})
 	}
 
 	async findAllPagination(query: IUserResultFindAll): Promise<IUserResultFindAllResponse> {
-		// let where_condition = {}
 
-		// if (query.search) {
-		// 	where_condition = {user: { fullName: { contains: query.search, mode: 'insensitive' }}
-		// }
 		if (query.hasFinished) {
 			query.hasFinished = String(query.hasFinished) === "false" ? false : true
 		}
-
-		console.log(query);
 
 
 		const userResult = await this.prisma.userResult.findMany({
 			skip: (query.pageNumber - 1) * query.pageSize,
 			take: +query.pageSize,
 			where: {
-				hasFinished: query.hasFinished,
+				userId: query.userId,
 				collectionId: query.collectionId,
-				user: { fullName: { contains: query.search, mode: 'insensitive' } },
+				userFullName: query.fullName,
+				groupName: query.group,
+				facultyName: query.faculty,
+				course: query.course,
+				grade: query.grade,
+				compyuterName: query.computerName,
+				hemisId: query.hemisId,
+				hasFinished: query.hasFinished,
 			},
-			include: { user: true, collection: true },
 			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const userResultCount = await this.prisma.userResult.count({
 			where: {
-				hasFinished: query.hasFinished,
+				userId: query.userId,
 				collectionId: query.collectionId,
-				user: { fullName: { contains: query.search, mode: 'insensitive' } },
+				userFullName: query.fullName,
+				groupName: query.group,
+				facultyName: query.faculty,
+				course: query.course,
+				grade: query.grade,
+				compyuterName: query.computerName,
+				hemisId: query.hemisId,
+				hasFinished: query.hasFinished,
 			},
 		})
 

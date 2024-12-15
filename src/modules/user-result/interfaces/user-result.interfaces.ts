@@ -23,7 +23,10 @@ export declare interface IUserResultAnswerDataCreate {
 
 export declare interface IUserResultResponse {
 	id: string
+	userId: string
+	collectionId: string
 	compyuterName: string
+	hemisId: string
 	grade: number
 	userFullName: string
 	allQuestionCount: number
@@ -32,16 +35,17 @@ export declare interface IUserResultResponse {
 	groupName: string
 	course: number
 	facultyName: string
+	startTime: Date
+	endTime: Date
 	createdAt: Date
-	user?: UserFindOneResponse
 	userResultAnswerData?: IUserResultAnswerDataResponse[]
-	collection?: CollectionFindOneResponse
 }
 
 
 export declare interface ICreateUserResultRepository {
 	compyuterName: string
 	grade: number
+	hemisId: string
 	userFullName: string
 	allQuestionCount: number
 	findQuestionCount?: number
@@ -52,21 +56,24 @@ export declare interface ICreateUserResultRepository {
 	course: number
 	facultyName: string
 	collectionId: string
+	startTime: Date
+	endTime: Date
 }
 
 export declare interface ICreateUserResultService {
 	questionId: string
-	userId: string
-	hasFinished: boolean
 	questionNumber: number
 	getTime: string
 	computerName: string
 	answer: { answerId: string }[]
+	startTime: Date
+	endTime: Date
 }
 
 export declare interface IUpdateUserResultRepository {
 	id: string
 	compyuterName?: string
+	hemisId?: string
 	grade?: number
 	userFullName?: string
 	allQuestionCount?: number
@@ -78,6 +85,8 @@ export declare interface IUpdateUserResultRepository {
 	course?: number
 	facultyName?: string
 	collectionId?: string
+	startTime?: string
+	endTime?: string
 }
 
 export declare interface IUserResultFindAllResponse {
@@ -94,7 +103,21 @@ export declare interface IUserResultFindAll {
 
 	collectionId?: string
 
-	search?: string
+	userId?: string
+
+	fullName?: string
+
+	faculty?: string
+
+	group?: string
+
+	hemisId?: string
+
+	computerName?: string
+
+	course?: number
+
+	grade?: number
 
 	hasFinished?: boolean
 }
