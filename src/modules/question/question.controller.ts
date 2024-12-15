@@ -169,20 +169,6 @@ export class QuestionController {
 							},
 						},
 					},
-					example: [
-						{
-							id: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
-							text: 'Answer text 1',
-							questionId: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
-							isCorrect: true,
-						},
-						{
-							id: '31919fb5-a5b4-4775-aedd-efc1254bca5d',
-							text: 'Answer text 2',
-							questionId: '21919fb5-a5b4-4775-aedd-efc1254bca5e',
-							isCorrect: false,
-						},
-					],
 				},
 			},
 		},

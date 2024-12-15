@@ -71,8 +71,7 @@ export class QuestionService {
 		})
 		if (questions.length) {
 			throw new BadRequestException(
-				`This ${questions.map((q) => q.text).join(' ')} questions already exists in ${
-					questions[0].collection.name
+				`This ${questions.map((q) => q.text).join(' ')} questions already exists in ${questions[0].collection.name
 				}`,
 			)
 		}
@@ -273,9 +272,9 @@ export class QuestionService {
 			const imageUrl = question.imageUrl
 			payload.text
 				? await this.findOneByTextWithCollectionId({
-						text: payload.text,
-						collectionId: payload.collectionId,
-				  })
+					text: payload.text,
+					collectionId: payload.collectionId,
+				})
 				: null
 
 			if (file) {
@@ -295,35 +294,47 @@ export class QuestionService {
 				)
 
 				const updated_answers = payload.answers.filter((item) =>
-					answers.filter((value) => value.id == item.id),
+					answers.some((value) => value.id == item.id),
 				)
+				// console.log("1", new_answers, "2", remove_answers, "3", updated_answers);
 
 				if (new_answers.length) {
 					new_answers.forEach(async (item) => {
-						await this.answerSerive.create({
-							text: item.text,
-							isCorrect: item.isCorrect,
-							questionId: item.questionId,
-						})
+						try {
+							await this.answerSerive.create({
+								text: item.text,
+								isCorrect: item.isCorrect,
+								questionId: item.questionId,
+							})
+						} catch (error) {
+
+						}
 					})
 				}
 
 				if (remove_answers.length) {
 					remove_answers.forEach(async (item) => {
-						await this.answerSerive.delete({ id: item.id })
+						try {
+							await this.answerSerive.delete({ id: item.id })
+						} catch (error) {
+
+						}
 					})
 				}
 
 				if (updated_answers.length) {
 					updated_answers.forEach(async (item) => {
-						await this.answerSerive.update(
-							{ id: item.id },
-							{
-								text: item.text,
-								questionId: item.questionId,
-								isCorrect: item.isCorrect,
-							},
-						)
+						try {
+							await this.answerSerive.update(
+								{ id: item.id },
+								{
+									text: item.text,
+									questionId: item.questionId,
+									isCorrect: item.isCorrect,
+								},
+							)
+						} catch (error) {
+						}
 					})
 				}
 			}
@@ -331,7 +342,7 @@ export class QuestionService {
 			if (file && imageUrl) {
 				await deleteFile(imageUrl)
 			}
-			return {status_code: 200, data: {}, message: 'updated'}
+			return { status_code: 200, data: {}, message: 'updated' }
 		} catch (err) {
 			if (file) {
 

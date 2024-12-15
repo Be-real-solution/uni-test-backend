@@ -15,7 +15,7 @@ const storage = diskStorage({
 		cb(null, upload_path)
 	},
 	filename: (req: any, file: any, cb: any): void => {
-		cb(null, `${file.mimetype.split('/')[0]}__${v4()}.${file.mimetype.split('/')[1]}`)
+		cb(null, `/api/upload/${file.mimetype.split('/')[0]}__${v4()}.${file.mimetype.split('/')[1]}`)
 	},
 })
 

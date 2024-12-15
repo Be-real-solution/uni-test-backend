@@ -80,22 +80,22 @@ export class QuestionsCreateWithAnswersDto implements Pick<QuestionsCreateWithAn
 export class AnswerUpdateForQuestionDto {
 	@ApiPropertyOptional({ example: 'UUID' })
 	@IsUUID('4')
-	@IsNotEmpty()
+	@IsOptional()
 	id: string
 
 	@ApiPropertyOptional({ example: 'text' })
 	@IsString()
-	@IsNotEmpty()
+	@IsOptional()
 	text: string
 
-	@ApiPropertyOptional({ example: 'uuid' })
+	@ApiProperty({ example: 'uuid' })
 	@IsUUID('4')
 	@IsNotEmpty()
 	questionId: string
 
 	@ApiPropertyOptional({ example: true })
 	@IsBoolean()
-	@IsNotEmpty()
+	@IsOptional()
 	isCorrect: boolean
 }
 

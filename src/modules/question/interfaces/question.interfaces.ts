@@ -38,9 +38,9 @@ export declare interface AnswerDefinition {
 }
 
 export declare interface AnswerUpdateRequestForQuestionUpdate extends AnswerUpdateRequest {
-	id: string
-	text: string
-	isCorrect: boolean
+	id?: string
+	text?: string
+	isCorrect?: boolean
 	questionId: string
 }
 
