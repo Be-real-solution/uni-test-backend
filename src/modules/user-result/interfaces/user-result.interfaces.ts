@@ -57,7 +57,7 @@ export declare interface ICreateUserResultRepository {
 	facultyName: string
 	collectionId: string
 	startTime: Date
-	endTime: Date
+	endTime?: Date
 }
 
 export declare interface ICreateUserResultService {
@@ -85,8 +85,8 @@ export declare interface IUpdateUserResultRepository {
 	course?: number
 	facultyName?: string
 	collectionId?: string
-	startTime?: string
-	endTime?: string
+	startTime?: Date
+	endTime?: Date
 }
 
 export declare interface IUserResultFindAllResponse {

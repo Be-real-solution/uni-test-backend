@@ -376,8 +376,8 @@ model UserResult {
   findQuestionCount Int      @default(0) @map("find_question_count") @db.SmallInt
   hasFinished       Boolean  @default(false) @map("has_finished") @db.Boolean
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamp
-  startTime         DateTime @default(now()) @map("start_time") @db.Timestamp
-  endTime           DateTime @default(now()) @map("end_time") @db.Timestamp
+  startTime         DateTime? @default(now()) @map("start_time") @db.Timestamp
+  endTime           DateTime? @map("end_time") @db.Timestamp
   updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamp
 
 userResultAnswerData UserResultAnswerData[]

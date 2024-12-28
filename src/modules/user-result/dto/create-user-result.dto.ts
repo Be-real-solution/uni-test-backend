@@ -57,13 +57,13 @@ export class CreateUserResultDto {
 	@IsString()
 	computerName: string
 
-	@ApiProperty({ example: '2024-01-01T00:00:00.000Z' })
-	@IsNotEmpty()
+	@ApiPropertyOptional({ example: '2024-01-01T00:00:00.000Z' })
+	@IsOptional()
 	@IsString()
 	startTime: Date
 
-	@ApiProperty({ example: '2024-01-01T00:00:00.000Z' })
-	@IsNotEmpty()
+	@ApiPropertyOptional({ example: '2024-01-01T00:00:00.000Z' })
+	@IsOptional()
 	@IsString()
 	endTime: Date
 }

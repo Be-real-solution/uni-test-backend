@@ -59,6 +59,7 @@ export class UserResultService {
                 await this.repository.update({
                     id: userResult.id,
                     hasFinished: true,
+                    endTime: payload.endTime,
                     findQuestionCount: find_answer_count > 0 ? userResult.findQuestionCount + 1 : userResult.findQuestionCount,
                 })
             } else {
@@ -81,8 +82,7 @@ export class UserResultService {
                 groupName: user.userInfo.group.name,
                 course: user.userInfo.group.course.stage,
                 facultyName: user.userInfo.group.faculty.name,
-                startTime: payload.startTime,
-                endTime: payload.endTime
+                startTime: payload.startTime
             })
 
             await this.repository.createUserResultAnswerData({
