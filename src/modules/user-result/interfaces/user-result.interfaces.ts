@@ -1,7 +1,3 @@
-import { CollectionFindOneResponse } from 'modules/collection'
-import { GroupFindOneResponse } from 'modules/group'
-import { QuestionFindOneResponse } from 'modules/question'
-import { UserFindOneResponse } from 'modules/user'
 
 export declare interface IUserResultAnswerDataResponse {
 	id?: string
@@ -15,6 +11,8 @@ export declare interface IUserResultAnswerDataResponse {
 
 export declare interface IUserResultAnswerDataCreate {
 	userResultId: string
+	questionName: string
+	questionImageUrl?: string
 	correctAnswerCount: number
 	findAnswerCount: number
 	getTime: string
@@ -26,6 +24,7 @@ export declare interface IUserResultResponse {
 	userId: string
 	collectionId: string
 	compyuterName: string
+	collectionName: string
 	hemisId: string
 	grade: number
 	userFullName: string
@@ -44,6 +43,7 @@ export declare interface IUserResultResponse {
 
 export declare interface ICreateUserResultRepository {
 	compyuterName: string
+	collectionName: string
 	grade: number
 	hemisId: string
 	userFullName: string
@@ -73,6 +73,7 @@ export declare interface ICreateUserResultService {
 export declare interface IUpdateUserResultRepository {
 	id: string
 	compyuterName?: string
+	collectionName?: string
 	hemisId?: string
 	grade?: number
 	userFullName?: string

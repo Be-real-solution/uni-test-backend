@@ -1,16 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { Type } from 'class-transformer'
 import {
-	IUserResultAnswerDataResponse,
-	IUserResultFindAll,
-	IUserResultFindAllResponse,
-	IUserResultResponse,
-} from '../interfaces/user-result.interfaces'
-import { UserFindOneResponse } from 'modules/user/interfaces'
-import { CollectionFindOneResponse } from 'modules/collection'
-import { QuestionFindOneResponse } from 'modules/question'
-import { GroupFindOneResponse } from 'modules/group'
-import {
-	IsBoolean,
 	IsBooleanString,
 	IsNotEmpty,
 	IsNumber,
@@ -18,9 +8,14 @@ import {
 	IsOptional,
 	IsString,
 	IsUUID,
-	ValidateNested,
+	ValidateNested
 } from 'class-validator'
-import { Type } from 'class-transformer'
+import {
+	IUserResultAnswerDataResponse,
+	IUserResultFindAll,
+	IUserResultFindAllResponse,
+	IUserResultResponse,
+} from '../interfaces/user-result.interfaces'
 
 export class UserResultAnswerDataDto {
 	@ApiProperty({ example: 'UUID' })
@@ -73,6 +68,9 @@ export class UserResultAnswerDataResponseDto implements IUserResultAnswerDataRes
 	@ApiProperty({ example: 'UUID' })
 	id: string
 
+	@ApiProperty({ example: "text" })
+	questionName: string
+
 	@ApiProperty({ example: 1 })
 	correctAnswerCount: number
 
@@ -97,6 +95,9 @@ export class UserResultResponseDto implements IUserResultResponse {
 
 	@ApiProperty({ example: 'computer name' })
 	compyuterName: string
+
+	@ApiProperty({ example: 'collection name' })
+	collectionName: string
 
 	@ApiProperty({ example: '1233242' })
 	hemisId: string

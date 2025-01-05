@@ -367,6 +367,7 @@ model UserResult {
   collectionId      String   @map("collection_id") @db.Uuid
   hemisId           String   @map("hemis_id") @db.VarChar(64)
   compyuterName     String   @map("compyuter_name") @db.VarChar(255)
+  collectionName    String?  @map("collection_name") @db.VarChar(255)
   grade             Int      @map("grade") @db.Integer
   userFullName      String   @map("user_fullname") @db.VarChar(255)
   groupName         String   @map("group_name") @db.VarChar(255)
@@ -389,6 +390,8 @@ userResultAnswerData UserResultAnswerData[]
 model UserResultAnswerData {
   id                 String   @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
   userResultId       String   @map("user_result_id") @db.Uuid
+  questionName       String?  @map("question_name") @db.VarChar(255)
+  questionImageUrl   String?  @map("question_image_url") @db.VarChar(255)
   correctAnswerCount Int      @map("correct_answer_count") @db.Integer
   findAnswerCount    Int      @map("find_answer_count") @db.Integer
   questionNumber     Int      @map("question_number") @db.Integer
