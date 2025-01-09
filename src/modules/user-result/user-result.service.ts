@@ -68,7 +68,7 @@ export class UserResultService {
 				await this.repository.update({
 					id: userResult.id,
 					hasFinished: true,
-					endTime: payload.endTime,
+					endTime: payload.endTime? payload.endTime : null,
 					findQuestionCount:
 						find_answer_count > 0
 							? userResult.findQuestionCount + 1
