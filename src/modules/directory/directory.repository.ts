@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'modules/prisma'
-import { ICreateDirectory, ICreateDirectoryResponse, IFindOneByParentIdOrName, IFindOneDirectoryResponse, IUpdateDirectory } from './interfaces'
+import {
+	ICreateDirectory,
+	ICreateDirectoryResponse,
+	IFindOneByParentIdOrName,
+	IFindOneDirectoryResponse,
+	IUpdateDirectory,
+} from './interfaces'
 
 @Injectable()
 export class DirectoryRepository {
@@ -15,9 +21,13 @@ export class DirectoryRepository {
 		})
 	}
 
-	async findOneByParentIdOrNameForCheck(payload: IFindOneByParentIdOrName): Promise<IFindOneDirectoryResponse> {
+	async findOneByParentIdOrNameForCheck(
+		payload: IFindOneByParentIdOrName,
+	): Promise<IFindOneDirectoryResponse> {
 		if (payload.id) {
-			return this.prisma.directory.findFirst({ where: { parent: { id: payload.id }, name: payload.name } })
+			return this.prisma.directory.findFirst({
+				where: { parent: { id: payload.id }, name: payload.name },
+			})
 		}
 		return this.prisma.directory.findFirst({ where: { parentId: null, name: payload.name } })
 	}
@@ -25,12 +35,23 @@ export class DirectoryRepository {
 	async findOne(id: string): Promise<IFindOneDirectoryResponse> {
 		return this.prisma.directory.findFirst({
 			where: { id },
-			include: { children: { orderBy: { createdAt: 'desc' } }, parent: true, collections: { orderBy: { createdAt: 'desc' } } },
+			include: {
+				children: {
+					orderBy: { createdAt: 'desc' },
+					include: { children: true, collections: true },
+				},
+				parent: true,
+				collections: { orderBy: { createdAt: 'desc' } },
+			},
 		})
 	}
 
 	async findAll(): Promise<IFindOneDirectoryResponse[]> {
-		return this.prisma.directory.findMany({ where: { parentId: null }, orderBy: { createdAt: 'desc' } })
+		return this.prisma.directory.findMany({
+			where: { parentId: null },
+			orderBy: { createdAt: 'desc' },
+			include: { collections: true, children: true },
+		})
 	}
 
 	async update(id: string, payload: IUpdateDirectory): Promise<IFindOneDirectoryResponse> {

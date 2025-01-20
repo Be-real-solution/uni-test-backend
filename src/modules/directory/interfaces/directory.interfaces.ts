@@ -10,6 +10,8 @@ export declare interface IFindOneDirectoryResponse {
 	name: string
   parentId: string
 	createdAt: Date
+	collectionCount?: number
+	directoryCount?: number
 	parent?: IFindOneDirectoryResponse
 	children?: IFindOneDirectoryResponse[]
 	collections?: CollectionFindOneResponse[]
