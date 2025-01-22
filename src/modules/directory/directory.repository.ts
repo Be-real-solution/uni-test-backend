@@ -38,7 +38,10 @@ export class DirectoryRepository {
 			include: {
 				children: {
 					orderBy: { createdAt: 'desc' },
-					include: { children: true, collections: true },
+					include: {
+						children: true,
+						collections: { include: { science: true, admin: true } },
+					},
 				},
 				parent: true,
 				collections: { orderBy: { createdAt: 'desc' } },
@@ -50,7 +53,7 @@ export class DirectoryRepository {
 		return this.prisma.directory.findMany({
 			where: { parentId: null },
 			orderBy: { createdAt: 'desc' },
-			include: { collections: true, children: true },
+			include: { collections: { include: { science: true, admin: true } }, children: true },
 		})
 	}
 
