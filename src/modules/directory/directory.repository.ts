@@ -40,11 +40,15 @@ export class DirectoryRepository {
 					orderBy: { createdAt: 'desc' },
 					include: {
 						children: true,
-						collections: { include: { science: true, admin: true } },
+						collections: {
+							where: { deletedAt: null },
+							include: { science: true, admin: true },
+						},
 					},
 				},
 				parent: true,
 				collections: {
+					where: { deletedAt: null },
 					include: { science: true, admin: true },
 					orderBy: { createdAt: 'desc' },
 				},
@@ -56,7 +60,13 @@ export class DirectoryRepository {
 		return this.prisma.directory.findMany({
 			where: { parentId: null },
 			orderBy: { createdAt: 'desc' },
-			include: { collections: { include: { science: true, admin: true } }, children: true },
+			include: {
+				collections: {
+					where: { deletedAt: null },
+					include: { science: true, admin: true },
+				},
+				children: true,
+			},
 		})
 	}
 
