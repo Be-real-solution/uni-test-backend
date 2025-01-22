@@ -44,7 +44,10 @@ export class DirectoryRepository {
 					},
 				},
 				parent: true,
-				collections: { orderBy: { createdAt: 'desc' } },
+				collections: {
+					include: { science: true, admin: true },
+					orderBy: { createdAt: 'desc' },
+				},
 			},
 		})
 	}
