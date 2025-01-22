@@ -30,6 +30,7 @@ export class CollectionRepository {
 				language: payload.language,
 				name: { contains: payload.name, mode: 'insensitive' },
 				scienceId: payload.scienceId,
+				directoryId: payload.directoryId,
 				deletedAt: null,
 			},
 			select: {

@@ -9,6 +9,7 @@ export declare interface CollectionFindFullRequest {
 	language?: CollectionLanguageEnum
 	scienceId?: string
 	adminId?: string
+	directoryId?: string
 }
 
 export declare interface CollectionFindAllRequest {

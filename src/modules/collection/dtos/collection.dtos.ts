@@ -32,6 +32,11 @@ export class CollectionFindFullRequestDto implements CollectionFindFullRequest {
 	@IsOptional()
 	scienceId?: string
 
+	@ApiPropertyOptional({ example: 'uuid' })
+	@IsUUID('4')
+	@IsOptional()
+	directoryId?: string
+
 	@ApiPropertyOptional({ example: 'uz' })
 	@IsEnum($Enums.CollectionLanguageEnum)
 	@IsOptional()
