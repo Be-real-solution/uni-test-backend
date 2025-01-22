@@ -61,14 +61,14 @@ export class DirectoryService {
 		if (!directory) {
 			throw new NotFoundException('Bunday directory mavjud emas')
 		}
-		const collectionCount = directory.collections.length
-		const directoryCount = directory.children.length
-
 		directory.children.forEach(item => {
 			item.directoryCount = item.children.length
 			item.collectionCount = item.collections.length
 		})
-		return { ...directory, directoryCount, collectionCount }
+
+		directory.collectionCount = directory.collections.length
+		directory.directoryCount = directory.children.length
+		return directory
 	}
 
 	async update(
