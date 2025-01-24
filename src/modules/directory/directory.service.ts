@@ -47,7 +47,7 @@ export class DirectoryService {
 	async findAll(): Promise<IFindOneDirectoryResponse[]> {
 		const directory = await this.repository.findAll()
 
-		directory.forEach(item => {
+		directory.forEach((item) => {
 			item.directoryCount = item.children.length
 			item.collectionCount = item.collections.length
 		})
@@ -61,7 +61,7 @@ export class DirectoryService {
 		if (!directory) {
 			throw new NotFoundException('Bunday directory mavjud emas')
 		}
-		directory.children.forEach(item => {
+		directory.children.forEach((item) => {
 			item.directoryCount = item.children.length
 			item.collectionCount = item.collections.length
 		})
@@ -78,23 +78,12 @@ export class DirectoryService {
 		const old_directory = await this.findOne(id)
 
 		let new_directory: IFindOneDirectoryResponse | null
+		let payload_condition: { id: string | null; name: string } = { id: '', name: '' }
 
-		if (
-			payload.parentId &&
-			payload.name &&
-			(old_directory.parentId != payload.parentId || old_directory.name != payload.name)
-		) {
-			let payload_condition: { id: string | null; name: string } = { id: '', name: '' }
-			if (payload.parentId && payload.name) {
-				payload_condition.id = payload.parentId
-				payload_condition.name = payload.name
-			} else if (payload.parentId) {
-				payload_condition.id = payload.parentId
-				payload_condition.name = old_directory.name
-			} else if (payload.name) {
-				payload_condition.id = old_directory.parentId
-				payload_condition.name = payload.name
-			}
+		if (payload.parentId != old_directory.parentId && payload.name != old_directory.name) {
+			payload_condition.id =
+				payload.parentId !== undefined ? payload.parentId : old_directory.parentId
+			payload_condition.name = payload.name || old_directory.name
 
 			new_directory = await this.repository.findOneByParentIdOrNameForCheck(payload_condition)
 			if (new_directory) {
@@ -102,7 +91,7 @@ export class DirectoryService {
 			}
 
 			new_directory = await this.repository.update(id, payload)
-		} else {
+		}  else  {
 			new_directory = old_directory
 		}
 
