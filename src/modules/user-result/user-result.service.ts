@@ -60,15 +60,14 @@ export class UserResultService {
 				questionNumber: payload.questionNumber,
 				getTime: payload.getTime,
 			})
-
+		
 			if (
-				question.collection.amountInTest == payload.questionNumber ||
-				userResult.endTime <= new Date()
+				question.collection.amountInTest == payload.questionNumber
 			) {
 				await this.repository.update({
 					id: userResult.id,
 					hasFinished: true,
-					endTime: payload.endTime? payload.endTime : null,
+					endTime: payload.endTime ? payload.endTime : null,
 					findQuestionCount:
 						find_answer_count > 0
 							? userResult.findQuestionCount + 1
