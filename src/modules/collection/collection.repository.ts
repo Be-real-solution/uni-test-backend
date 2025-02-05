@@ -189,12 +189,14 @@ export class CollectionRepository {
 				},
 				createdAt: true,
 				questions: {
+					where: { deletedAt: null },
 					select: {
 						id: true,
 						text: true,
 						imageUrl: true,
 						createdAt: true,
 						answers: {
+							where: { deletedAt: null },
 							select: {
 								id: true,
 								text: true,
