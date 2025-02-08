@@ -1,50 +1,68 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query } from '@nestjs/common'
-import { UserResultService } from './user-result.service'
-import { CreateUserResultDto, UserResultFindAllDto, UserResultFindAllResponseDto, UserResultResponseDto } from './dto/create-user-result.dto'
-import { UpdateUserResultDto } from './dto/update-user-result.dto'
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Query,
+	UseGuards
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CheckAuthGuard } from 'guards'
-import { Request } from 'express'
-// import userAgent from 'user-agents'
+import {
+	CreateUserResultDto,
+	UserResultFindAllDto,
+	UserResultFindAllResponseDto,
+	UserResultResponseDto,
+} from './dto/create-user-result.dto'
+import { UserResultService } from './user-result.service'
 
-import * as os from "os"
-import { IUserResultResponse } from './interfaces/user-result.interfaces'
 import { UserIdInAccessToken } from 'decorators'
-
+import { IUserResultResponse } from './interfaces/user-result.interfaces'
 
 @ApiTags('UserResult')
 @UseGuards(CheckAuthGuard)
 @ApiBearerAuth()
 @Controller('user-result')
 export class UserResultController {
-	constructor(private readonly studentResultService: UserResultService) {}
+	constructor(private readonly userResultService: UserResultService) {}
 
 	@ApiResponse({ type: UserResultResponseDto })
 	@Post()
-	create(@Body() payload: CreateUserResultDto, @UserIdInAccessToken() userId: string): Promise<IUserResultResponse> {
-		return this.studentResultService.create(payload, userId)
+	create(
+		@Body() payload: CreateUserResultDto,
+		@UserIdInAccessToken() userId: string,
+	): Promise<IUserResultResponse> {
+		return this.userResultService.create(payload, userId)
+	}
+
+	@ApiResponse({ type: null })
+	@Post('/remove-panding-result')
+	removePandingResult(): Promise<null> {
+		return this.userResultService.removePandingTests()
 	}
 
 	@ApiResponse({ type: UserResultFindAllResponseDto, isArray: true })
 	@Get()
 	findAll(@Query() query: UserResultFindAllDto) {
-		return this.studentResultService.findAll(query)
+		return this.userResultService.findAll(query)
 	}
 
 	@ApiResponse({ type: UserResultResponseDto })
 	@Get(':id')
 	findOne(@Param('id') id: string) {
-		return this.studentResultService.findOne(id)
+		return this.userResultService.findOne(id)
 	}
 
 	// @Patch(':id')
 	// update(@Param('id') id: string, @Body() updateUserResultDto: UpdateUserResultDto) {
-	// 	return this.studentResultService.update(+id, updateUserResultDto)
+	// 	return this.userResultService.update(+id, updateUserResultDto)
 	// }
 
 	@ApiResponse({ type: UserResultResponseDto })
 	@Delete(':id')
 	remove(@Param('id') id: string) {
-		return this.studentResultService.remove(id)
+		return this.userResultService.remove(id)
 	}
 }

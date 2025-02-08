@@ -50,6 +50,11 @@ export class UserResultService {
 			userId: user.id,
 		})
 
+		if (userResult && payload.questionNumber == 1) {
+			await this.repository.removeUserResult(userResult.id)
+			userResult = null
+		}
+
 		if (userResult) {
 			await this.repository.createUserResultAnswerData({
 				userResultId: userResult.id,
@@ -60,10 +65,8 @@ export class UserResultService {
 				questionNumber: payload.questionNumber,
 				getTime: payload.getTime,
 			})
-		
-			if (
-				question.collection.amountInTest == payload.questionNumber
-			) {
+
+			if (question.collection.amountInTest == payload.questionNumber) {
 				await this.repository.update({
 					id: userResult.id,
 					hasFinished: true,
@@ -97,6 +100,10 @@ export class UserResultService {
 				course: user.userInfo.group.course.stage,
 				facultyName: user.userInfo.group.faculty.name,
 				startTime: payload.startTime,
+				untilTime: new Date(
+					new Date(payload.startTime).getTime() +
+						question.collection.givenMinutes * 60 * 1000,
+				),
 			})
 
 			await this.repository.createUserResultAnswerData({
@@ -136,5 +143,11 @@ export class UserResultService {
 		}
 
 		return await this.repository.removeUserResult(id)
+	}
+
+	/** remove panding test */
+	async removePandingTests(): Promise<null> {
+		await this.repository.removePendingUserResults()
+		return null
 	}
 }

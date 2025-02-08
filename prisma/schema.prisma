@@ -379,9 +379,10 @@ model UserResult {
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamp
   startTime         DateTime? @default(now()) @map("start_time") @db.Timestamp
   endTime           DateTime? @map("end_time") @db.Timestamp
+  untilTime         DateTime? @map("until_time") @db.Timestamp
   updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamp
 
-userResultAnswerData UserResultAnswerData[]
+  userResultAnswerData UserResultAnswerData[]
 
   @@id([id])
   @@map("user_result")

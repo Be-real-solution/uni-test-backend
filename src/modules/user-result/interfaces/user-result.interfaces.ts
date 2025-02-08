@@ -58,6 +58,7 @@ export declare interface ICreateUserResultRepository {
 	collectionId: string
 	startTime: Date
 	endTime?: Date
+	untilTime?: Date
 }
 
 export declare interface ICreateUserResultService {

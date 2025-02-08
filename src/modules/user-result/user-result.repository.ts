@@ -31,7 +31,7 @@ export class UserResultRepository {
 				userId: payload.userId,
 				hasFinished: false,
 			},
-			include: { userResultAnswerData: true }
+			include: { userResultAnswerData: true },
 		})
 	}
 
@@ -45,11 +45,9 @@ export class UserResultRepository {
 	}
 
 	async findAllPagination(query: IUserResultFindAll): Promise<IUserResultFindAllResponse> {
-
 		if (query.hasFinished) {
-			query.hasFinished = String(query.hasFinished) === "false" ? false : true
+			query.hasFinished = String(query.hasFinished) === 'false' ? false : true
 		}
-
 
 		const userResult = await this.prisma.userResult.findMany({
 			skip: (query.pageNumber - 1) * query.pageSize,
@@ -96,7 +94,18 @@ export class UserResultRepository {
 		return this.prisma.userResult.delete({ where: { id } })
 	}
 
-	async createUserResultAnswerData(payload: IUserResultAnswerDataCreate): Promise<IUserResultAnswerDataResponse> {
+	async createUserResultAnswerData(
+		payload: IUserResultAnswerDataCreate,
+	): Promise<IUserResultAnswerDataResponse> {
 		return this.prisma.userResultAnswerData.create({ data: payload })
+	}
+
+	async removePendingUserResults(): Promise<null> {
+		
+		await this.prisma.userResult.deleteMany({
+			where: { hasFinished: false, untilTime: { lt: new Date() } },
+		})
+
+		return null
 	}
 }
