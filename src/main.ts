@@ -13,17 +13,17 @@ setImmediate(async (): Promise<void> => {
 
 	app.use(json({ limit: '50mb' }))
 	app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
-	app.use("/api/upload", express.static(join(__dirname, "../../uploads")));
+	app.use('/api/upload', express.static(join(__dirname, '../../uploads')))
 
-	// app.use(
-	// 	'/docs*',
-	// 	BasicAuth({
-	// 		challenge: true,
-	// 		users: {
-	// 			swaggerusername: 'swaggerpassword',
-	// 		},
-	// 	}),
-	// )
+	app.use(
+		'/docs*',
+		BasicAuth({
+			challenge: true,
+			users: {
+				[appConfig.swagger_login]: appConfig.swagger_password,
+			},
+		}),
+	)
 
 	const swaggerConfig = new DocumentBuilder()
 		.addBearerAuth({
