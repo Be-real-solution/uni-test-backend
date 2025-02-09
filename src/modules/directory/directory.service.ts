@@ -75,16 +75,17 @@ export class DirectoryService {
 		id: string,
 		payload: IUpdateDirectory,
 	): Promise<IResponse<IFindOneDirectoryResponse>> {
+
 		const old_directory = await this.findOne(id)
 
 		let new_directory: IFindOneDirectoryResponse | null
 		const payload_condition: { id: string | null; name: string } = { id: '', name: '' }
 
-		if (payload.parentId != old_directory.parentId && payload.name != old_directory.name) {
+		if (payload.parentId !== old_directory.parentId && payload.name !== old_directory.name) {
 			payload_condition.id =
 				payload.parentId !== undefined ? payload.parentId : old_directory.parentId
 			payload_condition.name = payload.name || old_directory.name
-
+			
 			new_directory = await this.repository.findOneByParentIdOrNameForCheck(payload_condition)
 			if (new_directory) {
 				throw new ConflictException('Bunday directory mavjud')
