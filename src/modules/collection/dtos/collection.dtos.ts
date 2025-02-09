@@ -14,7 +14,18 @@ import {
 	CollectionFindOneResponse,
 	CollectionUpdateRequest,
 } from '../interfaces'
-import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator'
+import {
+	IsArray,
+	IsBoolean,
+	IsEnum,
+	IsNotEmpty,
+	IsNumber,
+	IsObject,
+	IsOptional,
+	IsString,
+	IsUUID,
+	ValidateNested,
+} from 'class-validator'
 import { $Enums } from '@prisma/client'
 import { ScienceFindOneResponse, ScienceFindOneResponseDto } from '../../science'
 import { AdminFindOneResponse, AdminFindOneResponseDto } from '../../admin'

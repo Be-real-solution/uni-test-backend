@@ -12,7 +12,14 @@ import {
 	AnswerFindAllResponseDto,
 	AnswerFindOneResponseDto,
 } from './dtos'
-import { AnswerCreateResponse, AnswerDeleteResponse, AnswerFindAllResponse, AnswerFindFullResponse, AnswerFindOneResponse, AnswerUpdateResponse } from './interfaces'
+import {
+	AnswerCreateResponse,
+	AnswerDeleteResponse,
+	AnswerFindAllResponse,
+	AnswerFindFullResponse,
+	AnswerFindOneResponse,
+	AnswerUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 
@@ -53,7 +60,10 @@ export class AnswerController {
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: AnswerFindOneRequestDto, @Body() payload: AnswerUpdateRequestDto): Promise<AnswerUpdateResponse> {
+	update(
+		@Param() params: AnswerFindOneRequestDto,
+		@Body() payload: AnswerUpdateRequestDto,
+	): Promise<AnswerUpdateResponse> {
 		return this.service.update(params, payload)
 	}
 

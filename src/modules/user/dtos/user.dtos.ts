@@ -15,7 +15,15 @@ import {
 	UserCreateWithJsonFileRequest,
 	UserUpdateWithInfoRequest,
 } from '../interfaces'
-import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import {
+	IsEmail,
+	IsEnum,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	IsUUID,
+} from 'class-validator'
 import { $Enums } from '@prisma/client'
 import { UserInfoFindOneResponse, UserInfoFindOneResponseDto } from '../../user-info'
 import { Type } from 'class-transformer'
@@ -172,11 +180,6 @@ export class UserCreateManyWithJsonFileDto implements UserCreateWithJsonFileRequ
 	@IsString()
 	@IsNotEmpty()
 	hemis_id: string
-
-	@IsNumber()
-	@IsNotEmpty()
-	@Type(() => Number)
-	semestr: number
 }
 
 export class UserUpdateRequestDto implements UserUpdateRequest {

@@ -53,7 +53,10 @@ export class CourseService {
 		return this.repository.create(payload)
 	}
 
-	async update(params: CourseFindOneRequest, payload: CourseUpdateRequest): Promise<CourseUpdateResponse> {
+	async update(
+		params: CourseFindOneRequest,
+		payload: CourseUpdateRequest,
+	): Promise<CourseUpdateResponse> {
 		await this.findOne({ id: params.id })
 		payload.stage ? await this.findOneByStage({ stage: payload.stage, id: params.id }) : null
 

@@ -51,7 +51,8 @@ export class UserResultService {
 		})
 
 		if (userResult && payload.questionNumber == 1) {
-			await this.repository.removeUserResult(userResult.id)
+			// await this.repository.removeUserResult(userResult.id)
+			await this.repository.update({ id: userResult.id, isPending: true })
 			userResult = null
 		}
 

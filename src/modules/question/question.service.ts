@@ -71,7 +71,8 @@ export class QuestionService {
 		})
 		if (questions.length) {
 			throw new BadRequestException(
-				`This ${questions.map((q) => q.text).join(' ')} questions already exists in ${questions[0].collection.name
+				`This ${questions.map((q) => q.text).join(' ')} questions already exists in ${
+					questions[0].collection.name
 				}`,
 			)
 		}
@@ -272,9 +273,9 @@ export class QuestionService {
 			const imageUrl = question.imageUrl
 			payload.text
 				? await this.findOneByTextWithCollectionId({
-					text: payload.text,
-					collectionId: payload.collectionId,
-				})
+						text: payload.text,
+						collectionId: payload.collectionId,
+				  })
 				: null
 
 			if (file) {
@@ -306,9 +307,7 @@ export class QuestionService {
 								isCorrect: item.isCorrect,
 								questionId: item.questionId,
 							})
-						} catch (error) {
-
-						}
+						} catch (error) {}
 					})
 				}
 
@@ -316,9 +315,7 @@ export class QuestionService {
 					remove_answers.forEach(async (item) => {
 						try {
 							await this.answerSerive.delete({ id: item.id })
-						} catch (error) {
-
-						}
+						} catch (error) {}
 					})
 				}
 
@@ -333,8 +330,7 @@ export class QuestionService {
 									isCorrect: item.isCorrect,
 								},
 							)
-						} catch (error) {
-						}
+						} catch (error) {}
 					})
 				}
 			}
@@ -345,7 +341,6 @@ export class QuestionService {
 			return { status_code: 200, data: {}, message: 'updated' }
 		} catch (err) {
 			if (file) {
-
 				await deleteFile(file.filename)
 			}
 			throw err

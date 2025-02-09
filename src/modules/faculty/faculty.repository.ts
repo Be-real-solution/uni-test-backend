@@ -65,7 +65,9 @@ export class FacultyRepository {
 	}
 
 	async findByName(payload: Partial<FacultyFindOneResponse>): Promise<FacultyFindOneResponse> {
-		const faculty = await this.prisma.faculty.findFirst({ where: { name: payload.name, deletedAt: null, id: { not: payload.id } } })
+		const faculty = await this.prisma.faculty.findFirst({
+			where: { name: payload.name, deletedAt: null, id: { not: payload.id } },
+		})
 		return faculty
 	}
 
@@ -74,13 +76,21 @@ export class FacultyRepository {
 		return null
 	}
 
-	async update(payload: FacultyFindOneRequest & FacultyUpdateRequest): Promise<FacultyUpdateRequest> {
-		await this.prisma.faculty.update({ where: { id: payload.id, deletedAt: null }, data: { name: payload.name } })
+	async update(
+		payload: FacultyFindOneRequest & FacultyUpdateRequest,
+	): Promise<FacultyUpdateRequest> {
+		await this.prisma.faculty.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { name: payload.name },
+		})
 		return null
 	}
 
 	async delete(payload: FacultyDeleteRequest): Promise<FacultyDeleteResponse> {
-		await this.prisma.faculty.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.faculty.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 		return null
 	}
 
@@ -94,38 +104,34 @@ export class FacultyRepository {
 			select: { id: true, stage: true },
 			orderBy: [{ createdAt: 'desc' }],
 		})
-		// const semestrs = await this.prisma.semestr.findMany({ where: { deletedAt: null }, select: { id: true, stage: true }, orderBy: [{ createdAt: 'desc' }] })
 
 		const customFaculties = []
 		for (const f of faculties) {
 			const customCourses = []
 			for (const c of courses) {
-				// const customSemestrs = []
-				// for (const s of semestrs) {
-					const groups = await this.prisma.group.findMany({
+				const groups = await this.prisma.group.findMany({
+					where: {
+						deletedAt: null,
+						facultyId: f.id,
+						courseId: c.id,
+					},
+					select: { id: true, name: true },
+					orderBy: [{ createdAt: 'desc' }],
+				})
+				const customGroups = []
+				for (const g of groups) {
+					const userInfos = await this.prisma.userInfo.findMany({
 						where: {
 							deletedAt: null,
-							facultyId: f.id,
-							courseId: c.id,
-							// semestrId: s.id,
+							groupId: g.id,
+							user: { deletedAt: null },
 						},
-						select: { id: true, name: true },
+						select: { user: { select: { id: true, fullName: true } } },
 						orderBy: [{ createdAt: 'desc' }],
 					})
-					const customGroups = []
-					for (const g of groups) {
-						const userInfos = await this.prisma.userInfo.findMany({
-							where: {
-								deletedAt: null,
-								groupId: g.id,
-								user: { deletedAt: null },
-							},
-							select: { user: { select: { id: true, fullName: true } } },
-							orderBy: [{ createdAt: 'desc' }],
-						})
-						customGroups.push({ ...g, students: userInfos.map((u) => ({ ...u.user })) })
-					}
-					// customSemestrs.push({ ...s, groups: customGroups })
+					customGroups.push({ ...g, students: userInfos.map((u) => ({ ...u.user })) })
+				}
+				// customSemestrs.push({ ...s, groups: customGroups })
 				// }
 				customCourses.push({ ...c, groups: customGroups })
 			}

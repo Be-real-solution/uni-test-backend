@@ -5,9 +5,13 @@ import { Type } from 'class-transformer'
 export * from './create-directory.dto'
 
 export class SwaggerDirectoryDto implements IFindOneDirectoryResponse {
-	@ApiProperty({ name: 'id', example: 'ff084d2b-9e4e-468f-8e24-8688263a3c11', description: 'UUID' })
+	@ApiProperty({
+		name: 'id',
+		example: 'ff084d2b-9e4e-468f-8e24-8688263a3c11',
+		description: 'UUID',
+	})
 	id: string
-	
+
 	@ApiProperty({ name: 'name', example: 'math' })
 	name: string
 
@@ -25,7 +29,11 @@ export class SwaggerDirectoryDto implements IFindOneDirectoryResponse {
 }
 
 export class FindOneDirectoryDto implements IFindOneDirectoryResponse {
-	@ApiProperty({ name: 'id', example: 'ff084d2b-9e4e-468f-8e24-8688263a3c11', description: 'UUID' })
+	@ApiProperty({
+		name: 'id',
+		example: 'ff084d2b-9e4e-468f-8e24-8688263a3c11',
+		description: 'UUID',
+	})
 	id: string
 	@ApiProperty({ name: 'name', example: 'math' })
 	name: string

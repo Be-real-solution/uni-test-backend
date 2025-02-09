@@ -10,7 +10,15 @@ import {
 	QuestionUpdateRequest,
 	QuestionsCreateWithAnswersRequest,
 } from '../interfaces'
-import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator'
+import {
+	IsBoolean,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	IsUUID,
+	ValidateNested,
+} from 'class-validator'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
 import { Type } from 'class-transformer'
 
@@ -67,7 +75,9 @@ export class QuestionCreateRequestDto implements QuestionCreateRequest {
 	collectionId: string
 }
 
-export class QuestionsCreateWithAnswersDto implements Pick<QuestionsCreateWithAnswersRequest, 'collectionId'> {
+export class QuestionsCreateWithAnswersDto
+	implements Pick<QuestionsCreateWithAnswersRequest, 'collectionId'>
+{
 	@ApiProperty({ type: 'string', format: 'binary', description: 'TXT file' })
 	file: any
 
@@ -152,7 +162,7 @@ export class QuestionFindOneResponseDto implements QuestionFindOneResponse {
 
 	@ApiProperty({ example: 'image url' })
 	imageUrl: string
-	
+
 	@ApiProperty({ type: CollectionFindOneResponseDto })
 	collection: CollectionFindOneResponse
 

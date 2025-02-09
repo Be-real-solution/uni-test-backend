@@ -1,4 +1,18 @@
-import { BadGatewayException, BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
+import {
+	BadGatewayException,
+	BadRequestException,
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query,
+	UploadedFile,
+	UseGuards,
+	UseInterceptors,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserService } from './user.service'
 import {
@@ -15,7 +29,15 @@ import {
 	UserCreateManyWithJsonFileDto,
 	UserUpdateWithInfoRequestDto,
 } from './dtos'
-import { UserCreateResponse, UserDeleteResponse, UserFindAllResponse, UserFindFullResponse, UserFindOneResponse, UserSignInResponse, UserUpdateResponse } from './interfaces'
+import {
+	UserCreateResponse,
+	UserDeleteResponse,
+	UserFindAllResponse,
+	UserFindFullResponse,
+	UserFindOneResponse,
+	UserSignInResponse,
+	UserUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -110,7 +132,10 @@ export class UserController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
-	createWithInfo(@Body() payload: UserCreateWithInfoRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserCreateResponse> {
+	createWithInfo(
+		@Body() payload: UserCreateWithInfoRequestDto,
+		@UploadedFile() image: Express.Multer.File,
+	): Promise<UserCreateResponse> {
 		const imagePath = image ? `/uploads/${image.filename}` : ''
 
 		return this.service.createWithUserInfo({ ...payload, image: imagePath })
@@ -189,7 +214,11 @@ export class UserController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
-	update(@Param() params: UserFindOneRequestDto, @Body() payload: UserUpdateWithInfoRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserUpdateResponse> {
+	update(
+		@Param() params: UserFindOneRequestDto,
+		@Body() payload: UserUpdateWithInfoRequestDto,
+		@UploadedFile() image: Express.Multer.File,
+	): Promise<UserUpdateResponse> {
 		const imagePath = image ? `/uploads/${image.filename}` : undefined
 		return this.service.updateWithUserInfo(params, { ...payload, image: imagePath })
 	}

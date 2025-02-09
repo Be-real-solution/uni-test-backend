@@ -35,7 +35,10 @@ export class SettingController {
 
 	@Patch(':id')
 	@ApiResponse({ type: SwaggerSettingResponseDto })
-	update(@Param('id') id: string, @Body() payload: UpdateSettingDto): Promise<IResponse<ISettingResponse>> {
+	update(
+		@Param('id') id: string,
+		@Body() payload: UpdateSettingDto,
+	): Promise<IResponse<ISettingResponse>> {
 		return this.settingService.update(id, payload)
 	}
 

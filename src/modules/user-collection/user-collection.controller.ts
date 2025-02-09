@@ -38,25 +38,34 @@ export class UserCollectionController {
 
 	@Get()
 	@ApiResponse({ type: UserCollectionFindFullResponseDto, isArray: true })
-	findFull(@Query() payload: UserCollectionFindFullRequestDto): Promise<UserCollectionFindFullResponse> {
+	findFull(
+		@Query() payload: UserCollectionFindFullRequestDto,
+	): Promise<UserCollectionFindFullResponse> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('full')
 	@ApiResponse({ type: UserCollectionFindFullResponseDto, isArray: true })
-	findFullForUser(@UserIdInAccessToken() id: string, @Query() payload: UserCollectionFindFullRequestDto): Promise<UserCollectionFindFullResponse> {
+	findFullForUser(
+		@UserIdInAccessToken() id: string,
+		@Query() payload: UserCollectionFindFullRequestDto,
+	): Promise<UserCollectionFindFullResponse> {
 		return this.service.findFull({ ...payload, userId: id })
 	}
 
 	@Get('all')
 	@ApiResponse({ type: UserCollectionFindAllResponseDto })
-	findAll(@Query() payload: UserCollectionFindAllRequestDto): Promise<UserCollectionFindAllResponse> {
+	findAll(
+		@Query() payload: UserCollectionFindAllRequestDto,
+	): Promise<UserCollectionFindAllResponse> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
 	@Get(':id')
 	@ApiResponse({ type: UserCollectionFindOneResponseDto })
-	findOne(@Param() payload: UserCollectionFindOneRequestDto): Promise<UserCollectionFindOneResponse> {
+	findOne(
+		@Param() payload: UserCollectionFindOneRequestDto,
+	): Promise<UserCollectionFindOneResponse> {
 		return this.service.findOne(payload)
 	}
 
@@ -68,19 +77,26 @@ export class UserCollectionController {
 
 	@Post('many')
 	@ApiResponse({ type: null })
-	createMany(@Body() payload: UserCollectionCreateManyRequestDto): Promise<UserCollectionCreateResponse> {
+	createMany(
+		@Body() payload: UserCollectionCreateManyRequestDto,
+	): Promise<UserCollectionCreateResponse> {
 		return this.service.createMany(payload)
 	}
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: UserCollectionFindOneRequestDto, @Body() payload: UserCollectionUpdateRequestDto): Promise<UserCollectionUpdateResponse> {
+	update(
+		@Param() params: UserCollectionFindOneRequestDto,
+		@Body() payload: UserCollectionUpdateRequestDto,
+	): Promise<UserCollectionUpdateResponse> {
 		return this.service.update(params, payload)
 	}
 
 	@Delete(':id')
 	@ApiResponse({ type: null })
-	delete(@Param() payload: UserCollectionDeleteRequestDto): Promise<UserCollectionDeleteResponse> {
+	delete(
+		@Param() payload: UserCollectionDeleteRequestDto,
+	): Promise<UserCollectionDeleteResponse> {
 		return this.service.delete(payload)
 	}
 }

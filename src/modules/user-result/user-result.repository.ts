@@ -30,6 +30,10 @@ export class UserResultRepository {
 			where: {
 				userId: payload.userId,
 				hasFinished: false,
+				isPending: false,
+				// untilTime: {
+				// 	gte: new Date()
+				// }
 			},
 			include: { userResultAnswerData: true },
 		})
@@ -101,7 +105,6 @@ export class UserResultRepository {
 	}
 
 	async removePendingUserResults(): Promise<null> {
-		
 		await this.prisma.userResult.deleteMany({
 			where: { hasFinished: false, untilTime: { lt: new Date() } },
 		})

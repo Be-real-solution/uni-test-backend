@@ -53,7 +53,10 @@ export class GroupService {
 		return this.repository.create(payload)
 	}
 
-	async update(params: GroupFindOneRequest, payload: GroupUpdateRequest): Promise<GroupUpdateResponse> {
+	async update(
+		params: GroupFindOneRequest,
+		payload: GroupUpdateRequest,
+	): Promise<GroupUpdateResponse> {
 		await this.findOne({ id: params.id })
 		payload.name ? await this.findOneByName({ name: payload.name, id: params.id }) : null
 

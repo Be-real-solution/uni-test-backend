@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable, MethodNotAllowedException, UnauthorizedException } from '@nestjs/common'
+import {
+	CanActivate,
+	ExecutionContext,
+	Injectable,
+	MethodNotAllowedException,
+	UnauthorizedException,
+} from '@nestjs/common'
 import { Request } from 'express'
 import { PrismaService } from '../modules'
 import { JwtService } from '@nestjs/jwt'

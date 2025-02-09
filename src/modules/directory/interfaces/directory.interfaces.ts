@@ -1,4 +1,4 @@
-import { CollectionFindAllResponse, CollectionFindOneResponse } from "modules/collection"
+import { CollectionFindAllResponse, CollectionFindOneResponse } from 'modules/collection'
 
 export declare interface ICreateDirectory {
 	name: string
@@ -8,7 +8,7 @@ export declare interface ICreateDirectory {
 export declare interface IFindOneDirectoryResponse {
 	id: string
 	name: string
-  parentId: string
+	parentId: string
 	createdAt: Date
 	collectionCount?: number
 	directoryCount?: number
@@ -27,4 +27,4 @@ export declare interface IUpdateDirectory {
 	parentId?: string
 }
 
-export declare interface ICreateDirectoryResponse extends IFindOneDirectoryResponse {}
+export type ICreateDirectoryResponse = IFindOneDirectoryResponse

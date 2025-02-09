@@ -12,7 +12,14 @@ import {
 	UserInfoFindAllResponseDto,
 	UserInfoFindOneResponseDto,
 } from './dtos'
-import { UserInfoCreateResponse, UserInfoDeleteResponse, UserInfoFindAllResponse, UserInfoFindFullResponse, UserInfoFindOneResponse, UserInfoUpdateResponse } from './interfaces'
+import {
+	UserInfoCreateResponse,
+	UserInfoDeleteResponse,
+	UserInfoFindAllResponse,
+	UserInfoFindFullResponse,
+	UserInfoFindOneResponse,
+	UserInfoUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 
@@ -53,7 +60,10 @@ export class UserInfoController {
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: UserInfoFindOneRequestDto, @Body() payload: UserInfoUpdateRequestDto): Promise<UserInfoUpdateResponse> {
+	update(
+		@Param() params: UserInfoFindOneRequestDto,
+		@Body() payload: UserInfoUpdateRequestDto,
+	): Promise<UserInfoUpdateResponse> {
 		return this.service.update(params, payload)
 	}
 

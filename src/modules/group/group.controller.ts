@@ -12,7 +12,14 @@ import {
 	GroupFindAllResponseDto,
 	GroupFindOneResponseDto,
 } from './dtos'
-import { GroupCreateResponse, GroupDeleteResponse, GroupFindAllResponse, GroupFindFullResponse, GroupFindOneResponse, GroupUpdateResponse } from './interfaces'
+import {
+	GroupCreateResponse,
+	GroupDeleteResponse,
+	GroupFindAllResponse,
+	GroupFindFullResponse,
+	GroupFindOneResponse,
+	GroupUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 
@@ -53,7 +60,10 @@ export class GroupController {
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: GroupFindOneRequestDto, @Body() payload: GroupUpdateRequestDto): Promise<GroupUpdateResponse> {
+	update(
+		@Param() params: GroupFindOneRequestDto,
+		@Body() payload: GroupUpdateRequestDto,
+	): Promise<GroupUpdateResponse> {
 		return this.service.update(params, payload)
 	}
 

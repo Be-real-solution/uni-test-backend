@@ -9,6 +9,6 @@ import { AnswerModule } from 'modules/answer/answer.module'
 	imports: [PrismaModule, AnswerModule],
 	controllers: [QuestionController],
 	providers: [QuestionService, QuestionRepository],
-	exports: [QuestionService, QuestionRepository, ],
+	exports: [QuestionService, QuestionRepository],
 })
 export class QuestionModule {}

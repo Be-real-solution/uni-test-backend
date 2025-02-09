@@ -104,7 +104,7 @@ export declare interface CollectionQuestion {
 	id: string
 	text: string
 	createdAt: Date
-	imageUrl: string,
+	imageUrl: string
 	multipleChoice?: boolean
 	answers: QuestionAnswer[]
 }
@@ -118,9 +118,7 @@ export declare interface QuestionAnswer {
 
 export declare type CollectionCreateResponse = CollectionFindOneResponse
 
-export declare interface CollectionUpdateResponse extends CollectionUpdateRequest {
-
-}
+export type CollectionUpdateResponse = CollectionUpdateRequest
 
 export declare type CollectionDeleteResponse = null
 

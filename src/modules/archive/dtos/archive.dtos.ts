@@ -15,13 +15,21 @@ import {
 	CollectionQuestion,
 	QuestionAnswer,
 } from '../interfaces'
-import { IsArray, IsBoolean, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import {
+	IsArray,
+	IsBoolean,
+	IsDateString,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	IsUUID,
+} from 'class-validator'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
 import { FacultyFindOneResponse, FacultyFindOneResponseDto } from '../../faculty'
 import { GroupFindOneResponse, GroupFindOneResponseDto } from '../../group'
 import { UserFindOneResponse, UserFindOneResponseDto } from '../../user'
 import { CourseFindOneResponse, CourseFindOneResponseDto } from '../../course'
-// import { SemestrFindOneResponse, SemestrFindOneResponseDto } from '../../semestr'
 import { Type } from 'class-transformer'
 
 export class ArchiveFindFullRequestDto implements ArchiveFindFullRequest {
@@ -44,11 +52,6 @@ export class ArchiveFindFullRequestDto implements ArchiveFindFullRequest {
 	@IsUUID('4')
 	@IsOptional()
 	groupId?: string
-
-	// @ApiPropertyOptional({ example: 'uuid' })
-	// @IsUUID('4')
-	// @IsOptional()
-	// semestrId?: string
 
 	@ApiPropertyOptional({ example: 'uuid' })
 	@IsUUID('4')
@@ -96,11 +99,6 @@ export class ArchiveFindAllRequestDto implements ArchiveFindAllRequest {
 	@IsUUID('4')
 	@IsOptional()
 	groupId?: string
-
-	// @ApiPropertyOptional({ example: 'uuid' })
-	// @IsUUID('4')
-	// @IsOptional()
-	// semestrId?: string
 
 	@ApiPropertyOptional({ example: 'uuid' })
 	@IsUUID('4')
@@ -208,9 +206,6 @@ export class ArchiveFindFullResponseDto implements ArchiveFindOneResponse {
 	@ApiProperty({ type: CollectionFindOneResponseDto })
 	collection: CollectionFindOneResponse
 
-	// @ApiProperty({ type: SemestrFindOneResponseDto })
-	// semestr: SemestrFindOneResponse
-
 	@ApiProperty({ type: FacultyFindOneResponseDto })
 	faculty: FacultyFindOneResponse
 
@@ -239,7 +234,9 @@ export class ArchiveFindFullResponseDto implements ArchiveFindOneResponse {
 	startTime: Date
 }
 
-export class ArchiveCollectionQuestionAnswerResponseDto implements ArchiveCollectionQuestionAnswerResponse {
+export class ArchiveCollectionQuestionAnswerResponseDto
+	implements ArchiveCollectionQuestionAnswerResponse
+{
 	@ApiProperty({ example: true })
 	isChecked: boolean
 
@@ -293,9 +290,6 @@ export class ArchiveFindOneResponseDto implements ArchiveFindOneResponse {
 
 	@ApiProperty({ type: FacultyFindOneResponseDto })
 	faculty: FacultyFindOneResponse
-
-	// @ApiProperty({ type: SemestrFindOneResponseDto })
-	// semestr: SemestrFindOneResponse
 
 	@ApiProperty({ type: GroupFindOneResponseDto })
 	group: GroupFindOneResponse

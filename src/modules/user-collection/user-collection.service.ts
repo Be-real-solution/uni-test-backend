@@ -23,7 +23,9 @@ export class UserCollectionService {
 		this.repository = repository
 	}
 
-	async findFull(payload: UserCollectionFindFullRequest): Promise<UserCollectionFindFullResponse> {
+	async findFull(
+		payload: UserCollectionFindFullRequest,
+	): Promise<UserCollectionFindFullResponse> {
 		const userCollections = this.repository.findFull(payload)
 		return userCollections
 	}
@@ -41,8 +43,13 @@ export class UserCollectionService {
 		return userCollection
 	}
 
-	async findOneByUserCollection(payload: Partial<UserCollectionCreateRequest>): Promise<UserCollectionFindOneResponse> {
-		const userCollection = await this.repository.findByUserCollection({ userId: payload.userId, collectionId: payload.collectionId })
+	async findOneByUserCollection(
+		payload: Partial<UserCollectionCreateRequest>,
+	): Promise<UserCollectionFindOneResponse> {
+		const userCollection = await this.repository.findByUserCollection({
+			userId: payload.userId,
+			collectionId: payload.collectionId,
+		})
 		if (userCollection) {
 			throw new BadRequestException('UserCollection already exists')
 		}
@@ -50,17 +57,30 @@ export class UserCollectionService {
 	}
 
 	async create(payload: UserCollectionCreateRequest): Promise<UserCollectionCreateResponse> {
-		await this.findOneByUserCollection({ userId: payload.userId, collectionId: payload.collectionId })
+		await this.findOneByUserCollection({
+			userId: payload.userId,
+			collectionId: payload.collectionId,
+		})
 		return this.repository.create(payload)
 	}
 
-	async createMany(payload: UserCollectionCreateManyRequest): Promise<UserCollectionCreateResponse> {
+	async createMany(
+		payload: UserCollectionCreateManyRequest,
+	): Promise<UserCollectionCreateResponse> {
 		return this.repository.createMany(payload)
 	}
 
-	async update(params: UserCollectionFindOneRequest, payload: UserCollectionUpdateRequest): Promise<UserCollectionUpdateResponse> {
+	async update(
+		params: UserCollectionFindOneRequest,
+		payload: UserCollectionUpdateRequest,
+	): Promise<UserCollectionUpdateResponse> {
 		await this.findOne({ id: params.id })
-		payload.collectionId || payload.userId ? await this.findOneByUserCollection({ userId: payload.userId, collectionId: payload.collectionId }) : null
+		payload.collectionId || payload.userId
+			? await this.findOneByUserCollection({
+					userId: payload.userId,
+					collectionId: payload.collectionId,
+			  })
+			: null
 
 		await this.repository.update({ ...params, ...payload })
 		return null

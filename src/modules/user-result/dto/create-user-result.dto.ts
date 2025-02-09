@@ -8,7 +8,7 @@ import {
 	IsOptional,
 	IsString,
 	IsUUID,
-	ValidateNested
+	ValidateNested,
 } from 'class-validator'
 import {
 	IUserResultAnswerDataResponse,
@@ -29,7 +29,6 @@ export class CreateUserResultDto {
 	@IsOptional()
 	@IsUUID('4')
 	questionId: string
-
 
 	@ApiProperty({ example: 2 })
 	@IsNotEmpty()
@@ -52,7 +51,7 @@ export class CreateUserResultDto {
 	@IsString()
 	computerName: string
 
-	@ApiPropertyOptional({ example: '2024-01-01T00:00:00.000Z'  })
+	@ApiPropertyOptional({ example: '2024-01-01T00:00:00.000Z' })
 	@IsOptional()
 	@IsString()
 	startTime: Date
@@ -68,7 +67,7 @@ export class UserResultAnswerDataResponseDto implements IUserResultAnswerDataRes
 	@ApiProperty({ example: 'UUID' })
 	id: string
 
-	@ApiProperty({ example: "text" })
+	@ApiProperty({ example: 'text' })
 	questionName: string
 
 	@ApiProperty({ example: 1 })
@@ -85,7 +84,6 @@ export class UserResultAnswerDataResponseDto implements IUserResultAnswerDataRes
 
 	@ApiProperty({ example: new Date() })
 	createdAt?: Date
-
 }
 
 /** for swagger */
@@ -126,20 +124,19 @@ export class UserResultResponseDto implements IUserResultResponse {
 	@ApiProperty({ example: true })
 	hasFinished: boolean
 
-
 	@ApiProperty({ example: new Date() })
 	createdAt: Date
 
 	@ApiProperty({ example: new Date() })
 	startTime: Date
-	
+
 	@ApiProperty({ example: new Date() })
 	endTime: Date
 
-	@ApiPropertyOptional({ example: "UUID" })
+	@ApiPropertyOptional({ example: 'UUID' })
 	userId: string
 
-	@ApiPropertyOptional({ example: "UUID" })
+	@ApiPropertyOptional({ example: 'UUID' })
 	collectionId: string
 
 	@ApiProperty({ type: UserResultAnswerDataResponseDto, isArray: true })

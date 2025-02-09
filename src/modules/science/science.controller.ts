@@ -54,7 +54,10 @@ export class ScienceController {
 
 	@Get('with-collection')
 	@ApiResponse({ type: ScienceFindOneWithUserCollectionDto, isArray: true })
-	findAllWithUserCollection(@UserIdInAccessToken() id: string, @Query() payload: ScienceFindOnwWithUserCollectionRequestDto): Promise<ScienceFindOneWithUserCollection[]> {
+	findAllWithUserCollection(
+		@UserIdInAccessToken() id: string,
+		@Query() payload: ScienceFindOnwWithUserCollectionRequestDto,
+	): Promise<ScienceFindOneWithUserCollection[]> {
 		return this.service.findAllWithUserCollection({ ...payload, userId: payload.userId ?? id })
 	}
 
@@ -78,7 +81,10 @@ export class ScienceController {
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: ScienceFindOneRequestDto, @Body() payload: ScienceUpdateRequestDto): Promise<ScienceUpdateResponse> {
+	update(
+		@Param() params: ScienceFindOneRequestDto,
+		@Body() payload: ScienceUpdateRequestDto,
+	): Promise<ScienceUpdateResponse> {
 		return this.service.update(params, payload)
 	}
 

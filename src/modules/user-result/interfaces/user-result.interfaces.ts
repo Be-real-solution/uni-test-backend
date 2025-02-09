@@ -1,4 +1,3 @@
-
 export declare interface IUserResultAnswerDataResponse {
 	id?: string
 	userResultId: string
@@ -6,7 +5,6 @@ export declare interface IUserResultAnswerDataResponse {
 	findAnswerCount: number
 	getTime: string
 	createdAt?: Date
-
 }
 
 export declare interface IUserResultAnswerDataCreate {
@@ -39,7 +37,6 @@ export declare interface IUserResultResponse {
 	createdAt: Date
 	userResultAnswerData?: IUserResultAnswerDataResponse[]
 }
-
 
 export declare interface ICreateUserResultRepository {
 	compyuterName: string
@@ -81,6 +78,7 @@ export declare interface IUpdateUserResultRepository {
 	allQuestionCount?: number
 	findQuestionCount?: number
 	hasFinished?: boolean
+	isPending?: boolean
 	createdAt?: Date
 	userId?: string
 	groupName?: string

@@ -55,7 +55,14 @@ export class UserCollectionRepository {
 								text: true,
 								imageUrl: true,
 								createdAt: true,
-								answers: { select: { id: true, text: true, createdAt: true, isCorrect: true } },
+								answers: {
+									select: {
+										id: true,
+										text: true,
+										createdAt: true,
+										isCorrect: true,
+									},
+								},
 							},
 						},
 						science: {

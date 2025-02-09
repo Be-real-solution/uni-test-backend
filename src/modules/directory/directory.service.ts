@@ -78,7 +78,7 @@ export class DirectoryService {
 		const old_directory = await this.findOne(id)
 
 		let new_directory: IFindOneDirectoryResponse | null
-		let payload_condition: { id: string | null; name: string } = { id: '', name: '' }
+		const payload_condition: { id: string | null; name: string } = { id: '', name: '' }
 
 		if (payload.parentId != old_directory.parentId && payload.name != old_directory.name) {
 			payload_condition.id =
@@ -91,7 +91,7 @@ export class DirectoryService {
 			}
 
 			new_directory = await this.repository.update(id, payload)
-		}  else  {
+		} else {
 			new_directory = old_directory
 		}
 

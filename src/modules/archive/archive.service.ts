@@ -48,7 +48,10 @@ export class ArchiveService {
 	}
 
 	async create(payload: ArchiveCreateRequest): Promise<ArchiveCreateResponse> {
-		const userCollection = await this.userCollectionRepository.findByUserCollection({ collectionId: payload.collectionId, userId: payload.userId })
+		const userCollection = await this.userCollectionRepository.findByUserCollection({
+			collectionId: payload.collectionId,
+			userId: payload.userId,
+		})
 		console.log('userCollec', userCollection)
 		if (!userCollection || !userCollection.haveAttempt) {
 			throw new BadRequestException("You haven't attempt for this collection")
@@ -58,13 +61,19 @@ export class ArchiveService {
 		if (userCollection.haveAttempt === 1) {
 			await this.userCollectionRepository.delete({ id: userCollection.id })
 		} else {
-			await this.userCollectionRepository.update({ id: userCollection.id, haveAttempt: userCollection.haveAttempt - 1 })
+			await this.userCollectionRepository.update({
+				id: userCollection.id,
+				haveAttempt: userCollection.haveAttempt - 1,
+			})
 		}
 
 		return null
 	}
 
-	async update(params: ArchiveFindOneRequest, payload: ArchiveUpdateRequest): Promise<ArchiveUpdateResponse> {
+	async update(
+		params: ArchiveFindOneRequest,
+		payload: ArchiveUpdateRequest,
+	): Promise<ArchiveUpdateResponse> {
 		await this.findOne({ id: params.id })
 
 		await this.repository.update({ ...params, ...payload })
@@ -90,7 +99,6 @@ export class ArchiveService {
 				a.user.fullName,
 				a.faculty.name,
 				a.course.stage,
-				// a.semestr.stage,
 				a.group.name,
 				a.collection.science.name,
 				a.collection.name,
@@ -113,7 +121,20 @@ export class ArchiveService {
 		}
 
 		const table = [
-			['№', 'F.I.SH', 'Fakultet', 'Kurs', 'Semestr', 'Guruh', 'Fan', 'Test', 'Boshlangan vaqt', 'Tugatilgan vaqt', 'Umumiy testlar soni', 'Natija'],
+			[
+				'№',
+				'F.I.SH',
+				'Fakultet',
+				'Kurs',
+				'Semestr',
+				'Guruh',
+				'Fan',
+				'Test',
+				'Boshlangan vaqt',
+				'Tugatilgan vaqt',
+				'Umumiy testlar soni',
+				'Natija',
+			],
 			// [0, 'Qodirov Jahongir', 'Bugalteriya', 1, 1, 'Buxgalteriya ishi', 'Tarix', 'Tarix yakuniy test', this.formatDate(new Date()), this.formatDate(new Date()), 10, 5],
 			...mappedArchives,
 		]
@@ -151,7 +172,10 @@ export class ArchiveService {
 
 		const buffer = await workbook.xlsx.writeBuffer()
 		res.setHeader('Content-Disposition', 'attachment; filename="archives.xlsx"')
-		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+		res.setHeader(
+			'Content-Type',
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		)
 		res.write(buffer)
 		res.end()
 	}
@@ -168,7 +192,6 @@ export class ArchiveService {
 				a.user.fullName,
 				a.faculty.name,
 				a.course.stage,
-				// a.semestr.stage,
 				a.group.name,
 				a.collection.science.name,
 				a.collection.name,
@@ -191,7 +214,20 @@ export class ArchiveService {
 		}
 
 		const table = [
-			['№', 'F.I.SH', 'Fakultet', 'Kurs', 'Semestr', 'Guruh', 'Fan', 'Test', 'Boshlangan vaqt', 'Tugatilgan vaqt', 'Umumiy testlar soni', 'Natija'],
+			[
+				'№',
+				'F.I.SH',
+				'Fakultet',
+				'Kurs',
+				'Semestr',
+				'Guruh',
+				'Fan',
+				'Test',
+				'Boshlangan vaqt',
+				'Tugatilgan vaqt',
+				'Umumiy testlar soni',
+				'Natija',
+			],
 			...mappedArchives,
 		]
 
