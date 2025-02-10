@@ -20,7 +20,7 @@ export declare interface FacultyFindFullForSetCollection {
 export declare interface FacultyCourse {
 	id: string
 	stage: number
-	semestrs: FacultyCourseSemestr[]
+	groups: FacultyCourseSemestrGroup[]
 }
 
 export declare interface FacultyCourseSemestr {

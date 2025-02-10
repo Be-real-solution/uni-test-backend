@@ -5,19 +5,22 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { appConfig } from './configs'
 import * as BasicAuth from 'express-basic-auth'
+import * as express from 'express'
+import { join } from 'path'
 
 setImmediate(async (): Promise<void> => {
 	const app = await NestFactory.create<INestApplication>(AppModule, { cors: true })
 
 	app.use(json({ limit: '50mb' }))
 	app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
+	app.use('/api/upload', express.static(join(__dirname, '../../uploads')))
 
 	app.use(
 		'/docs*',
 		BasicAuth({
 			challenge: true,
 			users: {
-				swaggerusername: 'swaggerpassword',
+				[appConfig.swagger_login]: appConfig.swagger_password,
 			},
 		}),
 	)

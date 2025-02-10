@@ -1,3 +1,4 @@
+import { AnswerUpdateRequest } from 'modules/answer'
 import { CollectionFindOneResponse } from '../../collection'
 
 export declare interface QuestionFindFullRequest {
@@ -35,9 +36,19 @@ export declare interface AnswerDefinition {
 	text: string
 	isCorrect: boolean
 }
+
+export declare interface AnswerUpdateRequestForQuestionUpdate extends AnswerUpdateRequest {
+	id?: string
+	text?: string
+	isCorrect?: boolean
+	questionId: string
+}
+
 export declare interface QuestionUpdateRequest {
 	text?: string
+	imageUrl?: string
 	collectionId?: string
+	answers?: AnswerUpdateRequestForQuestionUpdate[]
 }
 
 export declare interface QuestionDeleteRequest {
@@ -55,14 +66,23 @@ export declare interface QuestionFindAllResponse {
 	data: QuestionFindOneResponse[]
 }
 
+export declare interface AnswerFindOneForQuestionResponse {
+	id: string
+	text: string
+	isCorrect: boolean
+	createdAt: Date
+}
+
 export declare interface QuestionFindOneResponse {
 	id: string
 	text: string
+	imageUrl: string
+	answers?: AnswerFindOneForQuestionResponse[]
 	collection?: CollectionFindOneResponse
 	createdAt: Date
 }
 
-export declare type QuestionCreateResponse = null
+export declare type QuestionCreateResponse = QuestionFindOneResponse
 
 export declare type QuestionsCreateWithAnswersResponse = null
 

@@ -40,8 +40,13 @@ export class AnswerService {
 		return answer
 	}
 
-	async findOneByTextWithQuestionId(payload: Partial<AnswerCreateRequest>): Promise<AnswerFindOneResponse> {
-		const answer = await this.repository.findByTextWithQuestionId({ text: payload.text, questionId: payload.questionId })
+	async findOneByTextWithQuestionId(
+		payload: Partial<AnswerCreateRequest>,
+	): Promise<AnswerFindOneResponse> {
+		const answer = await this.repository.findByTextWithQuestionId({
+			text: payload.text,
+			questionId: payload.questionId,
+		})
 		if (answer) {
 			throw new BadRequestException('Answer already exists')
 		}
@@ -49,13 +54,24 @@ export class AnswerService {
 	}
 
 	async create(payload: AnswerCreateRequest): Promise<AnswerCreateResponse> {
-		await this.findOneByTextWithQuestionId({ text: payload.text, questionId: payload.questionId })
+		await this.findOneByTextWithQuestionId({
+			text: payload.text,
+			questionId: payload.questionId,
+		})
 		return this.repository.create(payload)
 	}
 
-	async update(params: AnswerFindOneRequest, payload: AnswerUpdateRequest): Promise<AnswerUpdateResponse> {
+	async update(
+		params: AnswerFindOneRequest,
+		payload: AnswerUpdateRequest,
+	): Promise<AnswerUpdateResponse> {
 		await this.findOne({ id: params.id })
-		payload.text ? await this.findOneByTextWithQuestionId({ text: payload.text, questionId: payload.questionId }) : null
+		payload.text
+			? await this.findOneByTextWithQuestionId({
+					text: payload.text,
+					questionId: payload.questionId,
+			  })
+			: null
 
 		await this.repository.update({ ...params, ...payload })
 		return null

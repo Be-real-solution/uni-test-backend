@@ -48,8 +48,13 @@ export class ScienceService {
 		return science
 	}
 
-	async findOneBySinceId(payload: Partial<ScienceFindOneResponse>): Promise<ScienceFindOneResponse> {
-		const science = await this.repository.findByNameOrSinceId({ since_id: payload.since_id, id: payload.id })
+	async findOneBySinceId(
+		payload: Partial<ScienceFindOneResponse>,
+	): Promise<ScienceFindOneResponse> {
+		const science = await this.repository.findByNameOrSinceId({
+			since_id: payload.since_id,
+			id: payload.id,
+		})
 		if (science) {
 			throw new BadRequestException('Science already exists')
 		}
@@ -61,7 +66,10 @@ export class ScienceService {
 		return this.repository.create(payload)
 	}
 
-	async update(params: ScienceFindOneRequest, payload: ScienceUpdateRequest): Promise<ScienceUpdateResponse> {
+	async update(
+		params: ScienceFindOneRequest,
+		payload: ScienceUpdateRequest,
+	): Promise<ScienceUpdateResponse> {
 		await this.findOne({ id: params.id })
 		payload.name ? await this.findOneBySinceId({ id: params.id }) : null
 
@@ -75,7 +83,9 @@ export class ScienceService {
 		return null
 	}
 
-	async findAllWithUserCollection(payload: ScienceFindOnwWithUserCollectionRequest): Promise<ScienceFindOneWithUserCollection[]> {
+	async findAllWithUserCollection(
+		payload: ScienceFindOnwWithUserCollectionRequest,
+	): Promise<ScienceFindOneWithUserCollection[]> {
 		return this.repository.findAllWithUserCollection(payload)
 	}
 }

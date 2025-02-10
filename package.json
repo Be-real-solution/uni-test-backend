@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "eslint src --fix && prettier src --write",
-    "build": "rm -rf dist && tsc",
+    "build": "nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -38,6 +38,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "swagger-ui-express": "^5.0.1",
+    "user-agents": "^1.1.369",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
@@ -50,6 +51,7 @@
     "@types/node": "18.11.18",
     "@types/nodemailer": "^6.4.14",
     "@types/supertest": "^2.0.11",
+    "@types/user-agents": "^1.0.4",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",

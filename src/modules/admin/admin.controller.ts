@@ -1,4 +1,17 @@
-import { BadGatewayException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
+import {
+	BadGatewayException,
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query,
+	UploadedFile,
+	UseGuards,
+	UseInterceptors,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AdminService } from './admin.service'
 import {
@@ -17,7 +30,15 @@ import {
 import { diskStorage } from 'multer'
 import { extname, join } from 'path'
 import { v4 as uuidv4 } from 'uuid'
-import { AdminCreateResponse, AdminDeleteResponse, AdminFindAllResponse, AdminFindFullResponse, AdminFindOneResponse, AdminSignInResponse, AdminUpdateResponse } from './interfaces'
+import {
+	AdminCreateResponse,
+	AdminDeleteResponse,
+	AdminFindAllResponse,
+	AdminFindFullResponse,
+	AdminFindOneResponse,
+	AdminSignInResponse,
+	AdminUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -76,7 +97,10 @@ export class AdminController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
-	create(@Body() payload: AdminCreateRequestDto, @UploadedFile() image: Express.Multer.File): Promise<AdminCreateResponse> {
+	create(
+		@Body() payload: AdminCreateRequestDto,
+		@UploadedFile() image: Express.Multer.File,
+	): Promise<AdminCreateResponse> {
 		const imagePath = image ? `/uploads/${image.filename}` : ''
 		return this.service.create({ ...payload, image: imagePath })
 	}
@@ -110,7 +134,11 @@ export class AdminController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
-	update(@Param() params: AdminFindOneRequestDto, @Body() payload: AdminUpdateRequestDto, @UploadedFile() image?: Express.Multer.File): Promise<AdminUpdateResponse> {
+	update(
+		@Param() params: AdminFindOneRequestDto,
+		@Body() payload: AdminUpdateRequestDto,
+		@UploadedFile() image?: Express.Multer.File,
+	): Promise<AdminUpdateResponse> {
 		const imagePath = image ? `/uploads/${image.filename}` : undefined
 		return this.service.update(params, { ...payload, image: imagePath })
 	}

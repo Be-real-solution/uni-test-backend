@@ -47,7 +47,10 @@ export class AdminService {
 	}
 
 	async findOneByEmail(payload: Partial<AdminFindOneResponse>): Promise<AdminFindOneResponse> {
-		const admin = await this.repository.findByEmail({ emailAddress: payload.emailAddress, id: payload.id })
+		const admin = await this.repository.findByEmail({
+			emailAddress: payload.emailAddress,
+			id: payload.id,
+		})
 		if (admin) {
 			throw new BadRequestException('Admin already exists')
 		}
@@ -55,7 +58,10 @@ export class AdminService {
 	}
 
 	async findByEmail(payload: Partial<AdminFindOneResponse>): Promise<AdminFindOneResponse> {
-		const admin = await this.repository.findByEmail({ emailAddress: payload.emailAddress, id: payload.id })
+		const admin = await this.repository.findByEmail({
+			emailAddress: payload.emailAddress,
+			id: payload.id,
+		})
 		return admin
 	}
 
@@ -74,13 +80,20 @@ export class AdminService {
 
 	async create(payload: AdminCreateRequest): Promise<AdminCreateResponse> {
 		const password = await bcrypt.hash(payload.password, 7)
-		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress }) : null
+		payload.emailAddress
+			? await this.findOneByEmail({ emailAddress: payload.emailAddress })
+			: null
 		return this.repository.create({ ...payload, password })
 	}
 
-	async update(params: AdminFindOneRequest, payload: AdminUpdateRequest): Promise<AdminUpdateResponse> {
+	async update(
+		params: AdminFindOneRequest,
+		payload: AdminUpdateRequest,
+	): Promise<AdminUpdateResponse> {
 		await this.findOne({ id: params.id })
-		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress, id: params.id }) : null
+		payload.emailAddress
+			? await this.findOneByEmail({ emailAddress: payload.emailAddress, id: params.id })
+			: null
 		const password = payload.password ? await bcrypt.hash(payload.password, 7) : undefined
 		await this.repository.update({ ...params, ...payload, password })
 		return null

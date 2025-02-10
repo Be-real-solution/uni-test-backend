@@ -151,9 +151,6 @@ export class ScienceCollectionArchiveDto implements ScienceCollectionArchive {
 	@ApiProperty({ type: ScienceCollectionArchiveCourseDto })
 	course: ScienceCollectionArchiveCourse
 
-	@ApiProperty({ type: ScienceCollectionArchiveSemestrDto })
-	semestr: ScienceCollectionArchiveSemestr
-
 	@ApiProperty({ example: 4 })
 	result: number
 
@@ -200,7 +197,9 @@ export class ScienceFindFullForArchiveDto implements ScienceFindFullForArchive {
 	collections: ScienceCollection[]
 }
 
-export class ScienceFindOnwWithUserCollectionRequestDto implements ScienceFindOnwWithUserCollectionRequest {
+export class ScienceFindOnwWithUserCollectionRequestDto
+	implements ScienceFindOnwWithUserCollectionRequest
+{
 	@ApiPropertyOptional({ example: 'uuid' })
 	@IsUUID('4')
 	@IsOptional()

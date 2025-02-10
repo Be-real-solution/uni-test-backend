@@ -28,7 +28,6 @@ export class GroupRepository {
 			select: {
 				id: true,
 				course: { select: { id: true, stage: true, createdAt: true } },
-				semestr: { select: { id: true, stage: true, createdAt: true } },
 				faculty: { select: { id: true, name: true, createdAt: true } },
 				name: true,
 				createdAt: true,
@@ -46,7 +45,6 @@ export class GroupRepository {
 			take: payload.pageSize,
 			select: {
 				id: true,
-				semestr: { select: { id: true, stage: true, createdAt: true } },
 				course: { select: { id: true, stage: true, createdAt: true } },
 				faculty: { select: { id: true, name: true, createdAt: true } },
 				name: true,
@@ -73,7 +71,6 @@ export class GroupRepository {
 			select: {
 				id: true,
 				course: { select: { id: true, stage: true, createdAt: true } },
-				semestr: { select: { id: true, stage: true, createdAt: true } },
 				faculty: { select: { id: true, name: true, createdAt: true } },
 				name: true,
 				createdAt: true,
@@ -98,20 +95,25 @@ export class GroupRepository {
 	}
 
 	async create(payload: GroupCreateRequest): Promise<GroupCreateResponse> {
-		await this.prisma.group.create({ data: { name: payload.name, courseId: payload.courseId, facultyId: payload.facultyId, semestrId: payload.semestrId } })
+		await this.prisma.group.create({
+			data: { name: payload.name, courseId: payload.courseId, facultyId: payload.facultyId },
+		})
 		return null
 	}
 
 	async update(payload: GroupFindOneRequest & GroupUpdateRequest): Promise<GroupUpdateRequest> {
 		await this.prisma.group.update({
 			where: { id: payload.id, deletedAt: null },
-			data: { name: payload.name, courseId: payload.courseId, facultyId: payload.facultyId, semestrId: payload.semestrId },
+			data: { name: payload.name, courseId: payload.courseId, facultyId: payload.facultyId },
 		})
 		return null
 	}
 
 	async delete(payload: GroupDeleteRequest): Promise<GroupDeleteResponse> {
-		await this.prisma.group.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.group.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 		return null
 	}
 }

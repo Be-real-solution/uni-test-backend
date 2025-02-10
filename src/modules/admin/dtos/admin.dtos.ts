@@ -11,7 +11,15 @@ import {
 	AdminSignInResponse,
 	AdminUpdateRequest,
 } from '../interfaces'
-import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import {
+	IsEmail,
+	IsEnum,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	IsUUID,
+} from 'class-validator'
 import { $Enums } from '@prisma/client'
 import { SignInTokenDefinition, SignInTokenDefinitionDto } from '../../user'
 

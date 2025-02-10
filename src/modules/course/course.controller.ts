@@ -12,7 +12,14 @@ import {
 	CourseFindAllResponseDto,
 	CourseFindOneResponseDto,
 } from './dtos'
-import { CourseCreateResponse, CourseDeleteResponse, CourseFindAllResponse, CourseFindFullResponse, CourseFindOneResponse, CourseUpdateResponse } from './interfaces'
+import {
+	CourseCreateResponse,
+	CourseDeleteResponse,
+	CourseFindAllResponse,
+	CourseFindFullResponse,
+	CourseFindOneResponse,
+	CourseUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 
@@ -53,7 +60,10 @@ export class CourseController {
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: CourseFindOneRequestDto, @Body() payload: CourseUpdateRequestDto): Promise<CourseUpdateResponse> {
+	update(
+		@Param() params: CourseFindOneRequestDto,
+		@Body() payload: CourseUpdateRequestDto,
+	): Promise<CourseUpdateResponse> {
 		return this.service.update(params, payload)
 	}
 

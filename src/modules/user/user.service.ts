@@ -22,16 +22,25 @@ import {
 } from './interfaces'
 import { UserInfoService } from '../user-info'
 import { JWTService } from '../jwt'
+import { SettingService } from 'modules/setting/setting.service'
 
 @Injectable()
 export class UserService {
 	private readonly repository: UserRepository
 	private readonly jwtService: JWTService
 	private readonly userInfoService: UserInfoService
-	constructor(repository: UserRepository, userInfoService: UserInfoService, jwtService: JWTService) {
+	private readonly settingService: SettingService
+
+	constructor(
+		repository: UserRepository,
+		userInfoService: UserInfoService,
+		jwtService: JWTService,
+		settingService: SettingService,
+	) {
 		this.repository = repository
 		this.jwtService = jwtService
 		this.userInfoService = userInfoService
+		this.settingService = settingService
 	}
 
 	async findFull(payload: UserFindFullRequest): Promise<UserFindFullResponse> {
@@ -49,11 +58,17 @@ export class UserService {
 		if (!user) {
 			throw new BadRequestException('User not found')
 		}
+		const setting = await this.settingService.findAll()
+		user.setting = setting
+
 		return user
 	}
 
 	async findOneByEmail(payload: Partial<UserFindOneResponse>): Promise<UserFindOneResponse> {
-		const user = await this.repository.findByEmail({ emailAddress: payload.emailAddress, id: payload.id })
+		const user = await this.repository.findByEmail({
+			emailAddress: payload.emailAddress,
+			id: payload.id,
+		})
 		if (user) {
 			throw new BadRequestException('User already exists')
 		}
@@ -61,7 +76,10 @@ export class UserService {
 	}
 
 	async findByEmail(payload: Partial<UserFindOneResponse>): Promise<UserFindOneResponse> {
-		const user = await this.repository.findByEmail({ emailAddress: payload.emailAddress, id: payload.id })
+		const user = await this.repository.findByEmail({
+			emailAddress: payload.emailAddress,
+			id: payload.id,
+		})
 		return user
 	}
 
@@ -82,19 +100,28 @@ export class UserService {
 
 	async create(payload: UserCreateRequest): Promise<UserCreateResponse> {
 		const password = await bcrypt.hash(payload.password, 7)
-		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress }) : null
+		payload.emailAddress
+			? await this.findOneByEmail({ emailAddress: payload.emailAddress })
+			: null
 		return this.repository.create({ ...payload, password })
 	}
 
 	async createWithUserInfo(payload: UserCreateWithInfoRequest): Promise<UserCreateResponse> {
 		const password = await bcrypt.hash(payload.password, 7)
-		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress }) : null
-		const userId = await this.repository.createWithReturningId({ ...payload, password: password })
-		await this.userInfoService.create({ groupId: payload.groupId, hemisId: payload.hemisId, userId: userId }).catch(async (e) => {
-			console.log(e)
-			await this.repository.hardDelete({ id: userId })
-			throw new BadRequestException(e)
+		payload.emailAddress
+			? await this.findOneByEmail({ emailAddress: payload.emailAddress })
+			: null
+		const userId = await this.repository.createWithReturningId({
+			...payload,
+			password: password,
 		})
+		await this.userInfoService
+			.create({ groupId: payload.groupId, hemisId: payload.hemisId, userId: userId })
+			.catch(async (e) => {
+				console.log(e)
+				await this.repository.hardDelete({ id: userId })
+				throw new BadRequestException(e)
+			})
 
 		return null
 	}
@@ -109,25 +136,37 @@ export class UserService {
 				image: p.image,
 				hemis_id: p.hemis_id,
 				password: p.password,
-				semestr: Number(p.semestr),
 			}
 		})
 		return this.repository.createWithJsonFile(mappedPayload)
 	}
 
-	async updateWithUserInfo(params: UserFindOneRequest, payload: UserUpdateWithInfoRequest): Promise<UserUpdateResponse> {
+	async updateWithUserInfo(
+		params: UserFindOneRequest,
+		payload: UserUpdateWithInfoRequest,
+	): Promise<UserUpdateResponse> {
 		await this.findOne({ id: params.id })
-		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress, id: params.id }) : null
+		payload.emailAddress
+			? await this.findOneByEmail({ emailAddress: payload.emailAddress, id: params.id })
+			: null
 		const password = payload.password ? await bcrypt.hash(payload.password, 7) : undefined
 		await this.repository.update({ ...params, ...payload, password })
 		const userInfo = await this.userInfoService.findOneByUserId({ userId: params.id })
-		await this.userInfoService.update({ id: userInfo.id }, { groupId: payload.groupId, hemisId: payload.hemisId, userId: params.id })
+		await this.userInfoService.update(
+			{ id: userInfo.id },
+			{ groupId: payload.groupId, hemisId: payload.hemisId, userId: params.id },
+		)
 		return null
 	}
 
-	async update(params: UserFindOneRequest, payload: UserUpdateRequest): Promise<UserUpdateResponse> {
+	async update(
+		params: UserFindOneRequest,
+		payload: UserUpdateRequest,
+	): Promise<UserUpdateResponse> {
 		await this.findOne({ id: params.id })
-		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress, id: params.id }) : null
+		payload.emailAddress
+			? await this.findOneByEmail({ emailAddress: payload.emailAddress, id: params.id })
+			: null
 		const password = payload.password ? await bcrypt.hash(payload.password, 7) : undefined
 		await this.repository.update({ ...params, ...payload, password })
 		return null

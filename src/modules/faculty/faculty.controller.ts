@@ -68,7 +68,10 @@ export class FacultyController {
 
 	@Patch(':id')
 	@ApiResponse({ type: null })
-	update(@Param() params: FacultyFindOneRequestDto, @Body() payload: FacultyUpdateRequestDto): Promise<FacultyUpdateResponse> {
+	update(
+		@Param() params: FacultyFindOneRequestDto,
+		@Body() payload: FacultyUpdateRequestDto,
+	): Promise<FacultyUpdateResponse> {
 		return this.service.update(params, payload)
 	}
 

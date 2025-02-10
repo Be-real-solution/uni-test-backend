@@ -32,7 +32,16 @@ export class UserInfoRepository {
 			},
 			select: {
 				id: true,
-				user: { select: { id: true, image: true, type: true, fullName: true, emailAddress: true, createdAt: true } },
+				user: {
+					select: {
+						id: true,
+						image: true,
+						type: true,
+						fullName: true,
+						emailAddress: true,
+						createdAt: true,
+					},
+				},
 				createdAt: true,
 				hemisId: true,
 				group: { select: { id: true, name: true, createdAt: true } },
@@ -55,7 +64,16 @@ export class UserInfoRepository {
 			take: payload.pageSize,
 			select: {
 				id: true,
-				user: { select: { id: true, image: true, type: true, fullName: true, emailAddress: true, createdAt: true } },
+				user: {
+					select: {
+						id: true,
+						image: true,
+						type: true,
+						fullName: true,
+						emailAddress: true,
+						createdAt: true,
+					},
+				},
 				createdAt: true,
 				hemisId: true,
 				group: { select: { id: true, name: true, createdAt: true } },
@@ -85,7 +103,16 @@ export class UserInfoRepository {
 			where: { id: payload.id, deletedAt: null },
 			select: {
 				id: true,
-				user: { select: { id: true, image: true, type: true, fullName: true, emailAddress: true, createdAt: true } },
+				user: {
+					select: {
+						id: true,
+						image: true,
+						type: true,
+						fullName: true,
+						emailAddress: true,
+						createdAt: true,
+					},
+				},
 				createdAt: true,
 				hemisId: true,
 				group: { select: { id: true, name: true, createdAt: true } },
@@ -95,12 +122,23 @@ export class UserInfoRepository {
 		return userInfo
 	}
 
-	async findOneByHemisId(payload: Partial<UserInfoCreateRequest>): Promise<UserInfoFindOneResponse> {
+	async findOneByHemisId(
+		payload: Partial<UserInfoCreateRequest>,
+	): Promise<UserInfoFindOneResponse> {
 		const userInfo = await this.prisma.userInfo.findFirst({
 			where: { hemisId: payload.hemisId, deletedAt: null },
 			select: {
 				id: true,
-				user: { select: { id: true, image: true, type: true, fullName: true, emailAddress: true, createdAt: true } },
+				user: {
+					select: {
+						id: true,
+						image: true,
+						type: true,
+						fullName: true,
+						emailAddress: true,
+						createdAt: true,
+					},
+				},
 				createdAt: true,
 				hemisId: true,
 				group: { select: { id: true, name: true, createdAt: true } },
@@ -109,12 +147,23 @@ export class UserInfoRepository {
 		return userInfo
 	}
 
-	async findOneByHemisId2(payload: Partial<UserInfoCreateRequest>): Promise<UserInfoFindOneResponse> {
+	async findOneByHemisId2(
+		payload: Partial<UserInfoCreateRequest>,
+	): Promise<UserInfoFindOneResponse> {
 		const userInfo = await this.prisma.userInfo.findFirst({
 			where: { hemisId: payload.hemisId, deletedAt: null, userId: { not: payload.userId } },
 			select: {
 				id: true,
-				user: { select: { id: true, image: true, type: true, fullName: true, emailAddress: true, createdAt: true } },
+				user: {
+					select: {
+						id: true,
+						image: true,
+						type: true,
+						fullName: true,
+						emailAddress: true,
+						createdAt: true,
+					},
+				},
 				createdAt: true,
 				hemisId: true,
 				group: { select: { id: true, name: true, createdAt: true } },
@@ -128,7 +177,16 @@ export class UserInfoRepository {
 			where: { userId: payload.userId, deletedAt: null },
 			select: {
 				id: true,
-				user: { select: { id: true, image: true, type: true, fullName: true, emailAddress: true, createdAt: true } },
+				user: {
+					select: {
+						id: true,
+						image: true,
+						type: true,
+						fullName: true,
+						emailAddress: true,
+						createdAt: true,
+					},
+				},
 				createdAt: true,
 				hemisId: true,
 				group: { select: { id: true, name: true, createdAt: true } },
@@ -139,7 +197,16 @@ export class UserInfoRepository {
 				where: { userId: payload.userId },
 				select: {
 					id: true,
-					user: { select: { id: true, image: true, type: true, fullName: true, emailAddress: true, createdAt: true } },
+					user: {
+						select: {
+							id: true,
+							image: true,
+							type: true,
+							fullName: true,
+							emailAddress: true,
+							createdAt: true,
+						},
+					},
 					createdAt: true,
 					hemisId: true,
 					group: { select: { id: true, name: true, createdAt: true } },
@@ -155,17 +222,27 @@ export class UserInfoRepository {
 	}
 
 	async create(payload: UserInfoCreateRequest): Promise<UserInfoCreateResponse> {
-		await this.prisma.userInfo.create({ data: { userId: payload.userId, hemisId: payload.hemisId, groupId: payload.groupId } })
+		await this.prisma.userInfo.create({
+			data: { userId: payload.userId, hemisId: payload.hemisId, groupId: payload.groupId },
+		})
 		return null
 	}
 
-	async update(payload: UserInfoFindOneRequest & UserInfoUpdateRequest): Promise<UserInfoUpdateRequest> {
-		await this.prisma.userInfo.update({ where: { id: payload.id, deletedAt: null }, data: { userId: payload.userId, hemisId: payload.hemisId, groupId: payload.groupId } })
+	async update(
+		payload: UserInfoFindOneRequest & UserInfoUpdateRequest,
+	): Promise<UserInfoUpdateRequest> {
+		await this.prisma.userInfo.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { userId: payload.userId, hemisId: payload.hemisId, groupId: payload.groupId },
+		})
 		return null
 	}
 
 	async delete(payload: UserInfoDeleteRequest): Promise<UserInfoDeleteResponse> {
-		await this.prisma.userInfo.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.userInfo.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 		return null
 	}
 }

@@ -14,10 +14,23 @@ import {
 	CollectionFindOneResponse,
 	CollectionUpdateRequest,
 } from '../interfaces'
-import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator'
+import {
+	IsArray,
+	IsBoolean,
+	IsEnum,
+	IsNotEmpty,
+	IsNumber,
+	IsObject,
+	IsOptional,
+	IsString,
+	IsUUID,
+	ValidateNested,
+} from 'class-validator'
 import { $Enums } from '@prisma/client'
 import { ScienceFindOneResponse, ScienceFindOneResponseDto } from '../../science'
 import { AdminFindOneResponse, AdminFindOneResponseDto } from '../../admin'
+import { IFindOneDirectoryResponse } from 'modules/directory/interfaces'
+import { CreateDirectoryDto, FindOneDirectoryDto } from 'modules/directory/dto'
 
 export class CollectionFindFullRequestDto implements CollectionFindFullRequest {
 	@ApiPropertyOptional({ example: 'name' })
@@ -29,6 +42,11 @@ export class CollectionFindFullRequestDto implements CollectionFindFullRequest {
 	@IsUUID('4')
 	@IsOptional()
 	scienceId?: string
+
+	@ApiPropertyOptional({ example: 'uuid' })
+	@IsUUID('4')
+	@IsOptional()
+	directoryId?: string
 
 	@ApiPropertyOptional({ example: 'uz' })
 	@IsEnum($Enums.CollectionLanguageEnum)
@@ -121,6 +139,11 @@ export class CollectionCreateRequestDto implements CollectionCreateRequest {
 	@IsUUID('4')
 	@IsNotEmpty()
 	adminId: string
+
+	@ApiProperty({ example: 'uuid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	directoryId: string
 }
 
 export class CollectionBeforeCreateRequestDto implements CollectionBeforeCreateRequest {
@@ -164,6 +187,11 @@ export class CollectionBeforeCreateRequestDto implements CollectionBeforeCreateR
 	// @IsUUID('4')
 	@IsOptional()
 	adminId?: string
+
+	@ApiPropertyOptional({ example: 'uuid' })
+	// @IsUUID('4')
+	@IsOptional()
+	directoryId?: string
 }
 
 export class CollectionUpdateRequestDto implements CollectionUpdateRequest {
@@ -201,6 +229,11 @@ export class CollectionUpdateRequestDto implements CollectionUpdateRequest {
 	@IsUUID('4')
 	@IsOptional()
 	adminId?: string
+
+	@ApiPropertyOptional({ example: 'uuid' })
+	@IsUUID('4')
+	@IsOptional()
+	directoryId?: string
 }
 
 export class CollectionDeleteRequestDto implements CollectionDeleteRequest {
@@ -237,6 +270,9 @@ export class CollectionFindFullResponseDto implements CollectionFindOneResponse 
 	@ApiPropertyOptional({ type: AdminFindOneResponseDto })
 	admin?: AdminFindOneResponse
 
+	@ApiPropertyOptional({ type: FindOneDirectoryDto })
+	directory?: IFindOneDirectoryResponse
+
 	@ApiProperty({ example: new Date() })
 	createdAt: Date
 }
@@ -265,6 +301,9 @@ export class CollectionFindOneResponseDto implements CollectionFindOneResponse {
 
 	@ApiPropertyOptional({ type: AdminFindOneResponseDto })
 	admin?: AdminFindOneResponse
+
+	@ApiPropertyOptional({ type: FindOneDirectoryDto })
+	directory?: IFindOneDirectoryResponse
 
 	@ApiProperty({ example: new Date() })
 	createdAt: Date
@@ -347,6 +386,11 @@ export class CollectionBeforeCreateResponseDto implements CollectionBeforeCreate
 	@IsUUID('4')
 	@IsNotEmpty()
 	adminId: string
+
+	@ApiProperty({ example: 'uuid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	directoryId: string
 
 	@ApiProperty({ type: ColBeforeQuestionDto, isArray: true })
 	@IsArray()

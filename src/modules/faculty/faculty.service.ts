@@ -54,7 +54,10 @@ export class FacultyService {
 		return this.repository.create(payload)
 	}
 
-	async update(params: FacultyFindOneRequest, payload: FacultyUpdateRequest): Promise<FacultyUpdateResponse> {
+	async update(
+		params: FacultyFindOneRequest,
+		payload: FacultyUpdateRequest,
+	): Promise<FacultyUpdateResponse> {
 		await this.findOne({ id: params.id })
 		payload.name ? await this.findOneByName({ name: payload.name, id: params.id }) : null
 

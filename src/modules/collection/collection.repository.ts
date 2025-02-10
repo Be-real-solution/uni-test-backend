@@ -13,6 +13,7 @@ import {
 	CollectionFindOneResponse,
 	CollectionFindOneWithQuestionAnswers,
 	CollectionUpdateRequest,
+	CollectionUpdateResponse,
 } from './interfaces'
 
 @Injectable()
@@ -29,6 +30,7 @@ export class CollectionRepository {
 				language: payload.language,
 				name: { contains: payload.name, mode: 'insensitive' },
 				scienceId: payload.scienceId,
+				directoryId: payload.directoryId,
 				deletedAt: null,
 			},
 			select: {
@@ -40,7 +42,16 @@ export class CollectionRepository {
 				givenMinutes: true,
 				amountInTest: true,
 				science: { select: { id: true, name: true, since_id: true, createdAt: true } },
-				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
+				admin: {
+					select: {
+						emailAddress: true,
+						fullName: true,
+						id: true,
+						image: true,
+						type: true,
+						createdAt: true,
+					},
+				},
 			},
 			orderBy: [{ createdAt: 'desc' }],
 		})
@@ -67,7 +78,16 @@ export class CollectionRepository {
 				givenMinutes: true,
 				amountInTest: true,
 				science: { select: { id: true, name: true, since_id: true, createdAt: true } },
-				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
+				admin: {
+					select: {
+						emailAddress: true,
+						fullName: true,
+						id: true,
+						image: true,
+						type: true,
+						createdAt: true,
+					},
+				},
 			},
 			orderBy: [{ createdAt: 'desc' }],
 		})
@@ -101,7 +121,16 @@ export class CollectionRepository {
 				givenMinutes: true,
 				amountInTest: true,
 				science: { select: { id: true, name: true, since_id: true, createdAt: true } },
-				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
+				admin: {
+					select: {
+						emailAddress: true,
+						fullName: true,
+						id: true,
+						image: true,
+						type: true,
+						createdAt: true,
+					},
+				},
 			},
 		})
 
@@ -120,13 +149,24 @@ export class CollectionRepository {
 				givenMinutes: true,
 				amountInTest: true,
 				science: { select: { id: true, name: true, since_id: true, createdAt: true } },
-				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
+				admin: {
+					select: {
+						emailAddress: true,
+						fullName: true,
+						id: true,
+						image: true,
+						type: true,
+						createdAt: true,
+					},
+				},
 			},
 		})
 		return collection
 	}
 
-	async findOneWithQuestionAnswers(payload: CollectionFindOneRequest): Promise<CollectionFindOneWithQuestionAnswers> {
+	async findOneWithQuestionAnswers(
+		payload: CollectionFindOneRequest,
+	): Promise<CollectionFindOneWithQuestionAnswers> {
 		const collection = await this.prisma.collection.findFirst({
 			where: { id: payload.id, deletedAt: null },
 			select: {
@@ -137,14 +177,26 @@ export class CollectionRepository {
 				givenMinutes: true,
 				maxAttempts: true,
 				science: { select: { id: true, name: true, since_id: true, createdAt: true } },
-				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
+				admin: {
+					select: {
+						emailAddress: true,
+						fullName: true,
+						id: true,
+						image: true,
+						type: true,
+						createdAt: true,
+					},
+				},
 				createdAt: true,
 				questions: {
+					where: { deletedAt: null },
 					select: {
 						id: true,
 						text: true,
+						imageUrl: true,
 						createdAt: true,
 						answers: {
+							where: { deletedAt: null },
 							select: {
 								id: true,
 								text: true,
@@ -161,7 +213,7 @@ export class CollectionRepository {
 	}
 
 	async create(payload: CollectionCreateRequest): Promise<CollectionCreateResponse> {
-		await this.prisma.collection.create({
+		return this.prisma.collection.create({
 			data: {
 				name: payload.name,
 				amountInTest: payload.amountInTest,
@@ -170,9 +222,9 @@ export class CollectionRepository {
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
 				adminId: payload.adminId,
+				directoryId: payload.directoryId,
 			},
 		})
-		return null
 	}
 
 	async createWithReturningId(payload: CollectionCreateRequest): Promise<string> {
@@ -185,13 +237,16 @@ export class CollectionRepository {
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
 				adminId: payload.adminId,
+				directoryId: payload.directoryId,
 			},
 		})
 		return collection.id
 	}
 
-	async update(payload: CollectionFindOneRequest & CollectionUpdateRequest): Promise<CollectionUpdateRequest> {
-		await this.prisma.collection.update({
+	async update(
+		payload: CollectionFindOneRequest & CollectionUpdateRequest,
+	): Promise<CollectionUpdateResponse> {
+		return this.prisma.collection.update({
 			where: { id: payload.id, deletedAt: null },
 			data: {
 				name: payload.name,
@@ -201,31 +256,55 @@ export class CollectionRepository {
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
 				adminId: payload.adminId,
+				directoryId: payload.directoryId,
 			},
 		})
+
 		return null
 	}
 
 	async delete(payload: CollectionDeleteRequest): Promise<CollectionDeleteResponse> {
-		await this.prisma.collection.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
-		await this.prisma.question.updateMany({ where: { collectionId: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
-		const question = await this.prisma.question.findMany({ where: { deletedAt: null, collectionId: payload.id } })
-		await this.prisma.answer.updateMany({ where: { questionId: { in: question.map((q) => q.id) }, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.collection.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
+		await this.prisma.question.updateMany({
+			where: { collectionId: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
+		const question = await this.prisma.question.findMany({
+			where: { deletedAt: null, collectionId: payload.id },
+		})
+		await this.prisma.answer.updateMany({
+			where: { questionId: { in: question.map((q) => q.id) }, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 
 		return null
 	}
 
 	async HardDelete(payload: CollectionDeleteRequest): Promise<CollectionDeleteResponse> {
 		await this.prisma.collection.delete({ where: { id: payload.id, deletedAt: null } })
-		await this.prisma.question.updateMany({ where: { collectionId: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
-		const question = await this.prisma.question.findMany({ where: { deletedAt: null, collectionId: payload.id } })
-		await this.prisma.answer.updateMany({ where: { questionId: { in: question.map((q) => q.id) }, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.question.updateMany({
+			where: { collectionId: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
+		const question = await this.prisma.question.findMany({
+			where: { deletedAt: null, collectionId: payload.id },
+		})
+		await this.prisma.answer.updateMany({
+			where: { questionId: { in: question.map((q) => q.id) }, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 
 		return null
 	}
 
 	async scienceFindOne(payload: { id: string }): Promise<{ id: string; name: string }> {
-		const s = await this.prisma.science.findFirst({ where: { id: payload.id, deletedAt: null }, select: { id: true, name: true } })
+		const s = await this.prisma.science.findFirst({
+			where: { id: payload.id, deletedAt: null },
+			select: { id: true, name: true },
+		})
 		return s
 	}
 }

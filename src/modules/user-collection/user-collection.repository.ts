@@ -23,12 +23,23 @@ export class UserCollectionRepository {
 		this.prisma = prisma
 	}
 
-	async findFull(payload: UserCollectionFindFullRequest): Promise<UserCollectionFindFullResponse> {
+	async findFull(
+		payload: UserCollectionFindFullRequest,
+	): Promise<UserCollectionFindFullResponse> {
 		const userCollections = await this.prisma.userCollection.findMany({
 			where: { userId: payload.userId, collectionId: payload.collectionId, deletedAt: null },
 			select: {
 				id: true,
-				user: { select: { id: true, createdAt: true, emailAddress: true, fullName: true, type: true, image: true } },
+				user: {
+					select: {
+						id: true,
+						createdAt: true,
+						emailAddress: true,
+						fullName: true,
+						type: true,
+						image: true,
+					},
+				},
 				collection: {
 					select: {
 						id: true,
@@ -38,8 +49,25 @@ export class UserCollectionRepository {
 						maxAttempts: true,
 						givenMinutes: true,
 						amountInTest: true,
-						questions: { select: { id: true, text: true, createdAt: true, answers: { select: { id: true, text: true, createdAt: true } } } },
-						science: { select: { id: true, name: true, since_id: true, createdAt: true } },
+						questions: {
+							select: {
+								id: true,
+								text: true,
+								imageUrl: true,
+								createdAt: true,
+								answers: {
+									select: {
+										id: true,
+										text: true,
+										createdAt: true,
+										isCorrect: true,
+									},
+								},
+							},
+						},
+						science: {
+							select: { id: true, name: true, since_id: true, createdAt: true },
+						},
 					},
 				},
 				haveAttempt: true,
@@ -58,7 +86,16 @@ export class UserCollectionRepository {
 			take: payload.pageSize,
 			select: {
 				id: true,
-				user: { select: { id: true, createdAt: true, emailAddress: true, fullName: true, type: true, image: true } },
+				user: {
+					select: {
+						id: true,
+						createdAt: true,
+						emailAddress: true,
+						fullName: true,
+						type: true,
+						image: true,
+					},
+				},
 				collection: {
 					select: {
 						id: true,
@@ -68,7 +105,9 @@ export class UserCollectionRepository {
 						maxAttempts: true,
 						givenMinutes: true,
 						amountInTest: true,
-						science: { select: { id: true, name: true, since_id: true, createdAt: true } },
+						science: {
+							select: { id: true, name: true, since_id: true, createdAt: true },
+						},
 					},
 				},
 				haveAttempt: true,
@@ -94,8 +133,27 @@ export class UserCollectionRepository {
 			where: { id: payload.id, deletedAt: null },
 			select: {
 				id: true,
-				user: { select: { id: true, createdAt: true, emailAddress: true, fullName: true, type: true, image: true } },
-				collection: { select: { id: true, name: true, createdAt: true, language: true, maxAttempts: true, givenMinutes: true, amountInTest: true } },
+				user: {
+					select: {
+						id: true,
+						createdAt: true,
+						emailAddress: true,
+						fullName: true,
+						type: true,
+						image: true,
+					},
+				},
+				collection: {
+					select: {
+						id: true,
+						name: true,
+						createdAt: true,
+						language: true,
+						maxAttempts: true,
+						givenMinutes: true,
+						amountInTest: true,
+					},
+				},
 				haveAttempt: true,
 				createdAt: true,
 			},
@@ -104,13 +162,34 @@ export class UserCollectionRepository {
 		return userCollection
 	}
 
-	async findByUserCollection(payload: Partial<UserCollectionCreateRequest>): Promise<UserCollectionFindOneResponse> {
+	async findByUserCollection(
+		payload: Partial<UserCollectionCreateRequest>,
+	): Promise<UserCollectionFindOneResponse> {
 		const userCollection = await this.prisma.userCollection.findFirst({
 			where: { collectionId: payload.collectionId, userId: payload.userId, deletedAt: null },
 			select: {
 				id: true,
-				user: { select: { id: true, createdAt: true, emailAddress: true, fullName: true, type: true, image: true } },
-				collection: { select: { id: true, name: true, createdAt: true, language: true, maxAttempts: true, givenMinutes: true, amountInTest: true } },
+				user: {
+					select: {
+						id: true,
+						createdAt: true,
+						emailAddress: true,
+						fullName: true,
+						type: true,
+						image: true,
+					},
+				},
+				collection: {
+					select: {
+						id: true,
+						name: true,
+						createdAt: true,
+						language: true,
+						maxAttempts: true,
+						givenMinutes: true,
+						amountInTest: true,
+					},
+				},
 				haveAttempt: true,
 				createdAt: true,
 			},
@@ -119,15 +198,26 @@ export class UserCollectionRepository {
 	}
 
 	async create(payload: UserCollectionCreateRequest): Promise<UserCollectionCreateResponse> {
-		await this.prisma.userCollection.create({ data: { haveAttempt: payload.haveAttempt, userId: payload.userId, collectionId: payload.collectionId } })
+		await this.prisma.userCollection.create({
+			data: {
+				haveAttempt: payload.haveAttempt,
+				userId: payload.userId,
+				collectionId: payload.collectionId,
+			},
+		})
 		return null
 	}
 
-	async createMany(payload: UserCollectionCreateManyRequest): Promise<UserCollectionCreateResponse> {
+	async createMany(
+		payload: UserCollectionCreateManyRequest,
+	): Promise<UserCollectionCreateResponse> {
 		const candidates = await this.prisma.userCollection.findMany({
 			where: {
 				deletedAt: null,
-				OR: payload.userCollections.map((p) => ({ collectionId: p.collectionId, userId: p.userId })),
+				OR: payload.userCollections.map((p) => ({
+					collectionId: p.collectionId,
+					userId: p.userId,
+				})),
 			},
 		})
 
@@ -157,16 +247,25 @@ export class UserCollectionRepository {
 		return null
 	}
 
-	async update(payload: UserCollectionFindOneRequest & UserCollectionUpdateRequest): Promise<UserCollectionUpdateRequest> {
+	async update(
+		payload: UserCollectionFindOneRequest & UserCollectionUpdateRequest,
+	): Promise<UserCollectionUpdateRequest> {
 		await this.prisma.userCollection.update({
 			where: { id: payload.id, deletedAt: null },
-			data: { haveAttempt: payload.haveAttempt, userId: payload.userId, collectionId: payload.collectionId },
+			data: {
+				haveAttempt: payload.haveAttempt,
+				userId: payload.userId,
+				collectionId: payload.collectionId,
+			},
 		})
 		return null
 	}
 
 	async delete(payload: UserCollectionDeleteRequest): Promise<UserCollectionDeleteResponse> {
-		await this.prisma.userCollection.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.userCollection.update({
+			where: { id: payload.id, deletedAt: null },
+			data: { deletedAt: new Date() },
+		})
 		return null
 	}
 }

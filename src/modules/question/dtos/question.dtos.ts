@@ -10,8 +10,17 @@ import {
 	QuestionUpdateRequest,
 	QuestionsCreateWithAnswersRequest,
 } from '../interfaces'
-import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import {
+	IsBoolean,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	IsUUID,
+	ValidateNested,
+} from 'class-validator'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
+import { Type } from 'class-transformer'
 
 export class QuestionFindFullRequestDto implements QuestionFindFullRequest {
 	@ApiPropertyOptional({ example: 'uuid' })
@@ -66,7 +75,9 @@ export class QuestionCreateRequestDto implements QuestionCreateRequest {
 	collectionId: string
 }
 
-export class QuestionsCreateWithAnswersDto implements Pick<QuestionsCreateWithAnswersRequest, 'collectionId'> {
+export class QuestionsCreateWithAnswersDto
+	implements Pick<QuestionsCreateWithAnswersRequest, 'collectionId'>
+{
 	@ApiProperty({ type: 'string', format: 'binary', description: 'TXT file' })
 	file: any
 
@@ -74,6 +85,28 @@ export class QuestionsCreateWithAnswersDto implements Pick<QuestionsCreateWithAn
 	@IsUUID('4')
 	@IsNotEmpty()
 	collectionId: string
+}
+
+export class AnswerUpdateForQuestionDto {
+	@ApiPropertyOptional({ example: 'UUID' })
+	@IsUUID('4')
+	@IsOptional()
+	id: string
+
+	@ApiPropertyOptional({ example: 'text' })
+	@IsString()
+	@IsOptional()
+	text: string
+
+	@ApiProperty({ example: 'uuid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	questionId: string
+
+	@ApiPropertyOptional({ example: true })
+	@IsBoolean()
+	@IsOptional()
+	isCorrect: boolean
 }
 
 export class QuestionUpdateRequestDto implements QuestionUpdateRequest {
@@ -86,6 +119,12 @@ export class QuestionUpdateRequestDto implements QuestionUpdateRequest {
 	@IsUUID('4')
 	@IsOptional()
 	collectionId?: string
+
+	@ApiPropertyOptional({ examples: AnswerUpdateForQuestionDto })
+	@ValidateNested({ each: true })
+	@Type(() => AnswerUpdateForQuestionDto)
+	@IsOptional()
+	answers?: AnswerUpdateForQuestionDto[]
 }
 
 export class QuestionDeleteRequestDto implements QuestionDeleteRequest {
@@ -104,6 +143,9 @@ export class QuestionFindFullResponseDto implements QuestionFindOneResponse {
 	@ApiProperty({ example: 'text' })
 	text: string
 
+	@ApiProperty({ example: 'image url' })
+	imageUrl: string
+
 	@ApiProperty({ type: CollectionFindOneResponseDto })
 	collection: CollectionFindOneResponse
 
@@ -117,6 +159,9 @@ export class QuestionFindOneResponseDto implements QuestionFindOneResponse {
 
 	@ApiProperty({ example: 'text' })
 	text: string
+
+	@ApiProperty({ example: 'image url' })
+	imageUrl: string
 
 	@ApiProperty({ type: CollectionFindOneResponseDto })
 	collection: CollectionFindOneResponse
