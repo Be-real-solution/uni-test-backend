@@ -28,30 +28,31 @@ export class CheckAuthGuard implements CanActivate {
 		const request = context.switchToHttp().getRequest<Request>()
 
 		console.log(request.url, request.method)
-		// if (request.url === '/user/sign-in') {
-		// 	return true
-		// }
-		// const authorization = request.headers.authorization
-		// if (!authorization) {
-		// 	throw new UnauthorizedException('Authorization not provided')
-		// }
+		if (request.url === '/user/sign-in' || request.url === '/admin/sign-in') {
+			return true
+		}
+		const authorization = request.headers.authorization
+		if (!authorization) {
+			throw new UnauthorizedException('Authorization not provided')
+		}
 
-		// const token = authorization.split(' ')[1]
+		const token = authorization.split(' ')[1]
 
-		// if (!token) {
-		// 	throw new UnauthorizedException('Token not provided')
-		// }
-
-		// const user = await this.jwtService.verifyAsync(token, { secret: JwtConfig.accessToken.key }).catch((e) => {
-		// 	console.log(e)
-		// 	return undefined
-		// })
-		// if (!user) {
-		// 	throw new UnauthorizedException('Invalid access token')
-		// }
-		// if (!user?.id || !isUUID(user?.id, '4')) {
-		// 	throw new UnauthorizedException('Invalid access token')
-		// }
+		if (!token) {
+			throw new UnauthorizedException('Token not provided')
+		}
+		
+		const user = await this.jwtService.verifyAsync(token, { secret: JwtConfig.accessToken.key }).catch((e) => {
+			console.log(e)
+			return undefined
+		})
+		
+		if (!user) {
+			throw new UnauthorizedException('Invalid access token')
+		}
+		if (!user?.id || !isUUID(user?.id, '4')) {
+			throw new UnauthorizedException('Invalid access token')
+		}
 
 		// const userData = await this.prismaService.user.findFirst({ where: { id: user?.id, deletedAt: null } })
 		// if (!userData) {

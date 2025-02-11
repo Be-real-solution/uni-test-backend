@@ -3,6 +3,7 @@ import { PrismaService } from 'modules/prisma'
 import {
 	ICreateDirectory,
 	ICreateDirectoryResponse,
+	IFilterDirectory,
 	IFindOneByParentIdOrName,
 	IFindOneDirectoryResponse,
 	IUpdateDirectory,
@@ -56,9 +57,15 @@ export class DirectoryRepository {
 		})
 	}
 
-	async findAll(): Promise<IFindOneDirectoryResponse[]> {
+	async findAll(query: IFilterDirectory): Promise<IFindOneDirectoryResponse[]> {
+		// let where: any = { parentId: null }
+		// if (query.search) {
+		// 	where = { name: { containes: query.search } }
+		// }
 		return this.prisma.directory.findMany({
-			where: { parentId: null },
+			where: query.search
+				? { name: { contains: query.search, mode: 'insensitive' } }
+				: { parentId: null },
 			orderBy: { createdAt: 'desc' },
 			include: {
 				collections: {

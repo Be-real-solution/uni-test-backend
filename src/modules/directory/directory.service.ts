@@ -10,10 +10,12 @@ import { DirectoryRepository } from './directory.repository'
 import {
 	ICreateDirectory,
 	ICreateDirectoryResponse,
+	IFilterDirectory,
 	IFindOneDirectoryResponse,
 	IUpdateDirectory,
 } from './interfaces'
 import { IResponse } from 'interfaces/response.interfaces'
+import { FilterDirectoryDto } from './dto'
 
 @Injectable()
 export class DirectoryService {
@@ -44,8 +46,8 @@ export class DirectoryService {
 		return { status_code: 201, data: new_direct, message: 'success' }
 	}
 
-	async findAll(): Promise<IFindOneDirectoryResponse[]> {
-		const directory = await this.repository.findAll()
+	async findAll(query: IFilterDirectory): Promise<IFindOneDirectoryResponse[]> {
+		const directory = await this.repository.findAll(query)
 
 		directory.forEach((item) => {
 			item.directoryCount = item.children.length

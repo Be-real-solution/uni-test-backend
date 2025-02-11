@@ -28,3 +28,7 @@ export declare interface IUpdateDirectory {
 }
 
 export type ICreateDirectoryResponse = IFindOneDirectoryResponse
+
+export declare interface IFilterDirectory {
+	search?: string
+}

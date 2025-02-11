@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IFindOneDirectoryResponse } from '../interfaces'
 import { Type } from 'class-transformer'
+import { IsOptional, IsString } from 'class-validator'
 
 export * from './create-directory.dto'
 
@@ -49,4 +50,11 @@ export class FindOneDirectoryDto implements IFindOneDirectoryResponse {
 
 	@ApiProperty({ name: 'createdAt', example: `${new Date()}` })
 	createdAt: Date
+}
+
+export class FilterDirectoryDto {
+	@ApiPropertyOptional({ name: 'search', example: 'math' })
+	@IsOptional()
+	@IsString()
+	public search: string
 }
