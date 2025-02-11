@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common'
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common'
 import { DirectoryService } from './directory.service'
 import { CreateDirectoryDto } from './dto/create-directory.dto'
 import { UpdateDirectoryDto } from './dto/update-directory.dto'
@@ -6,7 +6,7 @@ import { CheckAuthGuard } from 'guards'
 import { IResponse } from 'interfaces/response.interfaces'
 import { ICreateDirectoryResponse, IFindOneDirectoryResponse } from './interfaces'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { SwaggerDirectoryDto } from './dto'
+import { FilterDirectoryDto, SwaggerDirectoryDto } from './dto'
 
 @UseGuards(CheckAuthGuard)
 @ApiBearerAuth()
@@ -23,8 +23,8 @@ export class DirectoryController {
 
 	@ApiResponse({ type: [SwaggerDirectoryDto] })
 	@Get()
-	findAll(): Promise<IFindOneDirectoryResponse[]> {
-		return this.directoryService.findAll()
+	findAll(@Query() query: FilterDirectoryDto): Promise<IFindOneDirectoryResponse[]> {
+		return this.directoryService.findAll(query)
 	}
 
 	@ApiResponse({ type: SwaggerDirectoryDto })
