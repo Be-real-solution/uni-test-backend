@@ -8,8 +8,8 @@ import { ICreateDirectoryResponse, IFindOneDirectoryResponse } from './interface
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { FilterDirectoryDto, FindByNameDto, SwaggerDirectoryDto } from './dto'
 
-// @UseGuards(CheckAuthGuard)
-// @ApiBearerAuth()
+@UseGuards(CheckAuthGuard)
+@ApiBearerAuth()
 @ApiTags('Directory')
 @Controller('directory')
 export class DirectoryController {
