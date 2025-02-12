@@ -32,3 +32,10 @@ export type ICreateDirectoryResponse = IFindOneDirectoryResponse
 export declare interface IFilterDirectory {
 	search?: string
 }
+
+export declare interface IFindByName {
+	subjectDirectoryId: string
+	specialityDirectoryId?: string
+	levelDirectoryId?: string
+}
+
