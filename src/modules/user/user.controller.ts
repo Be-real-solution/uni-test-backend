@@ -71,7 +71,7 @@ export class UserController {
 	@ApiBearerAuth()
 	@ApiResponse({ type: UserFindAllResponseDto })
 	findAll(@Query() payload: UserFindAllRequestDto): Promise<UserFindAllResponse> {
-		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
+		return this.service.findAll({ ...payload })
 	}
 
 	@Get(':id')

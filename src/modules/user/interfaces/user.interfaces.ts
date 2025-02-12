@@ -13,8 +13,8 @@ export declare interface UserFindFullRequest {
 }
 
 export declare interface UserFindAllRequest {
-	pageNumber?: number
-	pageSize?: number
+	pageNumber?: string
+	pageSize?: string
 	type?: UserTypeEnum
 	fullName?: string
 	emailAddress?: string

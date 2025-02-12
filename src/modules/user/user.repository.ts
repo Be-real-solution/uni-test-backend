@@ -73,8 +73,8 @@ export class UserRepository {
 				type: payload.type,
 				deletedAt: null,
 			},
-			skip: (payload.pageNumber - 1) * payload.pageSize,
-			take: payload.pageSize,
+			skip: (+payload.pageNumber - 1) * +payload.pageSize,
+			take: +payload.pageSize,
 			select: {
 				id: true,
 				createdAt: true,
@@ -114,7 +114,7 @@ export class UserRepository {
 		return {
 			pageSize: users.length,
 			totalCount: usersCount,
-			pageCount: Math.ceil(usersCount / payload.pageSize),
+			pageCount: Math.ceil(usersCount / +payload.pageSize),
 			data: users,
 		}
 	}

@@ -20,6 +20,7 @@ import {
 	IsEnum,
 	IsNotEmpty,
 	IsNumber,
+	IsNumberString,
 	IsOptional,
 	IsString,
 	IsUUID,
@@ -47,14 +48,14 @@ export class UserFindFullRequestDto implements UserFindFullRequest {
 
 export class UserFindAllRequestDto implements UserFindAllRequest {
 	@ApiPropertyOptional({ example: 5 })
-	@IsNumber()
 	@IsOptional()
-	pageNumber?: number
+	@IsNumberString()
+	pageNumber?: string = '1'
 
 	@ApiPropertyOptional({ example: 5 })
-	@IsNumber()
 	@IsOptional()
-	pageSize?: number
+	@IsNumberString()
+	pageSize?: string = '10'
 
 	@ApiPropertyOptional({ example: 'jn@gmail.com' })
 	@IsEmail()
