@@ -6,10 +6,10 @@ import { CheckAuthGuard } from 'guards'
 import { IResponse } from 'interfaces/response.interfaces'
 import { ICreateDirectoryResponse, IFindOneDirectoryResponse } from './interfaces'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { FilterDirectoryDto, SwaggerDirectoryDto } from './dto'
+import { FilterDirectoryDto, FindByNameDto, SwaggerDirectoryDto } from './dto'
 
-@UseGuards(CheckAuthGuard)
-@ApiBearerAuth()
+// @UseGuards(CheckAuthGuard)
+// @ApiBearerAuth()
 @ApiTags('Directory')
 @Controller('directory')
 export class DirectoryController {
@@ -25,6 +25,14 @@ export class DirectoryController {
 	@Get()
 	findAll(@Query() query: FilterDirectoryDto): Promise<IFindOneDirectoryResponse[]> {
 		return this.directoryService.findAll(query)
+	}
+
+	@ApiResponse({ type: SwaggerDirectoryDto })
+	@Get('/find-by-name')
+	findByName(@Query() query: FindByNameDto): Promise<IFindOneDirectoryResponse> {
+		console.log(query);
+		
+		return this.directoryService.findByName(query)
 	}
 
 	@ApiResponse({ type: SwaggerDirectoryDto })

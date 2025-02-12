@@ -4,6 +4,7 @@ import {
 	ICreateDirectory,
 	ICreateDirectoryResponse,
 	IFilterDirectory,
+	IFindByName,
 	IFindOneByParentIdOrName,
 	IFindOneDirectoryResponse,
 	IUpdateDirectory,
@@ -58,10 +59,6 @@ export class DirectoryRepository {
 	}
 
 	async findAll(query: IFilterDirectory): Promise<IFindOneDirectoryResponse[]> {
-		// let where: any = { parentId: null }
-		// if (query.search) {
-		// 	where = { name: { containes: query.search } }
-		// }
 		return this.prisma.directory.findMany({
 			where: query.search
 				? { name: { contains: query.search, mode: 'insensitive' } }
@@ -83,5 +80,52 @@ export class DirectoryRepository {
 
 	async remove(id: string): Promise<IFindOneDirectoryResponse> {
 		return this.prisma.directory.delete({ where: { id } })
+	}
+
+	async findByName(query: IFindByName): Promise<IFindOneDirectoryResponse> {
+		if (query.specialityDirectoryId && query.levelDirectoryId) {
+			return this.prisma.directory.findFirst({
+				where: {
+					AND: {
+						name: query.subjectDirectoryId,
+						children: {
+							some: {
+								AND: {
+									name: query.specialityDirectoryId,
+									children: { some: { name: query.levelDirectoryId } },
+								},
+							},
+						},
+					},
+				},
+
+				include: {
+					children: {
+						where: { name: query.specialityDirectoryId },
+						include: { children: { where: { name: query.levelDirectoryId } } },
+					},
+				},
+			})
+		}
+
+		if (query.specialityDirectoryId) {
+			return this.prisma.directory.findFirst({
+				where: {
+					AND: {
+						name: query.subjectDirectoryId,
+						children: { some: { name: query.specialityDirectoryId } },
+					},
+				},
+				include: { children: { where: { name: query.specialityDirectoryId } } },
+			})
+		}
+
+		if (query.levelDirectoryId) {
+			return null
+		}
+
+		return this.prisma.directory.findFirst({
+			where: { name: query.subjectDirectoryId },
+		})
 	}
 }

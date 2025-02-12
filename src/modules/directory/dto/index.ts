@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IFindOneDirectoryResponse } from '../interfaces'
 import { Type } from 'class-transformer'
-import { IsOptional, IsString } from 'class-validator'
+import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
 
 export * from './create-directory.dto'
 
@@ -56,5 +56,23 @@ export class FilterDirectoryDto {
 	@ApiPropertyOptional({ name: 'search', example: 'math' })
 	@IsOptional()
 	@IsString()
-	public search: string
+	search: string
+}
+
+
+export class FindByNameDto {
+	@ApiProperty({ name: 'subjectDirectoryId' })
+	@IsNotEmpty()
+	@IsString()
+	subjectDirectoryId: string
+
+	@ApiPropertyOptional({ name: 'specialityDirectoryId' })
+	@IsOptional()
+	@IsString()
+	specialityDirectoryId: string
+
+	@ApiPropertyOptional({ name: 'levelDirectoryId' })
+	@IsOptional()
+	@IsString()
+	levelDirectoryId: string
 }

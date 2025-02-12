@@ -11,6 +11,7 @@ import {
 	ICreateDirectory,
 	ICreateDirectoryResponse,
 	IFilterDirectory,
+	IFindByName,
 	IFindOneDirectoryResponse,
 	IUpdateDirectory,
 } from './interfaces'
@@ -115,5 +116,15 @@ export class DirectoryService {
 
 		await this.repository.remove(id)
 		return { status_code: 200, data: [], message: 'success' }
+	}
+
+	async findByName(query: IFindByName): Promise<IFindOneDirectoryResponse> {
+		const directory = await this.repository.findByName(query)
+
+		if (!directory) {
+			throw new NotFoundException('Bunday directory mavjud emas')
+		}
+
+		return directory
 	}
 }
