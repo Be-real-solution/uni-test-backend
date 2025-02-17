@@ -10,7 +10,7 @@ import {
 	UserCollectionFindOneResponse,
 	UserCollectionUpdateRequest,
 } from '../interfaces'
-import { IsArray, IsNotEmpty, IsNumber, IsObject, IsOptional, IsUUID } from 'class-validator'
+import { IsArray, IsNotEmpty, IsNumber, IsObject, IsOptional, IsUUID, ValidateNested } from 'class-validator'
 import { Type } from 'class-transformer'
 import { UserFindOneResponse, UserFindOneResponseDto } from '../../user'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
@@ -57,7 +57,7 @@ export class UserCollectionFindOneRequestDto implements UserCollectionFindOneReq
 }
 
 export class UserCollectionCreateRequestDto implements UserCollectionCreateRequest {
-	@ApiProperty({ example: 'name' })
+	@ApiProperty({ example: 1 })
 	@IsNumber()
 	@IsNotEmpty()
 	haveAttempt: number
@@ -76,7 +76,7 @@ export class UserCollectionCreateRequestDto implements UserCollectionCreateReque
 export class UserCollectionCreateManyRequestDto implements UserCollectionCreateManyRequest {
 	@ApiProperty({ type: UserCollectionCreateRequestDto, isArray: true })
 	@IsArray()
-	@IsObject({ each: true })
+	@ValidateNested({ each: true })
 	@Type(() => UserCollectionCreateRequestDto)
 	userCollections: UserCollectionCreateRequest[]
 }
