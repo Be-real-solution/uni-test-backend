@@ -234,6 +234,10 @@ export class UserCollectionRepository {
 					// 	userId: p.userId,
 					// 	haveAttempt: p.haveAttempt + col.haveAttempt,
 					// })
+					await this.prisma.userCollection.update({
+						where: { id: col.id },
+						data: { haveAttempt: +p.haveAttempt + +col.haveAttempt },
+					})
 				} else {
 					customPay.push(p)
 				}
@@ -244,7 +248,7 @@ export class UserCollectionRepository {
 		}
 
 		await this.prisma.userCollection.createMany({ data: customPay })
-		return null
+		return { statusCode: 200, data: [], message: 'success' }
 	}
 
 	async update(

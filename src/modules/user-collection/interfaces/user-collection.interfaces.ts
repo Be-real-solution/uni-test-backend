@@ -56,7 +56,7 @@ export declare interface UserCollectionFindOneResponse {
 	createdAt: Date
 }
 
-export declare type UserCollectionCreateResponse = null
+export declare type UserCollectionCreateResponse = { statusCode: number; data: []; message: string }
 
 export declare type UserCollectionUpdateResponse = null
 
