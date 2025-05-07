@@ -42,9 +42,10 @@ import {
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { multerFaceAuthUpload, multerImageUpload } from 'libs/fileService'
 
 @ApiTags('Admin')
-@UseGuards(CheckAuthGuard)
+// @UseGuards(CheckAuthGuard)
 @Controller('admin')
 export class AdminController {
 	private readonly service: AdminService
@@ -75,33 +76,34 @@ export class AdminController {
 	}
 
 	@Post()
-	@ApiBearerAuth()
-	@UseInterceptors(
-		FileInterceptor('image', {
-			storage: diskStorage({
-				destination: join(__dirname, '..', '..', '..', 'images'),
-				filename: (req, file, callback) => {
-					const uniqueSuffix = `${uuidv4()}-${Date.now()}`
-					const ext = extname(file.originalname)
-					const filename = `${uniqueSuffix}${ext}`
-					callback(null, filename)
-				},
-			}),
-			fileFilter: (req, file, callback) => {
-				if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-					return callback(new BadGatewayException('Only image files are allowed!'), false)
-				}
-				callback(null, true)
-			},
-		}),
-	)
+	// @ApiBearerAuth()
+	// @UseInterceptors(
+	// 	FileInterceptor('image', {
+	// 		storage: diskStorage({
+	// 			destination: join(__dirname, '..', '..', '..', 'images'),
+	// 			filename: (req, file, callback) => {
+	// 				const uniqueSuffix = `${uuidv4()}-${Date.now()}`
+	// 				const ext = extname(file.originalname)
+	// 				const filename = `${uniqueSuffix}${ext}`
+	// 				callback(null, filename)
+	// 			},
+	// 		}),
+	// 		fileFilter: (req, file, callback) => {
+	// 			if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+	// 				return callback(new BadGatewayException('Only image files are allowed!'), false)
+	// 			}
+	// 			callback(null, true)
+	// 		},
+	// 	}),
+	// )
+	@UseInterceptors(FileInterceptor('image', multerImageUpload))
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	create(
 		@Body() payload: AdminCreateRequestDto,
 		@UploadedFile() image: Express.Multer.File,
 	): Promise<AdminCreateResponse> {
-		const imagePath = image ? `/uploads/${image.filename}` : ''
+		const imagePath = image ? `/upload/admin/${image.filename}` : ''
 		return this.service.create({ ...payload, image: imagePath })
 	}
 
@@ -113,25 +115,7 @@ export class AdminController {
 
 	@Patch(':id')
 	@ApiBearerAuth()
-	@UseInterceptors(
-		FileInterceptor('image', {
-			storage: diskStorage({
-				destination: join(__dirname, '..', '..', '..', 'images'),
-				filename: (req, file, callback) => {
-					const uniqueSuffix = `${uuidv4()}-${Date.now()}`
-					const ext = extname(file.originalname)
-					const filename = `${uniqueSuffix}${ext}`
-					callback(null, filename)
-				},
-			}),
-			fileFilter: (req, file, callback) => {
-				if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-					return callback(new BadGatewayException('Only image files are allowed!'), false)
-				}
-				callback(null, true)
-			},
-		}),
-	)
+	@UseInterceptors(FileInterceptor('image', multerImageUpload))
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	update(
@@ -139,7 +123,7 @@ export class AdminController {
 		@Body() payload: AdminUpdateRequestDto,
 		@UploadedFile() image?: Express.Multer.File,
 	): Promise<AdminUpdateResponse> {
-		const imagePath = image ? `/uploads/${image.filename}` : undefined
+		const imagePath = image ? `/upload/admin/${image.filename}` : undefined
 		return this.service.update(params, { ...payload, image: imagePath })
 	}
 

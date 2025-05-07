@@ -18,6 +18,7 @@ import {
 	AdminUpdateResponse,
 } from './interfaces'
 import { JWTService } from '../jwt'
+import { deleteFile } from 'libs/fileService'
 
 @Injectable()
 export class AdminService {
@@ -90,11 +91,14 @@ export class AdminService {
 		params: AdminFindOneRequest,
 		payload: AdminUpdateRequest,
 	): Promise<AdminUpdateResponse> {
-		await this.findOne({ id: params.id })
+		const admin = await this.findOne({ id: params.id })
 		payload.emailAddress
 			? await this.findOneByEmail({ emailAddress: payload.emailAddress, id: params.id })
 			: null
 		const password = payload.password ? await bcrypt.hash(payload.password, 7) : undefined
+		if (payload.image || admin.image) {
+			await deleteFile(admin.image)
+		}
 		await this.repository.update({ ...params, ...payload, password })
 		return null
 	}

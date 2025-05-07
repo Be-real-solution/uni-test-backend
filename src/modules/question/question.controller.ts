@@ -120,6 +120,7 @@ export class QuestionController {
 		@Body() payload: QuestionCreateRequestDto,
 		@UploadedFile() file: Express.Multer.File,
 	): Promise<QuestionCreateResponse> {
+		file.filename && (file.filename = `upload/question/${file.filename}`)
 		return this.service.create(payload, file)
 	}
 
@@ -176,8 +177,9 @@ export class QuestionController {
 	update(
 		@Param() params: QuestionFindOneRequestDto,
 		@Body() payload: QuestionUpdateRequestDto,
-		@UploadedFile() file: Express.Multer.File,
+		@UploadedFile() file?: Express.Multer.File,
 	): Promise<IResponse<{}>> {
+		file?.filename && (file.filename = `upload/question/${file.filename}`)
 		return this.service.update(params, payload, file)
 	}
 

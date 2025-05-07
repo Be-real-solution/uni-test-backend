@@ -23,6 +23,8 @@ import {
 import { UserInfoService } from '../user-info'
 import { JWTService } from '../jwt'
 import { SettingService } from 'modules/setting/setting.service'
+import { exec } from 'child_process'
+import { deleteFile } from 'libs/fileService'
 
 @Injectable()
 export class UserService {
@@ -83,7 +85,10 @@ export class UserService {
 		return user
 	}
 
-	async singIn(payload: UserSignInRequest): Promise<UserSignInResponse> {
+	async singIn(
+		payload: UserSignInRequest,
+		file: Express.Multer.File,
+	): Promise<UserSignInResponse> {
 		const userInfo = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
 
 		const user = await this.repository.findOneWithPassword({ id: userInfo?.user.id })
@@ -91,6 +96,18 @@ export class UserService {
 		const isCorrect = await bcrypt.compare(payload.password, user.password)
 		if (!isCorrect) {
 			throw new UnauthorizedException('User1 not found')
+		}
+
+		if (file) {
+			const isCorrect = await this.verifyFace(
+				`/upload/face-auth/${file.filename}`,
+				user.image,
+			)
+			if (!isCorrect) {
+				throw new UnauthorizedException('User not found')
+			}
+
+			await deleteFile(`/upload/face-auth/${file.filename}`)
 		}
 
 		const tokens = await this.jwtService.getTokens({ id: user.id })
@@ -145,11 +162,14 @@ export class UserService {
 		params: UserFindOneRequest,
 		payload: UserUpdateWithInfoRequest,
 	): Promise<UserUpdateResponse> {
-		await this.findOne({ id: params.id })
+		const user = await this.findOne({ id: params.id })
 		payload.emailAddress
 			? await this.findOneByEmail({ emailAddress: payload.emailAddress, id: params.id })
 			: null
 		const password = payload.password ? await bcrypt.hash(payload.password, 7) : undefined
+		if (payload.image || user.image) {
+			await deleteFile(payload.image)
+		}
 		await this.repository.update({ ...params, ...payload, password })
 		const userInfo = await this.userInfoService.findOneByUserId({ userId: params.id })
 		await this.userInfoService.update(
@@ -178,5 +198,37 @@ export class UserService {
 		const userInfo = await this.userInfoService.findOneByUserId({ userId: payload.id })
 		await this.userInfoService.delete({ id: userInfo.id })
 		return null
+	}
+
+	private async verifyFace(firstImagePath: string, secondImagePath: string): Promise<boolean> {
+		// const pythonScriptPath = path.resolve('src/face/face.itils.py');
+		// const command = `${__dirname}/../../venv/Scripts/python.exe ./src/face/scripts/compare_images.py ./uploads/omadbek.jpg ./uploads/test9.jpg`;
+		const command = `${__dirname}/../../../venv/Scripts/python.exe ./src/modules/user/script/compare_images.py ${firstImagePath} ${secondImagePath}`
+
+		try {
+			const check: string = await new Promise((resolve, reject) => {
+				exec(command, (error, stdout, stderr) => {
+					if (error) {
+						console.error('Execution Error:', error)
+						return reject({ error: 'Execution failed', detail: error.message })
+					}
+
+					if (stderr) {
+						console.error('Python Stderr:', stderr)
+						// You can decide to reject here if stderr means failure in your context
+					}
+
+					try {
+						resolve(stdout)
+					} catch (e) {
+						reject({ error: 'Invalid Python response', raw: stdout })
+					}
+				})
+			})
+			return parseInt(check.split('\n')[1]) === 1
+		} catch (error) {
+			console.log(error)
+			return false
+		}
 	}
 }
