@@ -32,6 +32,10 @@ import { UserResultModule } from './modules/user-result/user-result.module'
 				serveRoot: '/uploads',
 			},
 			{
+				rootPath: join(__dirname, '..', '..', 'upload'),
+				serveRoot: '/upload',
+			},
+			{
 				rootPath: join(__dirname, '..', 'files'),
 				serveRoot: '/files',
 			},

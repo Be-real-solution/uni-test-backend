@@ -47,6 +47,7 @@ import { diskStorage } from 'multer'
 import { extname, join } from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import { SettingService } from 'modules/setting/setting.service'
+import { multerFaceAuthUpload, multerImageUpload } from 'libs/fileService'
 
 @ApiTags('User')
 @UseGuards(CheckAuthGuard)
@@ -111,45 +112,50 @@ export class UserController {
 
 	@Post('with-info')
 	@ApiBearerAuth()
-	@UseInterceptors(
-		FileInterceptor('image', {
-			storage: diskStorage({
-				destination: join(__dirname, '..', '..', '..', 'images'),
-				filename: (req, file, callback) => {
-					const uniqueSuffix = `${uuidv4()}-${Date.now()}`
-					const ext = extname(file.originalname)
-					const filename = `${uniqueSuffix}${ext}`
-					callback(null, filename)
-				},
-			}),
-			fileFilter: (req, file, callback) => {
-				if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-					return callback(new BadGatewayException('Only image files are allowed!'), false)
-				}
-				callback(null, true)
-			},
-		}),
-	)
+	@UseInterceptors(FileInterceptor('image', multerImageUpload))
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	createWithInfo(
 		@Body() payload: UserCreateWithInfoRequestDto,
 		@UploadedFile() image: Express.Multer.File,
 	): Promise<UserCreateResponse> {
-		const imagePath = image ? `/uploads/${image.filename}` : ''
+		const imagePath = image ? `/upload/user/${image.filename}` : ''
 
 		return this.service.createWithUserInfo({ ...payload, image: imagePath })
 	}
 
 	@Post('sign-in')
+	@ApiConsumes('multipart/form-data')
+	@UseInterceptors(FileInterceptor('file', multerFaceAuthUpload))
+	@ApiBody({
+		description: 'Fayl yuklash',
+		schema: {
+			type: 'object',
+			properties: {
+					file: {
+						type: 'string',
+						format: 'binary',
+					},
+					hemisId: {
+						type: 'string',
+						example: 'kimyo',
+					},
+					password: {
+						type: 'string',
+						example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
+					},
+				},
+			},
+		})
 	@ApiResponse({ type: UserSignInResponseDto })
-	async signIn(@Body() payload: UserSignInRequestDto): Promise<UserSignInResponse> {
+	async signIn(@Body() payload: UserSignInRequestDto, @UploadedFile() file: Express.Multer.File,): Promise<UserSignInResponse> {
+
 		const isemail = isEmail(payload.hemisId)
 		if (isemail) {
 			const adminResponse = await this.adminService.singIn(payload)
 			return { user: adminResponse.admin, tokens: adminResponse.tokens }
 		} else {
-			return this.service.singIn(payload)
+			return this.service.singIn(payload, file)
 		}
 	}
 
@@ -193,25 +199,7 @@ export class UserController {
 
 	@Patch(':id')
 	@ApiBearerAuth()
-	@UseInterceptors(
-		FileInterceptor('image', {
-			storage: diskStorage({
-				destination: join(__dirname, '..', '..', '..', 'images'),
-				filename: (req, file, callback) => {
-					const uniqueSuffix = `${uuidv4()}-${Date.now()}`
-					const ext = extname(file.originalname)
-					const filename = `${uniqueSuffix}${ext}`
-					callback(null, filename)
-				},
-			}),
-			fileFilter: (req, file, callback) => {
-				if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-					return callback(new BadGatewayException('Only image files are allowed!'), false)
-				}
-				callback(null, true)
-			},
-		}),
-	)
+	@UseInterceptors(FileInterceptor('image', multerImageUpload))
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	update(
@@ -219,7 +207,7 @@ export class UserController {
 		@Body() payload: UserUpdateWithInfoRequestDto,
 		@UploadedFile() image: Express.Multer.File,
 	): Promise<UserUpdateResponse> {
-		const imagePath = image ? `/uploads/${image.filename}` : undefined
+		const imagePath = image ? `/upload/user/${image.filename}` : undefined
 		return this.service.updateWithUserInfo(params, { ...payload, image: imagePath })
 	}
 

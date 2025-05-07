@@ -8,17 +8,46 @@ import { appConfig as config } from 'configs/app.configs'
 
 const storage = diskStorage({
 	destination: (req: any, file: any, cb: any) => {
-		const upload_path = resolve(__dirname, '..', '..', '..', config.path_for_file_upload)
+		let upload_path = resolve(__dirname, '..', '..', '..', config.path_for_file_upload)
+
+		if (req.url.startsWith('/admin')) {
+			upload_path = upload_path + '/admin'
+		} else if (req.url.startsWith('/user')) {
+			upload_path = upload_path + '/user'
+		} else if (req.url.startsWith('/collection')) {
+			upload_path = upload_path + '/collection'
+		} else if (req.url.startsWith('/question')) {
+			upload_path = upload_path + '/question'
+		}
+
 		if (!existsSync(upload_path)) {
 			mkdirSync(upload_path, { recursive: true })
 		}
 		cb(null, upload_path)
 	},
 	filename: (req: any, file: any, cb: any): void => {
-		cb(
-			null,
-			`/api/upload/${file.mimetype.split('/')[0]}__${v4()}.${file.mimetype.split('/')[1]}`,
+		cb(null, `${file.mimetype.split('/')[0]}__${v4()}.${file.mimetype.split('/')[1]}`)
+	},
+})
+
+const storageFaceAuth = diskStorage({
+	destination: (req: any, file: any, cb: any) => {
+		let upload_path = resolve(
+			__dirname,
+			'..',
+			'..',
+			'..',
+			config.path_for_file_upload,
+			'face-auth',
 		)
+
+		if (!existsSync(upload_path)) {
+			mkdirSync(upload_path, { recursive: true })
+		}
+		cb(null, upload_path)
+	},
+	filename: (req: any, file: any, cb: any): void => {
+		cb(null, `${file.mimetype.split('/')[0]}__${v4()}.${file.mimetype.split('/')[1]}`)
 	},
 })
 
@@ -83,6 +112,12 @@ export const multerImageUpload = {
 	limits: { fileSize: Number(config.file_size) * 1024 * 1024 },
 }
 
+export const multerFaceAuthUpload = {
+	fileFilter: fileFilters.image,
+	storage: storageFaceAuth,
+	limits: { fileSize: Number(config.file_size) * 1024 * 1024 },
+}
+
 export const multerOptionAll = {
 	fileFilter: fileFilters.all,
 	storage: storage,
@@ -97,7 +132,7 @@ export const multerImageVideoUpload = {
 
 export async function deleteFile(file_name: string) {
 	try {
-		const file_path = resolve(__dirname, '..', '..', '..', '../uploads', file_name)
+		const file_path = resolve(__dirname, '..', '..', '..', '..') + file_name
 
 		if (existsSync(file_path)) {
 			unlinkSync(file_path)
