@@ -25,6 +25,8 @@ import { JWTService } from '../jwt'
 import { SettingService } from 'modules/setting/setting.service'
 import { exec } from 'child_process'
 import { deleteFile } from 'libs/fileService'
+import axios from 'axios'
+import * as https from 'https'
 
 @Injectable()
 export class UserService {
@@ -95,19 +97,34 @@ export class UserService {
 
 		const isCorrect = await bcrypt.compare(payload.password, user.password)
 		if (!isCorrect) {
-			throw new UnauthorizedException('User1 not found')
+			throw new UnauthorizedException('User not found')
 		}
 
 		if (file) {
-			const isCorrect = await this.verifyFace(
-				`/upload/face-auth/${file.filename}`,
-				user.image,
-			)
-			if (!isCorrect) {
+			try {
+				const agent = new https.Agent({
+					rejectUnauthorized: false, // ❗ Sertifikatni tekshirmaydi
+				})
+				const response = await axios.post(
+					'https://face.medsfera.uz/api/recognize/from-image',
+					file.buffer,
+					{
+						headers: {
+							'Content-Type': 'application/octet-stream',
+						},
+						httpsAgent: agent
+					},
+				)
+
+				if (response.data.student.hemis_id != user.userInfo.hemisId) {
+					throw new UnauthorizedException('User not found')
+				}
+
+				// console.log(response)
+			} catch (error) {
+				// console.log(error)
 				throw new UnauthorizedException('User not found')
 			}
-
-			await deleteFile(`/upload/face-auth/${file.filename}`)
 		}
 
 		const tokens = await this.jwtService.getTokens({ id: user.id })
@@ -200,35 +217,4 @@ export class UserService {
 		return null
 	}
 
-	private async verifyFace(firstImagePath: string, secondImagePath: string): Promise<boolean> {
-		// const pythonScriptPath = path.resolve('src/face/face.itils.py');
-		// const command = `${__dirname}/../../venv/Scripts/python.exe ./src/face/scripts/compare_images.py ./uploads/omadbek.jpg ./uploads/test9.jpg`;
-		const command = `${__dirname}/../../../venv/Scripts/python.exe ./src/modules/user/script/compare_images.py ${firstImagePath} ${secondImagePath}`
-
-		try {
-			const check: string = await new Promise((resolve, reject) => {
-				exec(command, (error, stdout, stderr) => {
-					if (error) {
-						console.error('Execution Error:', error)
-						return reject({ error: 'Execution failed', detail: error.message })
-					}
-
-					if (stderr) {
-						console.error('Python Stderr:', stderr)
-						// You can decide to reject here if stderr means failure in your context
-					}
-
-					try {
-						resolve(stdout)
-					} catch (e) {
-						reject({ error: 'Invalid Python response', raw: stdout })
-					}
-				})
-			})
-			return parseInt(check.split('\n')[1]) === 1
-		} catch (error) {
-			console.log(error)
-			return false
-		}
-	}
 }
