@@ -126,13 +126,13 @@ export class UserController {
 
 	@Post('sign-in')
 	@ApiConsumes('multipart/form-data')
-	@UseInterceptors(FileInterceptor('file', multerFaceAuthUpload))
+	@UseInterceptors(FileInterceptor('image'))
 	@ApiBody({
 		description: 'Fayl yuklash',
 		schema: {
 			type: 'object',
 			properties: {
-					file: {
+					image: {
 						type: 'string',
 						format: 'binary',
 					},
