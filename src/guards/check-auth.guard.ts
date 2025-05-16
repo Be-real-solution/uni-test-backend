@@ -41,12 +41,14 @@ export class CheckAuthGuard implements CanActivate {
 		if (!token) {
 			throw new UnauthorizedException('Token not provided')
 		}
-		
-		const user = await this.jwtService.verifyAsync(token, { secret: JwtConfig.accessToken.key }).catch((e) => {
-			console.log(e)
-			return undefined
-		})
-		
+
+		const user = await this.jwtService
+			.verifyAsync(token, { secret: JwtConfig.accessToken.key })
+			.catch((e) => {
+				console.log(e)
+				return undefined
+			})
+
 		if (!user) {
 			throw new UnauthorizedException('Invalid access token')
 		}

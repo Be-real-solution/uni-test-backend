@@ -32,7 +32,7 @@ const storage = diskStorage({
 
 const storageFaceAuth = diskStorage({
 	destination: (req: any, file: any, cb: any) => {
-		let upload_path = resolve(
+		const upload_path = resolve(
 			__dirname,
 			'..',
 			'..',

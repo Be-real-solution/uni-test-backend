@@ -112,7 +112,7 @@ export class UserService {
 						headers: {
 							'Content-Type': 'application/octet-stream',
 						},
-						httpsAgent: agent
+						httpsAgent: agent,
 					},
 				)
 
@@ -216,5 +216,4 @@ export class UserService {
 		await this.userInfoService.delete({ id: userInfo.id })
 		return null
 	}
-
 }

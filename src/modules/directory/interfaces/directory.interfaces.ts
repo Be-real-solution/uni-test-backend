@@ -38,4 +38,3 @@ export declare interface IFindByName {
 	specialityDirectoryId?: string
 	levelDirectoryId?: string
 }
-

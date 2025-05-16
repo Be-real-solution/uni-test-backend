@@ -30,8 +30,8 @@ export class DirectoryController {
 	@ApiResponse({ type: SwaggerDirectoryDto })
 	@Get('/find-by-name')
 	findByName(@Query() query: FindByNameDto): Promise<IFindOneDirectoryResponse> {
-		console.log(query);
-		
+		console.log(query)
+
 		return this.directoryService.findByName(query)
 	}
 
