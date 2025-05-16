@@ -59,7 +59,6 @@ export class FilterDirectoryDto {
 	search: string
 }
 
-
 export class FindByNameDto {
 	@ApiProperty({ name: 'subjectDirectoryId' })
 	@IsNotEmpty()

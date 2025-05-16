@@ -10,7 +10,15 @@ import {
 	UserCollectionFindOneResponse,
 	UserCollectionUpdateRequest,
 } from '../interfaces'
-import { IsArray, IsNotEmpty, IsNumber, IsObject, IsOptional, IsUUID, ValidateNested } from 'class-validator'
+import {
+	IsArray,
+	IsNotEmpty,
+	IsNumber,
+	IsObject,
+	IsOptional,
+	IsUUID,
+	ValidateNested,
+} from 'class-validator'
 import { Type } from 'class-transformer'
 import { UserFindOneResponse, UserFindOneResponseDto } from '../../user'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'

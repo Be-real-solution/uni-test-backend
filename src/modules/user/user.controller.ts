@@ -132,24 +132,26 @@ export class UserController {
 		schema: {
 			type: 'object',
 			properties: {
-					image: {
-						type: 'string',
-						format: 'binary',
-					},
-					hemisId: {
-						type: 'string',
-						example: 'kimyo',
-					},
-					password: {
-						type: 'string',
-						example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
-					},
+				image: {
+					type: 'string',
+					format: 'binary',
+				},
+				hemisId: {
+					type: 'string',
+					example: 'kimyo',
+				},
+				password: {
+					type: 'string',
+					example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
 				},
 			},
-		})
+		},
+	})
 	@ApiResponse({ type: UserSignInResponseDto })
-	async signIn(@Body() payload: UserSignInRequestDto, @UploadedFile() file: Express.Multer.File,): Promise<UserSignInResponse> {
-
+	async signIn(
+		@Body() payload: UserSignInRequestDto,
+		@UploadedFile() file: Express.Multer.File,
+	): Promise<UserSignInResponse> {
 		const isemail = isEmail(payload.hemisId)
 		if (isemail) {
 			const adminResponse = await this.adminService.singIn(payload)
