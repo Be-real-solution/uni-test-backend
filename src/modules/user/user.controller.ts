@@ -125,8 +125,19 @@ export class UserController {
 	}
 
 	@Post('sign-in')
+	@ApiResponse({ type: UserSignInResponseDto })
+	async signIn(@Body() payload: UserSignInRequestDto): Promise<UserSignInResponse> {
+		const isemail = isEmail(payload.hemisId)
+		if (isemail) {
+			const adminResponse = await this.adminService.singIn(payload)
+			return { user: adminResponse.admin, tokens: adminResponse.tokens }
+		} else {
+			return this.service.singIn(payload)
+		}
+	}
+
+	@Post('sign-in/face-id')
 	@ApiConsumes('multipart/form-data')
-	@UseInterceptors(FileInterceptor('image'))
 	@ApiBody({
 		description: 'Fayl yuklash',
 		schema: {
@@ -136,29 +147,15 @@ export class UserController {
 					type: 'string',
 					format: 'binary',
 				},
-				hemisId: {
-					type: 'string',
-					example: 'kimyo',
-				},
-				password: {
-					type: 'string',
-					example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
-				},
 			},
 		},
 	})
+	@UseInterceptors(FileInterceptor('image'))
 	@ApiResponse({ type: UserSignInResponseDto })
-	async signIn(
-		@Body() payload: UserSignInRequestDto,
-		@UploadedFile() file: Express.Multer.File,
-	): Promise<UserSignInResponse> {
-		const isemail = isEmail(payload.hemisId)
-		if (isemail) {
-			const adminResponse = await this.adminService.singIn(payload)
-			return { user: adminResponse.admin, tokens: adminResponse.tokens }
-		} else {
-			return this.service.singIn(payload, file)
-		}
+	async signInByFaceId(@UploadedFile() file: Express.Multer.File): Promise<UserSignInResponse> {
+		console.log(file)
+
+		return this.service.signIndByFaceId(file)
 	}
 
 	@Post('with-json')
