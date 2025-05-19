@@ -28,7 +28,7 @@ export class CheckAuthGuard implements CanActivate {
 		const request = context.switchToHttp().getRequest<Request>()
 
 		console.log(request.url, request.method)
-		if (request.url === '/user/sign-in' || request.url === '/admin/sign-in') {
+		if (request.url === '/user/sign-in' || request.url === '/admin/sign-in' || request.url === '/user/sign-in/face-id') {
 			return true
 		}
 		const authorization = request.headers.authorization

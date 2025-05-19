@@ -87,10 +87,7 @@ export class UserService {
 		return user
 	}
 
-	async singIn(
-		payload: UserSignInRequest,
-		file: Express.Multer.File,
-	): Promise<UserSignInResponse> {
+	async singIn(payload: UserSignInRequest): Promise<UserSignInResponse> {
 		const userInfo = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
 
 		const user = await this.repository.findOneWithPassword({ id: userInfo?.user.id })
@@ -100,36 +97,37 @@ export class UserService {
 			throw new UnauthorizedException('User not found')
 		}
 
-		if (file) {
-			try {
-				const agent = new https.Agent({
-					rejectUnauthorized: false, // ❗ Sertifikatni tekshirmaydi
-				})
-				const response = await axios.post(
-					'https://face.medsfera.uz/api/recognize/from-image',
-					file.buffer,
-					{
-						headers: {
-							'Content-Type': 'application/octet-stream',
-						},
-						httpsAgent: agent,
-					},
-				)
-
-				if (response.data.student.hemis_id != user.userInfo.hemisId) {
-					throw new UnauthorizedException('User not found')
-				}
-
-				// console.log(response)
-			} catch (error) {
-				// console.log(error)
-				throw new UnauthorizedException('User not found')
-			}
-		}
-
 		const tokens = await this.jwtService.getTokens({ id: user.id })
 
 		return { user: user, tokens: tokens }
+	}
+
+	async signIndByFaceId(file: Express.Multer.File): Promise<UserSignInResponse> {
+		let response: any
+		try {
+			const agent = new https.Agent({
+				rejectUnauthorized: false, // ❗ Sertifikatni tekshirmaydi
+			})
+
+			response = await axios.post(
+				'https://face.medsfera.uz/api/recognize/from-image',
+				file.buffer,
+				{
+					headers: {
+						'Content-Type': 'application/octet-stream',
+					},
+					httpsAgent: agent,
+				},
+			)
+			
+		} catch (error) {
+			console.log(error)
+			throw new UnauthorizedException('User not found')
+		}
+
+		const userInfo = await this.userInfoService.findOneByHemisId({ hemisId: response.data.student.hemis_id })
+		const tokens = await this.jwtService.getTokens({ id: userInfo.user.id })
+		return { user: userInfo.user, tokens: tokens }
 	}
 
 	async create(payload: UserCreateRequest): Promise<UserCreateResponse> {
