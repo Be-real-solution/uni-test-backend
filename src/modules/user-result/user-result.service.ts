@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common'
 import { AnswerService } from 'modules/answer'
 import { QuestionService } from 'modules/question'
 import { UserService } from 'modules/user'
@@ -101,6 +101,7 @@ export class UserResultService {
 				course: user.userInfo.group.course.stage,
 				facultyName: user.userInfo.group.faculty.name,
 				startTime: payload.startTime,
+				hasFinished: question.collection.amountInTest == payload.questionNumber ? true : false,
 				untilTime: new Date(
 					new Date(payload.startTime).getTime() +
 						question.collection.givenMinutes * 60 * 1000,

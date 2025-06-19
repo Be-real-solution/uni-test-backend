@@ -113,3 +113,9 @@ export declare interface QuestionAnswer {
 	isChecked: boolean
 	isCorrect: boolean
 }
+
+export declare interface IFindOneForCheck {
+	userId: string
+	collectionId: string
+	startTime: Date
+}

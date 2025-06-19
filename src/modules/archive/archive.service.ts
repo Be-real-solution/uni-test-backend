@@ -48,6 +48,16 @@ export class ArchiveService {
 	}
 
 	async create(payload: ArchiveCreateRequest): Promise<ArchiveCreateResponse> {
+		const checkArchive = await this.repository.findOneForCheck({
+			userId: payload.userId,
+			collectionId: payload.collectionId,
+			startTime: payload.startTime
+		})
+
+		if (checkArchive) {
+			throw new BadRequestException("This collection already exists")
+		}
+
 		const userCollection = await this.userCollectionRepository.findByUserCollection({
 			collectionId: payload.collectionId,
 			userId: payload.userId,
