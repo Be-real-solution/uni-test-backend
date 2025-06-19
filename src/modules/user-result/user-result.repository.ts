@@ -111,4 +111,10 @@ export class UserResultRepository {
 
 		return null
 	}
+
+	async findHasFinishedFalse(): Promise<IUserResultResponse[]> {
+		return this.prisma.userResult.findMany({
+			where: { hasFinished: false, untilTime: { gte: new Date() } },
+		})
+	}
 }

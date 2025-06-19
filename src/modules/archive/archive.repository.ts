@@ -12,6 +12,7 @@ import {
 	ArchiveFindOneRequest,
 	ArchiveFindOneResponse,
 	ArchiveUpdateRequest,
+	IFindOneForCheck,
 } from './interfaces'
 import { UserService } from '../user'
 import { CollectionService } from '../collection'
@@ -398,5 +399,16 @@ export class ArchiveRepository {
 			data: { deletedAt: new Date() },
 		})
 		return null
+	}
+
+	async findOneForCheck(payload: IFindOneForCheck) {
+		return this.prisma.archive.findFirst({
+			where: {
+				userId: payload.userId,
+				collectionId: payload.collectionId,
+				startTime: payload.startTime,
+				deletedAt: null,
+			},
+		})
 	}
 }
