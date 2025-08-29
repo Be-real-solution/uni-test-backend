@@ -12,7 +12,7 @@ setImmediate(async (): Promise<void> => {
 	const app = await NestFactory.create<INestApplication>(AppModule, { cors: true })
 
 	app.use(json({ limit: '50mb' }))
-	app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
+	app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, enableDebugMessages: true }))
 	app.use('/api/upload', express.static(join(__dirname, '../../uploads')))
 
 	app.use(

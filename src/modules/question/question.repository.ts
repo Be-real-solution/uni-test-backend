@@ -99,6 +99,7 @@ export class QuestionRepository {
 					select: {
 						id: true,
 						text: true,
+						imageUrl: true,
 						isCorrect: true,
 						createdAt: true,
 					},

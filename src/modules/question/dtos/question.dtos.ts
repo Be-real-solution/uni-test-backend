@@ -98,6 +98,11 @@ export class AnswerUpdateForQuestionDto {
 	@IsOptional()
 	text: string
 
+	@ApiPropertyOptional({ example: 'text' })
+	@IsString()
+	@IsOptional()
+	imageUrl: string
+
 	@ApiProperty({ example: 'uuid' })
 	@IsUUID('4')
 	@IsNotEmpty()
