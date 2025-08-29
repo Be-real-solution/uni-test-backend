@@ -40,5 +40,5 @@ setImmediate(async (): Promise<void> => {
 
 	console.log('app config:', appConfig)
 
-	await app.listen(appConfig.port, appConfig.host)
+	await app.listen(appConfig.port, appConfig.host, () => console.log(`Server is running on http://${appConfig.host}:${appConfig.port}`))
 })
