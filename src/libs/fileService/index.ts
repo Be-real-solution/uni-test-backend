@@ -18,6 +18,8 @@ const storage = diskStorage({
 			upload_path = upload_path + '/collection'
 		} else if (req.url.startsWith('/question')) {
 			upload_path = upload_path + '/question'
+		} else if (req.url.startsWith('/answer')) {
+			upload_path = upload_path + '/answer'
 		}
 
 		if (!existsSync(upload_path)) {

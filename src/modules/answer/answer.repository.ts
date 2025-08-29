@@ -83,6 +83,7 @@ export class AnswerRepository {
 			select: {
 				id: true,
 				text: true,
+				imageUrl: true,
 				createdAt: true,
 				isCorrect: true,
 				question: { select: { id: true, createdAt: true, text: true, imageUrl: true } },
@@ -109,9 +110,11 @@ export class AnswerRepository {
 	}
 
 	async create(payload: AnswerCreateRequest): Promise<AnswerCreateResponse> {
-		await this.prisma.answer.create({
+		console.log(payload)
+		return await this.prisma.answer.create({
 			data: {
-				text: payload.text,
+				text: payload?.text,
+				imageUrl: payload?.imageUrl,
 				questionId: payload.questionId,
 				isCorrect: payload.isCorrect,
 			},
@@ -125,9 +128,10 @@ export class AnswerRepository {
 		await this.prisma.answer.update({
 			where: { id: payload.id, deletedAt: null },
 			data: {
-				text: payload.text,
-				questionId: payload.questionId,
-				isCorrect: payload.isCorrect,
+				text: payload?.text,
+				imageUrl: payload?.imageUrl,
+				questionId: payload?.questionId,
+				isCorrect: payload?.isCorrect,
 			},
 		})
 		return null

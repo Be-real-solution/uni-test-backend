@@ -17,13 +17,19 @@ export declare interface AnswerFindOneRequest {
 }
 
 export declare interface AnswerCreateRequest {
-	text: string
+	text?: string
+	imageUrl?: string
 	questionId: string
 	isCorrect: boolean
 }
 
+export declare interface AnswerCreateOrUpdateRequest extends AnswerCreateRequest {
+	id?: string
+}
+
 export declare interface AnswerUpdateRequest {
 	text?: string
+	imageUrl?: string
 	questionId?: string
 	isCorrect?: boolean
 }
@@ -45,13 +51,21 @@ export declare interface AnswerFindAllResponse {
 
 export declare interface AnswerFindOneResponse {
 	id: string
-	text: string
+	text?: string
+	imageUrl?: string
 	question: QuestionFindOneResponse
 	isCorrect: boolean
 	createdAt: Date
 }
 
-export declare type AnswerCreateResponse = null
+export declare type AnswerCreateResponse = {
+	id: string
+	text?: string
+	imageUrl?: string
+	questionId: string
+	isCorrect: boolean
+	createdAt: Date
+}
 
 export declare type AnswerUpdateResponse = null
 

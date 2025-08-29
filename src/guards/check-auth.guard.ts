@@ -46,7 +46,7 @@ export class CheckAuthGuard implements CanActivate {
 			.verifyAsync(token, { secret: JwtConfig.accessToken.key })
 			.catch((e) => {
 				console.log(e)
-				return undefined
+				return false
 			})
 
 		if (!user) {

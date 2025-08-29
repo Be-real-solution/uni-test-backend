@@ -9,8 +9,9 @@ import {
 	AnswerFindOneResponse,
 	AnswerUpdateRequest,
 } from '../interfaces'
-import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import { IsBoolean, IsBooleanString, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { QuestionFindOneResponse, QuestionFindOneResponseDto } from '../../question'
+import { Transform } from 'class-transformer'
 
 export class AnswerFindFullRequestDto implements AnswerFindFullRequest {
 	@ApiPropertyOptional({ example: 'uuid' })
@@ -143,3 +144,27 @@ export class AnswerFindAllResponseDto implements AnswerFindAllResponse {
 	@ApiProperty({ type: AnswerFindOneResponseDto, isArray: true })
 	data: AnswerFindOneResponse[]
 }
+
+export class AnswerCreateOrUpdateRequestDto {
+	@ApiPropertyOptional({ example: 'uuid' })
+	@IsUUID('4')
+	@IsOptional()
+	id?: string
+
+	@ApiPropertyOptional({ example: 'text' })
+	@IsOptional()
+	@IsString()
+	text?: string
+
+	@ApiProperty({ example: 'uuid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	questionId: string
+
+	@ApiProperty({ example: true })
+	@IsBoolean()
+	@IsNotEmpty()
+	@Transform(({ value }) => value === 'true' || value === true)
+	isCorrect: boolean
+}
+

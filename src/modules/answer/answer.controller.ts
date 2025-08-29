@@ -1,5 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query,
+	UploadedFile,
+	UseGuards,
+	UseInterceptors,
+} from '@nestjs/common'
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AnswerService } from './answer.service'
 import {
 	AnswerCreateRequestDto,
@@ -11,6 +23,7 @@ import {
 	AnswerUpdateRequestDto,
 	AnswerFindAllResponseDto,
 	AnswerFindOneResponseDto,
+	AnswerCreateOrUpdateRequestDto,
 } from './dtos'
 import {
 	AnswerCreateResponse,
@@ -22,6 +35,8 @@ import {
 } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { multerImageUpload } from 'libs/fileService'
 
 @ApiTags('Answer')
 @ApiBearerAuth()
@@ -71,5 +86,53 @@ export class AnswerController {
 	@ApiResponse({ type: null })
 	delete(@Param() payload: AnswerDeleteRequestDto): Promise<AnswerDeleteResponse> {
 		return this.service.delete(payload)
+	}
+
+	@Post('create-or-update')
+	@ApiResponse({ type: null })
+	@ApiConsumes('multipart/form-data')
+	@UseInterceptors(FileInterceptor('file', multerImageUpload))
+	@ApiBody({
+		description: 'Fayl yuklash',
+		schema: {
+			type: 'object',
+			properties: {
+				file: {
+					type: 'string',
+					format: 'binary',
+				},
+				text: {
+					type: 'string',
+					example: 'text',
+				},
+				id: {
+					type: 'string',
+					format: 'uuid',
+					example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
+				},
+				questionId: {
+					type: 'string',
+					format: 'uuid',
+					example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',
+				},
+				isCorrect: {
+					type: 'boolean',
+					example: true,
+				},
+			},
+		},
+	})
+	createOrUpdate(
+		@Body() payload: AnswerCreateOrUpdateRequestDto,
+		@UploadedFile() file: Express.Multer.File,
+	) {
+		file?.filename && (file.filename = `upload/answer/${file.filename}`)
+		return this.service.createOrUpdate(payload, file)
+	}
+
+	@Delete('delete-file/:id')
+	@ApiResponse({ type: null })
+	deleteFile(@Param() params: AnswerFindOneRequestDto) {
+		return this.service.deleteAnswerFile(params)
 	}
 }

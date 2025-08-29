@@ -186,7 +186,8 @@ model Question {
 
 model Answer {
   id         String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
-  text       String    @map("text") @db.VarChar(255)
+  text       String?   @map("text") @db.VarChar(255)
+  imageUrl   String?   @map("image_url") @db.VarChar(255)
   isCorrect  Boolean   @map("is_correct") @db.Boolean
   questionId String    @map("question_id") @db.Uuid
   createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamp
@@ -286,7 +287,8 @@ model ArchiveQuestion {
 
 model ArchiveAnswer {
   id         String    @default(dbgenerated("GEN_RANDOM_UUID()")) @map("id") @db.Uuid
-  text       String    @map("text") @db.VarChar(255)
+  text       String?   @map("text") @db.VarChar(255)
+  imageUrl   String?   @map("image_url") @db.VarChar(255)
   isCorrect  Boolean   @map("is_correct") @db.Boolean
   isChecked  Boolean   @map("is_checked") @db.Boolean
   questionId String    @map("question_id") @db.Uuid
