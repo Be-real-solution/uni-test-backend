@@ -188,3 +188,11 @@ export class QuestionFindAllResponseDto implements QuestionFindAllResponse {
 	@ApiProperty({ type: QuestionFindOneResponseDto, isArray: true })
 	data: QuestionFindOneResponse[]
 }
+
+export class QuestionFindAllPictureQuestionsDto {
+
+	@ApiPropertyOptional({ example: 'science name' })
+	@IsOptional()
+	scienceName?: string
+}
+

@@ -5,6 +5,7 @@ import {
 	QuestionCreateResponse,
 	QuestionDeleteRequest,
 	QuestionDeleteResponse,
+	QuestionFindAllPictureQuestions,
 	QuestionFindAllRequest,
 	QuestionFindAllResponse,
 	QuestionFindFullRequest,
@@ -351,5 +352,10 @@ export class QuestionService {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
 		return null
+	}
+
+	async findAllPictureQuestions(payload: QuestionFindAllPictureQuestions) {
+		const questions = this.repository.findAllPictureQuestions(payload)
+		return questions
 	}
 }

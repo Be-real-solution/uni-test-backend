@@ -89,3 +89,8 @@ export declare type QuestionsCreateWithAnswersResponse = null
 export declare type QuestionUpdateResponse = null
 
 export declare type QuestionDeleteResponse = null
+
+
+export declare interface QuestionFindAllPictureQuestions {
+	scienceName?: string
+}

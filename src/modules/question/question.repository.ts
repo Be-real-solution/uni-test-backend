@@ -5,6 +5,7 @@ import {
 	QuestionCreateResponse,
 	QuestionDeleteRequest,
 	QuestionDeleteResponse,
+	QuestionFindAllPictureQuestions,
 	QuestionFindAllRequest,
 	QuestionFindAllResponse,
 	QuestionFindFullRequest,
@@ -248,5 +249,18 @@ export class QuestionRepository {
 	async deleteCollection(payload: { id: string }): Promise<null> {
 		await this.prisma.collection.delete({ where: { id: payload.id, deletedAt: null } })
 		return null
+	}
+
+	async findAllPictureQuestions(payload: QuestionFindAllPictureQuestions) {
+		const questions = await this.prisma.question.findMany({
+			where: {
+				imageUrl: { not: null },
+				deletedAt: null,
+				collection: { science: { name: payload.scienceName } },
+			},
+			orderBy: [{ createdAt: 'desc' }],
+		})
+
+		return questions
 	}
 }

@@ -26,6 +26,7 @@ import {
 	QuestionFindOneResponseDto,
 	QuestionsCreateWithAnswersDto,
 	AnswerUpdateForQuestionDto,
+	QuestionFindAllPictureQuestionsDto,
 } from './dtos'
 import {
 	QuestionCreateResponse,
@@ -64,6 +65,12 @@ export class QuestionController {
 	@ApiResponse({ type: QuestionFindAllResponseDto })
 	findAll(@Query() payload: QuestionFindAllRequestDto): Promise<QuestionFindAllResponse> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
+	}
+
+	@Get('picture-questions')
+	@ApiResponse({ type: QuestionFindAllResponseDto })
+	findAllPictureQuestions(@Query() payload: QuestionFindAllPictureQuestionsDto) {
+		return this.service.findAllPictureQuestions({scienceName: payload?.scienceName})
 	}
 
 	@Get(':id')
