@@ -32,6 +32,7 @@ export class AnswerRepository {
 			select: {
 				id: true,
 				text: true,
+				imageUrl: true,
 				createdAt: true,
 				isCorrect: true,
 				question: { select: { id: true, createdAt: true, text: true, imageUrl: true } },
@@ -54,6 +55,7 @@ export class AnswerRepository {
 			select: {
 				id: true,
 				text: true,
+				imageUrl: true,
 				createdAt: true,
 				isCorrect: true,
 				question: { select: { id: true, createdAt: true, text: true, imageUrl: true } },

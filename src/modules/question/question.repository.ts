@@ -258,6 +258,7 @@ export class QuestionRepository {
 				deletedAt: null,
 				collection: { science: { name: payload.scienceName } },
 			},
+			include: { collection: true, answers: true },
 			orderBy: [{ createdAt: 'desc' }],
 		})
 
