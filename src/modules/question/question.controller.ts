@@ -127,7 +127,7 @@ export class QuestionController {
 		@Body() payload: QuestionCreateRequestDto,
 		@UploadedFile() file: Express.Multer.File,
 	): Promise<QuestionCreateResponse> {
-		file.filename && (file.filename = `upload/question/${file.filename}`)
+		file?.filename && (file.filename = `upload/question/${file?.filename}`)
 		return this.service.create(payload, file)
 	}
 

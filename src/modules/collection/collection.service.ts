@@ -209,9 +209,7 @@ export class CollectionService {
 		await this.findOne({ id: params.id })
 		payload.name ? await this.findOneByName({ name: payload.name, id: params.id }) : null
 
-		const collection = await this.repository.update({ ...params, ...payload })
-
-		return collection
+		return this.repository.update({ id: params.id, ...payload })
 	}
 
 	async delete(payload: CollectionDeleteRequest): Promise<CollectionDeleteResponse> {

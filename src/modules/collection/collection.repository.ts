@@ -255,12 +255,12 @@ export class CollectionRepository {
 	async update(
 		payload: CollectionFindOneRequest & CollectionUpdateRequest,
 	): Promise<CollectionUpdateResponse> {
-		return this.prisma.collection.update({
+		await this.prisma.collection.update({
 			where: { id: payload.id, deletedAt: null },
 			data: {
 				name: payload.name,
 				amountInTest: payload.amountInTest,
-				givenMinutes: payload.amountInTest,
+				givenMinutes: payload.givenMinutes,
 				language: payload.language,
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
@@ -268,8 +268,10 @@ export class CollectionRepository {
 				directoryId: payload.directoryId,
 			},
 		})
-
-		return null
+		
+		return this.prisma.collection.findFirst({
+			where: { id: payload.id, deletedAt: null },
+		})
 	}
 
 	async delete(payload: CollectionDeleteRequest): Promise<CollectionDeleteResponse> {
