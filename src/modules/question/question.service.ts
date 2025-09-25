@@ -281,6 +281,8 @@ export class QuestionService {
 
 			if (file) {
 				payload.imageUrl = file.filename
+			} else if (payload.removeImage) {
+				payload.imageUrl = null
 			}
 			await this.repository.update({ ...params, ...payload })
 
@@ -336,7 +338,7 @@ export class QuestionService {
 				}
 			}
 
-			if (file && imageUrl) {
+			if ((file && imageUrl) || (payload.removeImage && imageUrl)) {
 				await deleteFile(imageUrl)
 			}
 			return { status_code: 200, data: {}, message: 'updated' }

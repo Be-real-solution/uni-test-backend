@@ -120,6 +120,11 @@ export class QuestionUpdateRequestDto implements QuestionUpdateRequest {
 	@IsOptional()
 	text?: string
 
+	@ApiPropertyOptional({ example: true })
+	@IsBoolean()
+	@IsOptional()
+	removeImage?: boolean
+
 	@ApiPropertyOptional({ example: 'uuid' })
 	@IsUUID('4')
 	@IsOptional()

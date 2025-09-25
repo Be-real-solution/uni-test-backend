@@ -48,6 +48,7 @@ export declare interface QuestionUpdateRequest {
 	text?: string
 	imageUrl?: string
 	collectionId?: string
+	removeImage?: boolean
 	answers?: AnswerUpdateRequestForQuestionUpdate[]
 }
 
