@@ -165,61 +165,53 @@ export class CollectionRepository {
 	}
 
 	async findOneWithQuestionAnswers(
-    payload: CollectionFindOneRequest,
-): Promise<CollectionFindOneWithQuestionAnswers> {
-    console.log('=== repository payload ===', payload)
+		payload: CollectionFindOneRequest,
+	): Promise<CollectionFindOneWithQuestionAnswers> {
+		const collection = await this.prisma.collection.findFirst({
+			where: { id: payload.id, deletedAt: null },
+			select: {
+				id: true,
+				name: true,
+				language: true,
+				amountInTest: true,
+				givenMinutes: true,
+				maxAttempts: true,
+				science: { select: { id: true, name: true, since_id: true, createdAt: true } },
+				admin: {
+					select: {
+						emailAddress: true,
+						fullName: true,
+						id: true,
+						image: true,
+						type: true,
+						createdAt: true,
+					},
+				},
+				createdAt: true,
+				questions: {
+					where: { deletedAt: null },
+					select: {
+						id: true,
+						text: true,
+						imageUrl: true,
+						createdAt: true,
+						answers: {
+							where: { deletedAt: null },
+							select: {
+								id: true,
+								text: true,
+								imageUrl: true,
+								isCorrect: true,
+								createdAt: true,
+							},
+						},
+					},
+				},
+			},
+		})
 
-    const withoutDeletedAt = await this.prisma.collection.findFirst({
-        where: { id: payload.id }
-    })
-    console.log('=== without deletedAt ===', withoutDeletedAt)
-
-    const collection = await this.prisma.collection.findFirst({
-        where: { id: payload.id, deletedAt: null },
-        select: {
-            id: true,
-            name: true,
-            language: true,
-            amountInTest: true,
-            givenMinutes: true,
-            maxAttempts: true,
-            science: { select: { id: true, name: true, since_id: true, createdAt: true } },
-            admin: {
-                select: {
-                    emailAddress: true,
-                    fullName: true,
-                    id: true,
-                    image: true,
-                    type: true,
-                    createdAt: true,
-                },
-            },
-            createdAt: true,
-            questions: {
-                where: { deletedAt: null },
-                select: {
-                    id: true,
-                    text: true,
-                    imageUrl: true,
-                    createdAt: true,
-                    answers: {
-                        where: { deletedAt: null },
-                        select: {
-                            id: true,
-                            text: true,
-                            isCorrect: true,
-                            createdAt: true,
-                        },
-                    },
-                },
-            },
-        },
-    })
-
-    console.log('=== with deletedAt null ===', collection)
-
-    return collection
-}
+		return collection
+	}
 
 	async create(payload: CollectionCreateRequest): Promise<CollectionCreateResponse> {
 		return this.prisma.collection.create({
