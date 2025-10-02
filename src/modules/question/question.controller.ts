@@ -148,6 +148,10 @@ export class QuestionController {
 					type: 'string',
 					example: 'kimyo',
 				},
+				removeImage: {
+					type: 'boolean',
+					example: true,
+				},
 				collectionId: {
 					type: 'string',
 					example: '11919fb5-a5b4-4775-aedd-efc1254bca5c',

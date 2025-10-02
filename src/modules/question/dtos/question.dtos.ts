@@ -12,6 +12,7 @@ import {
 } from '../interfaces'
 import {
 	IsBoolean,
+	IsBooleanString,
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
@@ -20,7 +21,7 @@ import {
 	ValidateNested,
 } from 'class-validator'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
-import { Type } from 'class-transformer'
+import { Transform, Type } from 'class-transformer'
 
 export class QuestionFindFullRequestDto implements QuestionFindFullRequest {
 	@ApiPropertyOptional({ example: 'uuid' })
@@ -121,8 +122,9 @@ export class QuestionUpdateRequestDto implements QuestionUpdateRequest {
 	text?: string
 
 	@ApiPropertyOptional({ example: true })
-	@IsBoolean()
 	@IsOptional()
+	@IsBoolean()
+	@Transform(({ value }) => value === 'true' || value === true)
 	removeImage?: boolean
 
 	@ApiPropertyOptional({ example: 'uuid' })
