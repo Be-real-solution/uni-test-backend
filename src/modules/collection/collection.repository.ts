@@ -218,7 +218,7 @@ export class CollectionRepository {
 			data: {
 				name: payload.name,
 				amountInTest: payload.amountInTest,
-				givenMinutes: payload.amountInTest,
+				givenMinutes: payload.givenMinutes,
 				language: payload.language,
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
@@ -233,7 +233,7 @@ export class CollectionRepository {
 			data: {
 				name: payload.name,
 				amountInTest: payload.amountInTest,
-				givenMinutes: payload.amountInTest,
+				givenMinutes: payload.givenMinutes,
 				language: payload.language,
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
