@@ -27,7 +27,7 @@ export class QuestionRepository {
 
 	async findFull(payload: QuestionFindFullRequest): Promise<QuestionFindFullResponse> {
 		const questions = await this.prisma.question.findMany({
-			where: { text: { contains: payload.text, mode: 'insensitive' }, deletedAt: null },
+			where: { text: { contains: payload.text, mode: 'insensitive' }, collectionId: payload.collectionId, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
@@ -55,7 +55,7 @@ export class QuestionRepository {
 		const questions = await this.prisma.question.findMany({
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
-			where: { text: { contains: payload.text, mode: 'insensitive' }, deletedAt: null },
+			where: { text: { contains: payload.text, mode: 'insensitive' }, collectionId: payload.collectionId, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
