@@ -269,12 +269,12 @@ export class UserRepository {
 			let group: GroupFindOneResponse
 			if (groupNames.includes(u.group)) {
 				group = groups.find((g) => g.name === u.group)
-				if (group.course.id !== course.id || group.faculty.id !== faculty.id) {
-					throw new BadRequestException(
-						`Fileni o'qishda xatolik. Talaba ma'lumotlarida xatolik mavjud.` +
-							u.full_name,
-					)
-				}
+				// if (group.course.id !== course.id || group.faculty.id !== faculty.id) {
+				// 	throw new BadRequestException(
+				// 		`Fileni o'qishda xatolik. Talaba ma'lumotlarida xatolik mavjud.` +
+				// 			u.full_name,
+				// 	)
+				// }
 			} else {
 				group = await this.prisma.group.findFirst({
 					where: { name: u.group, deletedAt: null },
@@ -298,12 +298,12 @@ export class UserRepository {
 						},
 					})
 				}
-				if (group.course.id !== course.id || group.faculty.id !== faculty.id) {
-					throw new BadRequestException(
-						`Fileni o'qishda xatolik. Talaba ma'lumotlarida xatolik mavjud.` +
-							u.full_name,
-					)
-				}
+				// if (group.course.id !== course.id || group.faculty.id !== faculty.id) {
+				// 	throw new BadRequestException(
+				// 		`Fileni o'qishda xatolik. Talaba ma'lumotlarida xatolik mavjud.` +
+				// 			u.full_name,
+				// 	)
+				// }
 				groupNames.push(group.name)
 				groups.push(group)
 			}
