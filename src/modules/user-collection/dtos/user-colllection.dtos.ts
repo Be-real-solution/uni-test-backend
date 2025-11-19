@@ -12,6 +12,7 @@ import {
 } from '../interfaces'
 import {
 	IsArray,
+	IsBoolean,
 	IsNotEmpty,
 	IsNumber,
 	IsObject,
@@ -79,6 +80,11 @@ export class UserCollectionCreateRequestDto implements UserCollectionCreateReque
 	@IsUUID('4')
 	@IsNotEmpty()
 	collectionId: string
+
+	@ApiProperty({ example: false })
+	@IsOptional()
+	@IsBoolean()
+	isMakeup?: boolean
 }
 
 export class UserCollectionCreateManyRequestDto implements UserCollectionCreateManyRequest {

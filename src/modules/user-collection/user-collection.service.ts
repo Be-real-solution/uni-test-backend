@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common'
 import { UserCollectionRepository } from './user-collection.repository'
 import {
 	UserCollectionCreateManyRequest,
@@ -15,19 +15,39 @@ import {
 	UserCollectionUpdateRequest,
 	UserCollectionUpdateResponse,
 } from './interfaces'
+import { ArchiveRepository } from 'modules/archive'
 
 @Injectable()
 export class UserCollectionService {
 	private readonly repository: UserCollectionRepository
-	constructor(repository: UserCollectionRepository) {
+	private readonly archiveRepository: ArchiveRepository
+	constructor(
+		repository: UserCollectionRepository,
+		@Inject(forwardRef(() => ArchiveRepository)) archiveRepository: ArchiveRepository
+	) {
 		this.repository = repository
+		this.archiveRepository = archiveRepository
 	}
 
 	async findFull(
 		payload: UserCollectionFindFullRequest,
 	): Promise<UserCollectionFindFullResponse> {
-		const userCollections = this.repository.findFull(payload)
-		return userCollections
+		const userCollections = await this.repository.findFull(payload)
+		const list: UserCollectionFindFullResponse = []
+
+		userCollections.forEach(async (col: UserCollectionFindOneResponse) => {
+			if (col.isMakeup) {
+				const archive = await this.archiveRepository.findToday(
+					payload.userId,
+					col.collection.id,
+				)
+
+				if (archive != col.haveAttempt) {
+					list.push(col)
+				}
+			}
+		})
+		return list
 	}
 
 	async findAll(payload: UserCollectionFindAllRequest): Promise<UserCollectionFindAllResponse> {
@@ -68,6 +88,12 @@ export class UserCollectionService {
 		payload: UserCollectionCreateManyRequest,
 	): Promise<UserCollectionCreateResponse> {
 		return this.repository.createMany(payload)
+	}
+
+	async createManyMakeup(
+		payload: UserCollectionCreateManyRequest,
+	): Promise<UserCollectionCreateResponse> {
+		return this.repository.createManyMakeup(payload)
 	}
 
 	async update(

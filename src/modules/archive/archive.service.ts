@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common'
 import { ArchiveRepository } from './archive.repository'
 import {
 	ArchiveCreateRequest,
@@ -19,12 +19,13 @@ import * as ExcelJs from 'exceljs'
 import { Response } from 'express'
 import * as path from 'path'
 import * as fs from 'fs'
+import { appConfig } from 'configs'
 @Injectable()
 export class ArchiveService {
 	private readonly repository: ArchiveRepository
 	private readonly userCollectionRepository: UserCollectionRepository
 
-	constructor(repository: ArchiveRepository, userCollectionRepository: UserCollectionRepository) {
+	constructor(repository: ArchiveRepository, @Inject(forwardRef(() => UserCollectionRepository)) userCollectionRepository: UserCollectionRepository) {
 		this.repository = repository
 		this.userCollectionRepository = userCollectionRepository
 	}
@@ -68,12 +69,19 @@ export class ArchiveService {
 		}
 		await this.repository.create(payload)
 
-		if (userCollection.haveAttempt === 1) {
+		if (!userCollection.isMakeup) {
+			await this.userCollectionRepository.update({
+				id: userCollection.id,
+				haveAttempt: userCollection.haveAttempt - 1,
+			})
+		}
+
+		if (userCollection.haveAttempt === 1 || (userCollection.isMakeup && payload.result >= appConfig.passing_score)) {
 			await this.userCollectionRepository.delete({ id: userCollection.id })
 		} else {
 			await this.userCollectionRepository.update({
 				id: userCollection.id,
-				haveAttempt: userCollection.haveAttempt - 1,
+				haveAttempt: userCollection.isMakeup ? userCollection.haveAttempt : userCollection.haveAttempt - 1,
 			})
 		}
 

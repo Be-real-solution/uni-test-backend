@@ -83,6 +83,15 @@ export class UserCollectionController {
 		return this.service.createMany(payload)
 	}
 
+
+	@Post('many-makeup-assignment')
+	@ApiResponse({ type: null })
+	createManyMakeupAssignment(
+		@Body() payload: UserCollectionCreateManyRequestDto,
+	): Promise<UserCollectionCreateResponse> {
+		return this.service.createManyMakeup(payload)
+	}
+
 	@Patch(':id')
 	@ApiResponse({ type: null })
 	update(

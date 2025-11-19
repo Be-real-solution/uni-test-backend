@@ -11,6 +11,7 @@ export declare interface UserCollectionFindAllRequest {
 	pageSize?: number
 	userId?: string
 	collectionId?: string
+	isMakeup?: boolean
 }
 
 export declare interface UserCollectionFindOneRequest {
@@ -21,6 +22,7 @@ export declare interface UserCollectionCreateRequest {
 	haveAttempt: number
 	userId: string
 	collectionId: string
+	// isMakeup?: boolean
 }
 
 export declare interface UserCollectionCreateManyRequest {
@@ -51,6 +53,7 @@ export declare interface UserCollectionFindAllResponse {
 export declare interface UserCollectionFindOneResponse {
 	id: string
 	haveAttempt: number
+	isMakeup?: boolean
 	user?: UserFindOneResponse
 	collection?: CollectionFindOneResponse
 	createdAt: Date

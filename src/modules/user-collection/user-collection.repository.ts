@@ -154,6 +154,7 @@ export class UserCollectionRepository {
 						amountInTest: true,
 					},
 				},
+				isMakeup: true,
 				haveAttempt: true,
 				createdAt: true,
 			},
@@ -190,6 +191,7 @@ export class UserCollectionRepository {
 						amountInTest: true,
 					},
 				},
+				isMakeup: true,
 				haveAttempt: true,
 				createdAt: true,
 			},
@@ -229,20 +231,56 @@ export class UserCollectionRepository {
 					return c.collectionId === p.collectionId && c.userId === p.userId
 				})
 				if (col) {
-					// customPay.push({
-					// 	collectionId: p.collectionId,
-					// 	userId: p.userId,
-					// 	haveAttempt: p.haveAttempt + col.haveAttempt,
-					// })
 					await this.prisma.userCollection.update({
 						where: { id: col.id },
-						data: { haveAttempt: +p.haveAttempt + +col.haveAttempt },
+						data: {
+							haveAttempt: +p.haveAttempt + +col.haveAttempt,
+						},
 					})
 				} else {
 					customPay.push(p)
 				}
 			}
-			// await this.prisma.userCollection.updateMany({ where: { id: { in: candidates.map((c) => c.id) } }, data: { deletedAt: new Date(), haveAttempt: 0 } })
+		} else {
+			customPay = payload.userCollections
+		}
+
+		await this.prisma.userCollection.createMany({ data: customPay })
+		return { statusCode: 200, data: [], message: 'success' }
+	}
+
+	async createManyMakeup(
+		payload: UserCollectionCreateManyRequest,
+	): Promise<UserCollectionCreateResponse> {
+		const candidates = await this.prisma.userCollection.findMany({
+			where: {
+				deletedAt: null,
+				OR: payload.userCollections.map((p) => ({
+					collectionId: p.collectionId,
+					userId: p.userId,
+				})),
+			},
+		})
+
+		let customPay = []
+
+		if (candidates.length) {
+			for (const p of payload.userCollections) {
+				const col = candidates.find((c) => {
+					return c.collectionId === p.collectionId && c.userId === p.userId
+				})
+				if (col) {
+					await this.prisma.userCollection.update({
+						where: { id: col.id },
+						data: {
+							haveAttempt: +p.haveAttempt + +col.haveAttempt,
+							isMakeup: true,
+						},
+					})
+				} else {
+					customPay.push(p)
+				}
+			}
 		} else {
 			customPay = payload.userCollections
 		}

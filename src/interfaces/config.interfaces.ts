@@ -5,6 +5,7 @@ export declare interface AppConfigOptions {
 	file_size: number
 	swagger_login: string
 	swagger_password: string
+	passing_score: number
 }
 
 export declare interface DatabaseConfigOptions {

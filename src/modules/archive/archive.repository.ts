@@ -411,4 +411,17 @@ export class ArchiveRepository {
 			},
 		})
 	}
+
+	async findToday(userId: string, collectionId: string) {
+		return this.prisma.archive.count({
+			where: {
+				userId: userId,
+				collectionId: collectionId,
+				createdAt: {
+					gte: new Date(new Date().setHours(0, 0, 0, 0)),
+					lt: new Date(new Date().setHours(23, 59, 59, 999)),
+				},
+			},
+		})
+	}
 }
