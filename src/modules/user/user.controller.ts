@@ -153,8 +153,6 @@ export class UserController {
 	@UseInterceptors(FileInterceptor('image'))
 	@ApiResponse({ type: UserSignInResponseDto })
 	async signInByFaceId(@UploadedFile() file: Express.Multer.File): Promise<UserSignInResponse> {
-		console.log(file)
-
 		return this.service.signIndByFaceId(file)
 	}
 
