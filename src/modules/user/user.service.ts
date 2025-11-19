@@ -109,10 +109,10 @@ export class UserService {
 			const agent = new https.Agent({
 				rejectUnauthorized: false, // ❗ Sertifikatni tekshirmaydi
 			})
-			console.log('FACE RECOGNATION URL', appConfig.face_recognition_url)
+			console.log('FACE RECOGNATION URL', appConfig.face_recognation_url)
 
 			response = await axios.post(
-				appConfig.face_recognition_url,
+				appConfig.face_recognation_url,
 				file.buffer,
 				{
 					headers: {

@@ -8,5 +8,5 @@ export const appConfig: AppConfigOptions = {
 	swagger_login: process.env.SWAGGER_LOGIN,
 	swagger_password: process.env.SWAGGER_PASSWORD,
 	passing_score: Number(process.env.PASSING_SCORE),
-	face_recognition_url: process.env.FACE_RECOGNITION_URL,
+	face_recognation_url: process.env.FACE_RECOGNATION_URL,
 }
