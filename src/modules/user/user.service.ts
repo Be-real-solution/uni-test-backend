@@ -27,6 +27,7 @@ import { exec } from 'child_process'
 import { deleteFile } from 'libs/fileService'
 import axios from 'axios'
 import * as https from 'https'
+import { appConfig } from 'configs'
 
 @Injectable()
 export class UserService {
@@ -110,7 +111,7 @@ export class UserService {
 			})
 
 			response = await axios.post(
-				'https://face.medsfera.uz/api/recognize/from-image',
+				appConfig.face_recognition_url,
 				file.buffer,
 				{
 					headers: {

@@ -6,6 +6,7 @@ export declare interface AppConfigOptions {
 	swagger_login: string
 	swagger_password: string
 	passing_score: number
+	face_recognition_url: string
 }
 
 export declare interface DatabaseConfigOptions {
