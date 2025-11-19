@@ -22,7 +22,7 @@ export declare interface UserCollectionCreateRequest {
 	haveAttempt: number
 	userId: string
 	collectionId: string
-	// isMakeup?: boolean
+	isMakeup?: boolean
 }
 
 export declare interface UserCollectionCreateManyRequest {
