@@ -23,7 +23,7 @@ export class UserCollectionService {
 	private readonly archiveRepository: ArchiveRepository
 	constructor(
 		repository: UserCollectionRepository,
-		@Inject(forwardRef(() => ArchiveRepository)) archiveRepository: ArchiveRepository
+		@Inject(forwardRef(() => ArchiveRepository)) archiveRepository: ArchiveRepository,
 	) {
 		this.repository = repository
 		this.archiveRepository = archiveRepository
@@ -33,20 +33,23 @@ export class UserCollectionService {
 		payload: UserCollectionFindFullRequest,
 	): Promise<UserCollectionFindFullResponse> {
 		const userCollections = await this.repository.findFull(payload)
-		const list: UserCollectionFindFullResponse = []
+		const list: any = []
 
-		userCollections.forEach(async (col: UserCollectionFindOneResponse) => {
+		for (const col of userCollections) {
+		
 			if (col.isMakeup) {
-				const archive = await this.archiveRepository.findToday(
+				const archiveCount = await this.archiveRepository.findToday(
 					payload.userId,
 					col.collection.id,
 				)
-
-				if (archive != col.haveAttempt) {
+				if (archiveCount != col.haveAttempt) {
 					list.push(col)
 				}
+			} else {
+				list.push(col)
 			}
-		})
+		}
+
 		return list
 	}
 

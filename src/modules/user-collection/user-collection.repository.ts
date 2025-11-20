@@ -280,11 +280,11 @@ export class UserCollectionRepository {
 						},
 					})
 				} else {
-					customPay.push(p)
+					customPay.push({...p, isMakeup: true})
 				}
 			}
 		} else {
-			customPay = payload.userCollections
+			customPay = payload.userCollections.map((p) => ({...p, isMakeup: true}))
 		}
 
 		await this.prisma.userCollection.createMany({ data: customPay })
