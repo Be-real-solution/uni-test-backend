@@ -49,6 +49,7 @@ export class ArchiveService {
 	}
 
 	async create(payload: ArchiveCreateRequest): Promise<ArchiveCreateResponse> {
+		console.log('archive payload', payload)
 		const checkArchive = await this.repository.findOneForCheck({
 			userId: payload.userId,
 			collectionId: payload.collectionId,
