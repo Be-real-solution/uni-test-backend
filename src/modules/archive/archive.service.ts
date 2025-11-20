@@ -64,10 +64,13 @@ export class ArchiveService {
 			collectionId: payload.collectionId,
 			userId: payload.userId,
 		})
-		console.log('userCollec', userCollection)
+
 		if (!userCollection || !userCollection.haveAttempt) {
 			throw new BadRequestException("You haven't attempt for this collection")
 		}
+		payload.result = Math.round(payload.result)
+		console.log(payload.result);
+		
 		await this.repository.create(payload)
 
 		if (!userCollection.isMakeup) {
@@ -77,7 +80,7 @@ export class ArchiveService {
 			})
 		}
 
-		if (userCollection.haveAttempt === 1 || (userCollection.isMakeup && payload.result >= appConfig.passing_score)) {
+		if ((userCollection.haveAttempt === 1 && !userCollection.isMakeup) || (userCollection.isMakeup && payload.result >= appConfig.passing_score)) {
 			await this.userCollectionRepository.delete({ id: userCollection.id })
 		} else {
 			await this.userCollectionRepository.update({
