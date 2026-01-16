@@ -207,6 +207,18 @@ export class UserCollectionRepository {
 				haveAttempt: payload.haveAttempt,
 				userId: payload.userId,
 				collectionId: payload.collectionId,
+				isMakeup: payload.isMakeup,
+			},
+		})
+		return null
+	}
+
+	async createByHemisId(payload: UserCollectionCreateRequest): Promise<UserCollectionCreateResponse> {
+		await this.prisma.userCollection.create({
+			data: {
+				haveAttempt: payload.haveAttempt,
+				userId: payload.userId,
+				collectionId: payload.collectionId,
 			},
 		})
 		return null

@@ -1,6 +1,7 @@
 import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common'
 import { UserCollectionRepository } from './user-collection.repository'
 import {
+	UserCollectionCreateByHemisIdRequest,
 	UserCollectionCreateManyRequest,
 	UserCollectionCreateRequest,
 	UserCollectionCreateResponse,
@@ -16,17 +17,21 @@ import {
 	UserCollectionUpdateResponse,
 } from './interfaces'
 import { ArchiveRepository } from 'modules/archive'
+import { UserInfoService } from 'modules/user-info'
 
 @Injectable()
 export class UserCollectionService {
 	private readonly repository: UserCollectionRepository
 	private readonly archiveRepository: ArchiveRepository
+	private readonly userInfoService: UserInfoService
 	constructor(
 		repository: UserCollectionRepository,
 		@Inject(forwardRef(() => ArchiveRepository)) archiveRepository: ArchiveRepository,
+		userInfoService: UserInfoService,
 	) {
 		this.repository = repository
 		this.archiveRepository = archiveRepository
+		this.userInfoService = userInfoService
 	}
 
 	async findFull(
@@ -85,6 +90,21 @@ export class UserCollectionService {
 			collectionId: payload.collectionId,
 		})
 		return this.repository.create(payload)
+	}
+
+	async createByHemisId(payload: UserCollectionCreateByHemisIdRequest): Promise<UserCollectionCreateResponse> {
+		const user = await this.userInfoService.findOneByHemisId({hemisId: payload.hemisId})
+		await this.findOneByUserCollection({
+			userId: user.user.id,
+			collectionId: payload.collectionId,
+		})
+
+		return this.repository.create({
+			haveAttempt: payload.haveAttempt,
+			userId: user.user.id,
+			collectionId: payload.collectionId,
+			isMakeup: payload.isMakeup,
+		})
 	}
 
 	async createMany(

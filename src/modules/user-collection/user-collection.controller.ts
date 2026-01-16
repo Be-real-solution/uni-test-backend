@@ -14,6 +14,7 @@ import {
 	UserCollectionCreateManyRequestDto,
 } from './dtos'
 import {
+	UserCollectionCreateByHemisIdRequest,
 	UserCollectionCreateResponse,
 	UserCollectionDeleteResponse,
 	UserCollectionFindAllResponse,
@@ -24,6 +25,7 @@ import {
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 import { UserIdInAccessToken } from '../../decorators'
+
 
 @ApiTags('UserCollection')
 @UseGuards(CheckAuthGuard)
@@ -73,6 +75,12 @@ export class UserCollectionController {
 	@ApiResponse({ type: null })
 	create(@Body() payload: UserCollectionCreateRequestDto): Promise<UserCollectionCreateResponse> {
 		return this.service.create(payload)
+	}
+
+	@Post('create-by-hemis-id')
+	@ApiResponse({ type: null })
+	createByHemisId(@Body() payload: UserCollectionCreateByHemisIdRequest): Promise<UserCollectionCreateResponse> {
+		return this.service.createByHemisId(payload)
 	}
 
 	@Post('many')

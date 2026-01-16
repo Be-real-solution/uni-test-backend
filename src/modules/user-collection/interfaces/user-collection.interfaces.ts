@@ -25,6 +25,13 @@ export declare interface UserCollectionCreateRequest {
 	isMakeup?: boolean
 }
 
+export declare interface UserCollectionCreateByHemisIdRequest {
+	haveAttempt: number
+	hemisId: string
+	collectionId: string
+	isMakeup?: boolean
+}
+
 export declare interface UserCollectionCreateManyRequest {
 	userCollections: UserCollectionCreateRequest[]
 }
