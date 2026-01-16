@@ -4,9 +4,10 @@ import { UserCollectionService } from './user-collection.service'
 import { UserCollectionRepository } from './user-collection.repository'
 import { PrismaModule } from '../prisma'
 import { ArchiveModule } from 'modules/archive'
+import { UserInfoModule } from 'modules/user-info'
 
 @Module({
-	imports: [PrismaModule, forwardRef(() => ArchiveModule)],
+	imports: [PrismaModule, UserInfoModule, forwardRef(() => ArchiveModule)],
 	controllers: [UserCollectionController],
 	providers: [UserCollectionService, UserCollectionRepository],
 	exports: [UserCollectionRepository, UserCollectionService],
