@@ -168,3 +168,17 @@ export class UserCollectionFindAllResponseDto implements UserCollectionFindAllRe
 	@ApiProperty({ type: UserCollectionFindOneResponseDto, isArray: true })
 	data: UserCollectionFindOneResponse[]
 }
+
+export class UserCollectionCreateByHemisIdDto {
+	@ApiProperty({ example: 4 })
+	haveAttempt: number
+
+	@ApiProperty({ example: '123456789' })
+	hemisId: string
+
+	@ApiProperty({ example: 'uuid' })
+	collectionId: string
+
+	@ApiPropertyOptional({ example: false })
+	isMakeup?: boolean
+}

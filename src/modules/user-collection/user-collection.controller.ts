@@ -12,6 +12,7 @@ import {
 	UserCollectionFindAllResponseDto,
 	UserCollectionFindOneResponseDto,
 	UserCollectionCreateManyRequestDto,
+	UserCollectionCreateByHemisIdDto,
 } from './dtos'
 import {
 	UserCollectionCreateByHemisIdRequest,
@@ -79,7 +80,7 @@ export class UserCollectionController {
 
 	@Post('create-by-hemis-id')
 	@ApiResponse({ type: null })
-	createByHemisId(@Body() payload: UserCollectionCreateByHemisIdRequest): Promise<UserCollectionCreateResponse> {
+	createByHemisId(@Body() payload: UserCollectionCreateByHemisIdDto): Promise<UserCollectionCreateResponse> {
 		return this.service.createByHemisId(payload)
 	}
 
