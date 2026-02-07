@@ -129,7 +129,7 @@ export class CollectionService {
 	}
 
 	async create(payload: CollectionCreateRequest): Promise<CollectionCreateResponse> {
-		await this.findOneByName({ name: payload.name })
+		// await this.findOneByName({ name: payload.name })
 		const collection = await this.repository.create(payload)
 
 		return collection
@@ -139,7 +139,7 @@ export class CollectionService {
 		payload: CollectionCreateRequest,
 		text: string,
 	): Promise<CollectionCreateResponse> {
-		await this.findOneByName({ name: payload.name })
+		// await this.findOneByName({ name: payload.name })
 		const collection = await this.repository.create(payload)
 		await this.questionService
 			.createManyWithAnswers({ collectionId: collection.id }, text)
@@ -154,7 +154,7 @@ export class CollectionService {
 	async confirmCreateWithQuestions(
 		payload: CollectionBeforeCreateResponse,
 	): Promise<CollectionCreateResponse> {
-		await this.findOneByName({ name: payload.name })
+		// await this.findOneByName({ name: payload.name })
 		const collection = await this.repository.create({
 			adminId: payload.adminId,
 			amountInTest: payload.amountInTest,
@@ -183,7 +183,7 @@ export class CollectionService {
 		payload: CollectionBeforeCreateRequest,
 		text: string,
 	): Promise<CollectionBeforeCreateResponse> {
-		payload.name ? await this.findOneByName({ name: payload.name }) : null
+		// payload.name ? await this.findOneByName({ name: payload.name }) : null
 		const ques = await this.questionService.returnManyWithAnswers(text)
 		let s: any
 		if (payload.scienceId) {
@@ -207,7 +207,7 @@ export class CollectionService {
 		payload: CollectionUpdateRequest,
 	): Promise<CollectionUpdateResponse> {
 		await this.findOne({ id: params.id })
-		payload.name ? await this.findOneByName({ name: payload.name, id: params.id }) : null
+		// payload.name ? await this.findOneByName({ name: payload.name, id: params.id }) : null
 
 		return this.repository.update({ id: params.id, ...payload })
 	}
