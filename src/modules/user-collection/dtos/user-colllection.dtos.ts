@@ -17,6 +17,7 @@ import {
 	IsNumber,
 	IsObject,
 	IsOptional,
+	IsString,
 	IsUUID,
 	ValidateNested,
 } from 'class-validator'
@@ -171,14 +172,21 @@ export class UserCollectionFindAllResponseDto implements UserCollectionFindAllRe
 
 export class UserCollectionCreateByHemisIdDto {
 	@ApiProperty({ example: 4 })
+	@IsNumber()
+	@IsNotEmpty()
 	haveAttempt: number
 
 	@ApiProperty({ example: '123456789' })
+	@IsString()
+	@IsNotEmpty()
 	hemisId: string
 
 	@ApiProperty({ example: 'uuid' })
+	@IsNotEmpty()
 	collectionId: string
 
 	@ApiPropertyOptional({ example: false })
+	@IsOptional()
+	@IsBoolean()
 	isMakeup?: boolean
 }

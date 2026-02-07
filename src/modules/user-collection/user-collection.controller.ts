@@ -80,7 +80,7 @@ export class UserCollectionController {
 
 	@Post('create-by-hemis-id')
 	@ApiResponse({ type: null })
-	createByHemisId(@Body() payload: UserCollectionCreateByHemisIdDto): Promise<UserCollectionCreateResponse> {
+	createByHemisId(@Body() payload: UserCollectionCreateByHemisIdDto) {
 		return this.service.createByHemisId(payload)
 	}
 

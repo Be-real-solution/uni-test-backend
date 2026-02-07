@@ -92,19 +92,25 @@ export class UserCollectionService {
 		return this.repository.create(payload)
 	}
 
-	async createByHemisId(payload: UserCollectionCreateByHemisIdRequest): Promise<UserCollectionCreateResponse> {
+	async createByHemisId(payload: UserCollectionCreateByHemisIdRequest) {
 		const user = await this.userInfoService.findOneByHemisId({hemisId: payload.hemisId})
-		await this.findOneByUserCollection({
+		const userCollection = await this.repository.findByUserCollection({
 			userId: user.user.id,
 			collectionId: payload.collectionId,
 		})
 
-		return this.repository.create({
+		if (userCollection) {
+			return userCollection
+		}
+
+		const data = await this.repository.create({
 			haveAttempt: payload.haveAttempt,
 			userId: user.user.id,
 			collectionId: payload.collectionId,
 			isMakeup: payload.isMakeup,
 		})
+
+		return data
 	}
 
 	async createMany(
