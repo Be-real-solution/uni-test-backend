@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { ScheduleModule } from '@nestjs/schedule'
 import {
 	AdminModule,
 	AnswerModule,
@@ -41,6 +42,7 @@ import { UserResultModule } from './modules/user-result/user-result.module'
 			},
 		),
 		ConfigModule.forRoot({ isGlobal: true, load: [databaseConfig] }),
+		ScheduleModule.forRoot(),
 		PrismaModule,
 		JWTModule,
 		AdminModule,

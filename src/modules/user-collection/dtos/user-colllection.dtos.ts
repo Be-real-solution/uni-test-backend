@@ -183,7 +183,7 @@ export class UserCollectionCreateByHemisIdDto {
 
 	@ApiProperty({ example: 'uuid' })
 	@IsNotEmpty()
-	collectionId: string
+	collectionId: string[]
 
 	@ApiPropertyOptional({ example: false })
 	@IsOptional()

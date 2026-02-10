@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma'
 import {
 	UserCollectionCreateManyRequest,
 	UserCollectionCreateRequest,
+	UserCollectionCreateRequestMany,
 	UserCollectionCreateResponse,
 	UserCollectionDeleteRequest,
 	UserCollectionDeleteResponse,
@@ -201,6 +202,46 @@ export class UserCollectionRepository {
 		return userCollection
 	}
 
+	async findByUserCollections(
+		payload: Partial<UserCollectionCreateRequestMany>,
+	): Promise<UserCollectionFindOneResponse[]> {
+		const userCollection = await this.prisma.userCollection.findMany({
+			where: {
+				collectionId: { in: payload.collectionId },
+				userId: payload.userId,
+				deletedAt: null,
+			},
+			select: {
+				id: true,
+				user: {
+					select: {
+						id: true,
+						createdAt: true,
+						emailAddress: true,
+						fullName: true,
+						type: true,
+						image: true,
+					},
+				},
+				collection: {
+					select: {
+						id: true,
+						name: true,
+						createdAt: true,
+						language: true,
+						maxAttempts: true,
+						givenMinutes: true,
+						amountInTest: true,
+					},
+				},
+				isMakeup: true,
+				haveAttempt: true,
+				createdAt: true,
+			},
+		})
+		return userCollection
+	}
+
 	async create(payload: UserCollectionCreateRequest): Promise<UserCollectionCreateResponse> {
 		await this.prisma.userCollection.create({
 			data: {
@@ -213,7 +254,9 @@ export class UserCollectionRepository {
 		return null
 	}
 
-	async createByHemisId(payload: UserCollectionCreateRequest): Promise<UserCollectionCreateResponse> {
+	async createByHemisId(
+		payload: UserCollectionCreateRequest,
+	): Promise<UserCollectionCreateResponse> {
 		await this.prisma.userCollection.create({
 			data: {
 				haveAttempt: payload.haveAttempt,
@@ -292,11 +335,11 @@ export class UserCollectionRepository {
 						},
 					})
 				} else {
-					customPay.push({...p, isMakeup: true})
+					customPay.push({ ...p, isMakeup: true })
 				}
 			}
 		} else {
-			customPay = payload.userCollections.map((p) => ({...p, isMakeup: true}))
+			customPay = payload.userCollections.map((p) => ({ ...p, isMakeup: true }))
 		}
 
 		await this.prisma.userCollection.createMany({ data: customPay })
@@ -323,5 +366,11 @@ export class UserCollectionRepository {
 			data: { deletedAt: new Date() },
 		})
 		return null
+	}
+
+	async findUnSolvedUserCollections() {
+		return this.prisma.userCollection.findMany({
+			where: { deletedAt: null, createdAt: { lt: new Date() } },
+		})
 	}
 }

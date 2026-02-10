@@ -1,4 +1,5 @@
 import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common'
+import { Cron, CronExpression } from '@nestjs/schedule'
 import { UserCollectionRepository } from './user-collection.repository'
 import {
 	UserCollectionCreateByHemisIdRequest,
@@ -94,23 +95,30 @@ export class UserCollectionService {
 
 	async createByHemisId(payload: UserCollectionCreateByHemisIdRequest) {
 		const user = await this.userInfoService.findOneByHemisId({hemisId: payload.hemisId})
-		const userCollection = await this.repository.findByUserCollection({
+		const existingCollections = await this.repository.findByUserCollections({
 			userId: user.user.id,
 			collectionId: payload.collectionId,
 		})
 
-		if (userCollection) {
-			return userCollection
+		const existingCollectionIds = new Set(existingCollections.map(c => c.collection?.id))
+
+		const newCollections = payload.collectionId.filter(id => !existingCollectionIds.has(id))
+
+		if (newCollections.length) {
+			await this.repository.createMany({
+				userCollections: newCollections.map(collectionId => ({
+					collectionId,
+					userId: user.user.id,
+					haveAttempt: payload.haveAttempt,
+					isMakeup: payload.isMakeup,
+				})),
+			})
 		}
 
-		const data = await this.repository.create({
-			haveAttempt: payload.haveAttempt,
+		return this.repository.findByUserCollections({
 			userId: user.user.id,
 			collectionId: payload.collectionId,
-			isMakeup: payload.isMakeup,
 		})
-
-		return data
 	}
 
 	async createMany(
@@ -146,4 +154,13 @@ export class UserCollectionService {
 		await this.repository.delete(payload)
 		return null
 	}
+
+	@Cron(CronExpression.EVERY_DAY_AT_3AM)
+	async deleteUnSolvedUserCollections() {
+		// const userCollections = await this.repository.findUnSolvedUserCollections()
+		// for (const userCollection of userCollections) {
+		// 	await this.repository.delete({ id: userCollection.id })
+		// }
+	}
 }
+

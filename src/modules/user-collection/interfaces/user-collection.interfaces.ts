@@ -25,10 +25,17 @@ export declare interface UserCollectionCreateRequest {
 	isMakeup?: boolean
 }
 
+export declare interface UserCollectionCreateRequestMany {
+	haveAttempt: number
+	userId: string
+	collectionId: string[]
+	isMakeup?: boolean
+}
+
 export declare interface UserCollectionCreateByHemisIdRequest {
 	haveAttempt: number
 	hemisId: string
-	collectionId: string
+	collectionId: string[]
 	isMakeup?: boolean
 }
 
