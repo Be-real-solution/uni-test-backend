@@ -310,6 +310,7 @@ export class ArchiveRepository {
 						name: true,
 						science: { select: { name: true, since_id: true } },
 						questions: {
+							orderBy: { createdAt: 'asc' },
 							select: {
 								text: true,
 								answers: {
