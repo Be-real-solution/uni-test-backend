@@ -116,14 +116,24 @@ export class UserCollectionService {
 		const newCollections = collectionIds.filter((id) => !existingCollectionIds.has(id))
 
 		if (newCollections.length) {
-			await this.repository.createMany({
-				userCollections: newCollections.map((collectionId) => ({
-					collectionId,
-					userId: user.user.id,
-					haveAttempt: payload.haveAttempt,
-					isMakeup: payload.isMakeup,
-				})),
-			})
+			await Promise.all(
+				newCollections.map((collectionId) => 
+					this.repository.create({
+						collectionId,
+						userId: user.user.id,
+						haveAttempt: payload.haveAttempt,
+						isMakeup: payload.isMakeup,
+					})
+				)
+			)
+			// await this.repository.createMany({
+			// 	userCollections: newCollections.map((collectionId) => ({
+			// 		collectionId,
+			// 		userId: user.user.id,
+			// 		haveAttempt: payload.haveAttempt,
+			// 		isMakeup: payload.isMakeup,
+			// 	})),
+			// })
 		}
 
 		return this.repository.findByUserCollections({
