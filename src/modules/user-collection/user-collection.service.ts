@@ -42,7 +42,6 @@ export class UserCollectionService {
 		const list: any = []
 
 		for (const col of userCollections) {
-		
 			if (col.isMakeup) {
 				const archiveCount = await this.archiveRepository.findToday(
 					payload.userId,
@@ -94,19 +93,31 @@ export class UserCollectionService {
 	}
 
 	async createByHemisId(payload: UserCollectionCreateByHemisIdRequest) {
-		const user = await this.userInfoService.findOneByHemisId({hemisId: payload.hemisId})
+		const user = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
+
+		// collectionId doim array bo'lishini ta'minlaymiz
+		let collectionIds: string[] = []
+		if (Array.isArray(payload.collectionId)) {
+			collectionIds = payload.collectionId
+		} else if (typeof payload.collectionId === 'string') {
+			collectionIds = (payload.collectionId as string).split(',').map((id) => id.trim())
+		}
+
+		// Faqat noyob (unique) va bo'sh bo'lmagan ID larni ajratib olamiz
+		// collectionIds = [...new Set(collectionIds)].filter((id) => id.length > 0)
+
 		const existingCollections = await this.repository.findByUserCollections({
 			userId: user.user.id,
-			collectionId: payload.collectionId,
+			collectionId: collectionIds,
 		})
 
-		const existingCollectionIds = new Set(existingCollections.map(c => c.collection?.id))
+		const existingCollectionIds = new Set(existingCollections.map((c) => c.collection?.id))
 
-		const newCollections = payload.collectionId.filter(id => !existingCollectionIds.has(id))
+		const newCollections = collectionIds.filter((id) => !existingCollectionIds.has(id))
 
 		if (newCollections.length) {
 			await this.repository.createMany({
-				userCollections: newCollections.map(collectionId => ({
+				userCollections: newCollections.map((collectionId) => ({
 					collectionId,
 					userId: user.user.id,
 					haveAttempt: payload.haveAttempt,
@@ -117,7 +128,7 @@ export class UserCollectionService {
 
 		return this.repository.findByUserCollections({
 			userId: user.user.id,
-			collectionId: payload.collectionId,
+			collectionId: collectionIds,
 		})
 	}
 
@@ -163,4 +174,3 @@ export class UserCollectionService {
 		// }
 	}
 }
-

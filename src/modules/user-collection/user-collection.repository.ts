@@ -291,7 +291,7 @@ export class UserCollectionRepository {
 					await this.prisma.userCollection.update({
 						where: { id: col.id },
 						data: {
-							haveAttempt: +p.haveAttempt + +col.haveAttempt,
+							haveAttempt: Number(p.haveAttempt || 0) + Number(col.haveAttempt || 0),
 						},
 					})
 				} else {
@@ -330,7 +330,7 @@ export class UserCollectionRepository {
 					await this.prisma.userCollection.update({
 						where: { id: col.id },
 						data: {
-							haveAttempt: +p.haveAttempt + +col.haveAttempt,
+							haveAttempt: Number(p.haveAttempt || 0) + Number(col.haveAttempt || 0),
 							isMakeup: true,
 						},
 					})
