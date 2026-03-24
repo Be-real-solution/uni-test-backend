@@ -94,7 +94,7 @@ export class UserCollectionService {
 
 	async createByHemisId(payload: UserCollectionCreateByHemisIdRequest) {
 		const user = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
-
+		console.log('createByHemisId', payload)
 		// collectionId doim array bo'lishini ta'minlaymiz
 		let collectionIds: string[] = []
 		if (Array.isArray(payload.collectionId)) {
@@ -174,3 +174,4 @@ export class UserCollectionService {
 		// }
 	}
 }
+
