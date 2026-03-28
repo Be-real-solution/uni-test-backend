@@ -15,7 +15,6 @@ import {
 	IsBoolean,
 	IsNotEmpty,
 	IsNumber,
-	IsObject,
 	IsOptional,
 	IsString,
 	IsUUID,
@@ -170,6 +169,18 @@ export class UserCollectionFindAllResponseDto implements UserCollectionFindAllRe
 	data: UserCollectionFindOneResponse[]
 }
 
+export class TopicWithExcusedDto {
+	@ApiProperty({ example: 'uuid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	collectionId: string
+
+	@ApiProperty({ example: false })
+	@IsBoolean()
+	@IsNotEmpty()
+	isExcused: boolean
+}
+
 export class UserCollectionCreateByHemisIdDto {
 	@ApiProperty({ example: 4 })
 	@IsNumber()
@@ -181,9 +192,11 @@ export class UserCollectionCreateByHemisIdDto {
 	@IsNotEmpty()
 	hemisId: string
 
-	@ApiProperty({ example: 'uuid' })
-	@IsNotEmpty()
-	collectionId: string[]
+	@ApiProperty({ type: TopicWithExcusedDto, isArray: true })
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => TopicWithExcusedDto)
+	topics: TopicWithExcusedDto[]
 
 	@ApiPropertyOptional({ example: false })
 	@IsOptional()

@@ -233,6 +233,7 @@ model UserCollection {
   userId       String    @map("user_id") @db.Uuid
   haveAttempt  Int       @default(1) @map("have_attempt") @db.Integer
   isMakeup     Boolean   @default(false) @map("is_makeup")
+  isExcused    Boolean   @default(false) @map("is_excused")
   collectionId String    @map("collection_id") @db.Uuid
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamp

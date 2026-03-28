@@ -94,47 +94,35 @@ export class UserCollectionService {
 
 	async createByHemisId(payload: UserCollectionCreateByHemisIdRequest) {
 		const user = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
-		console.log('createByHemisId', payload)
-		// collectionId doim array bo'lishini ta'minlaymiz
-		let collectionIds: string[] = []
-		if (Array.isArray(payload.collectionId)) {
-			collectionIds = payload.collectionId
-		} else if (typeof payload.collectionId === 'string') {
-			collectionIds = (payload.collectionId as string).split(',').map((id) => id.trim())
-		}
-
-		// Faqat noyob (unique) va bo'sh bo'lmagan ID larni ajratib olamiz
-		// collectionIds = [...new Set(collectionIds)].filter((id) => id.length > 0)
+		const collectionIds = payload.topics.map((t) => t.collectionId)
 
 		const existingCollections = await this.repository.findByUserCollections({
 			userId: user.user.id,
 			collectionId: collectionIds,
 		})
 
-		const existingCollectionIds = new Set(existingCollections.map((c) => c.collection?.id))
+		const existingByCollectionId = new Map(existingCollections.map((c) => [c.collection?.id, c]))
 
-		const newCollections = collectionIds.filter((id) => !existingCollectionIds.has(id))
+		const newTopics = payload.topics.filter((t) => !existingByCollectionId.has(t.collectionId))
+		const existingTopics = payload.topics.filter((t) => existingByCollectionId.has(t.collectionId))
 
-		if (newCollections.length) {
-			await Promise.all(
-				newCollections.map((collectionId) => 
-					this.repository.create({
-						collectionId,
-						userId: user.user.id,
-						haveAttempt: payload.haveAttempt,
-						isMakeup: payload.isMakeup,
-					})
-				)
-			)
-			// await this.repository.createMany({
-			// 	userCollections: newCollections.map((collectionId) => ({
-			// 		collectionId,
-			// 		userId: user.user.id,
-			// 		haveAttempt: payload.haveAttempt,
-			// 		isMakeup: payload.isMakeup,
-			// 	})),
-			// })
-		}
+		await Promise.all([
+			...newTopics.map((topic) =>
+				this.repository.create({
+					collectionId: topic.collectionId,
+					userId: user.user.id,
+					haveAttempt: payload.haveAttempt,
+					isMakeup: payload.isMakeup,
+					isExcused: topic.isExcused,
+				})
+			),
+			...existingTopics.map((topic) =>
+				this.repository.update({
+					id: existingByCollectionId.get(topic.collectionId).id,
+					isExcused: topic.isExcused,
+				})
+			),
+		])
 
 		return this.repository.findByUserCollections({
 			userId: user.user.id,

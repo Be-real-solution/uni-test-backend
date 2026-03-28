@@ -235,6 +235,7 @@ export class UserCollectionRepository {
 					},
 				},
 				isMakeup: true,
+				isExcused: true,
 				haveAttempt: true,
 				createdAt: true,
 			},
@@ -249,6 +250,7 @@ export class UserCollectionRepository {
 				userId: payload.userId,
 				collectionId: payload.collectionId,
 				isMakeup: payload.isMakeup,
+				isExcused: payload.isExcused ?? false,
 			},
 		})
 		return null
@@ -355,6 +357,7 @@ export class UserCollectionRepository {
 				haveAttempt: payload.haveAttempt,
 				userId: payload.userId,
 				collectionId: payload.collectionId,
+				isExcused: payload.isExcused,
 			},
 		})
 		return null

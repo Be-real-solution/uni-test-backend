@@ -23,6 +23,7 @@ export declare interface UserCollectionCreateRequest {
 	userId: string
 	collectionId: string
 	isMakeup?: boolean
+	isExcused?: boolean
 }
 
 export declare interface UserCollectionCreateRequestMany {
@@ -32,10 +33,15 @@ export declare interface UserCollectionCreateRequestMany {
 	isMakeup?: boolean
 }
 
+export declare interface TopicWithExcused {
+	collectionId: string
+	isExcused: boolean
+}
+
 export declare interface UserCollectionCreateByHemisIdRequest {
 	haveAttempt: number
 	hemisId: string
-	collectionId: string[]
+	topics: TopicWithExcused[]
 	isMakeup?: boolean
 }
 
@@ -47,6 +53,7 @@ export declare interface UserCollectionUpdateRequest {
 	haveAttempt?: number
 	userId?: string
 	collectionId?: string
+	isExcused?: boolean
 }
 
 export declare interface UserCollectionDeleteRequest {
@@ -68,6 +75,7 @@ export declare interface UserCollectionFindOneResponse {
 	id: string
 	haveAttempt: number
 	isMakeup?: boolean
+	isExcused?: boolean
 	user?: UserFindOneResponse
 	collection?: CollectionFindOneResponse
 	createdAt: Date
