@@ -41,8 +41,13 @@ export declare interface TopicWithExcused {
 export declare interface UserCollectionCreateByHemisIdRequest {
 	haveAttempt: number
 	hemisId: string
-	topics: TopicWithExcused[]
+	collections: TopicWithExcused[]
 	isMakeup?: boolean
+}
+
+export declare interface UserCollectionUpdateIsExcusedByHemisIdRequest {
+	hemisId: string
+	collections: TopicWithExcused[]
 }
 
 export declare interface UserCollectionCreateManyRequest {

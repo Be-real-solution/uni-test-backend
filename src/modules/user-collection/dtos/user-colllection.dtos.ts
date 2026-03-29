@@ -181,6 +181,19 @@ export class TopicWithExcusedDto {
 	isExcused: boolean
 }
 
+export class UserCollectionUpdateIsExcusedByHemisIdDto {
+	@ApiProperty({ example: '123456789' })
+	@IsString()
+	@IsNotEmpty()
+	hemisId: string
+
+	@ApiProperty({ type: TopicWithExcusedDto, isArray: true })
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => TopicWithExcusedDto)
+	collections: TopicWithExcusedDto[]
+}
+
 export class UserCollectionCreateByHemisIdDto {
 	@ApiProperty({ example: 4 })
 	@IsNumber()
@@ -196,7 +209,7 @@ export class UserCollectionCreateByHemisIdDto {
 	@IsArray()
 	@ValidateNested({ each: true })
 	@Type(() => TopicWithExcusedDto)
-	topics: TopicWithExcusedDto[]
+	collections: TopicWithExcusedDto[]
 
 	@ApiPropertyOptional({ example: false })
 	@IsOptional()

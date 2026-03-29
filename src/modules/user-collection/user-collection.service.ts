@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { UserCollectionRepository } from './user-collection.repository'
 import {
@@ -14,6 +14,7 @@ import {
 	UserCollectionFindFullResponse,
 	UserCollectionFindOneRequest,
 	UserCollectionFindOneResponse,
+	UserCollectionUpdateIsExcusedByHemisIdRequest,
 	UserCollectionUpdateRequest,
 	UserCollectionUpdateResponse,
 } from './interfaces'
@@ -94,7 +95,7 @@ export class UserCollectionService {
 
 	async createByHemisId(payload: UserCollectionCreateByHemisIdRequest) {
 		const user = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
-		const collectionIds = payload.topics.map((t) => t.collectionId)
+		const collectionIds = payload.collections.map((t) => t.collectionId)
 
 		const existingCollections = await this.repository.findByUserCollections({
 			userId: user.user.id,
@@ -103,8 +104,8 @@ export class UserCollectionService {
 
 		const existingByCollectionId = new Map(existingCollections.map((c) => [c.collection?.id, c]))
 
-		const newTopics = payload.topics.filter((t) => !existingByCollectionId.has(t.collectionId))
-		const existingTopics = payload.topics.filter((t) => existingByCollectionId.has(t.collectionId))
+		const newTopics = payload.collections.filter((t) => !existingByCollectionId.has(t.collectionId))
+		const existingTopics = payload.collections.filter((t) => existingByCollectionId.has(t.collectionId))
 
 		await Promise.all([
 			...newTopics.map((topic) =>
@@ -162,6 +163,38 @@ export class UserCollectionService {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
 		return null
+	}
+
+	async updateIsExcusedByHemisId(payload: UserCollectionUpdateIsExcusedByHemisIdRequest) {
+		const user = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
+		const collectionIds = payload.collections.map((t) => t.collectionId)
+
+		const existingCollections = await this.repository.findByUserCollections({
+			userId: user.user.id,
+			collectionId: collectionIds,
+		})
+
+		if (existingCollections.length === 0) {
+			throw new NotFoundException('UserCollection not found')
+		}
+
+		const existingByCollectionId = new Map(existingCollections.map((c) => [c.collection?.id, c]))
+
+		const toUpdate = payload.collections.filter((t) => existingByCollectionId.has(t.collectionId))
+
+		await Promise.all(
+			toUpdate.map((topic) =>
+				this.repository.update({
+					id: existingByCollectionId.get(topic.collectionId).id,
+					isExcused: topic.isExcused,
+				})
+			)
+		)
+
+		return this.repository.findByUserCollections({
+			userId: user.user.id,
+			collectionId: collectionIds,
+		})
 	}
 
 	@Cron(CronExpression.EVERY_DAY_AT_3AM)

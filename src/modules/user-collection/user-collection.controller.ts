@@ -13,6 +13,7 @@ import {
 	UserCollectionFindOneResponseDto,
 	UserCollectionCreateManyRequestDto,
 	UserCollectionCreateByHemisIdDto,
+	UserCollectionUpdateIsExcusedByHemisIdDto,
 } from './dtos'
 import {
 	UserCollectionCreateByHemisIdRequest,
@@ -82,6 +83,12 @@ export class UserCollectionController {
 	@ApiResponse({ type: null })
 	createByHemisId(@Body() payload: UserCollectionCreateByHemisIdDto) {
 		return this.service.createByHemisId(payload)
+	}
+
+	@Patch('update-is-excused-by-hemis-id')
+	@ApiResponse({ type: null })
+	updateIsExcusedByHemisId(@Body() payload: UserCollectionUpdateIsExcusedByHemisIdDto) {
+		return this.service.updateIsExcusedByHemisId(payload)
 	}
 
 	@Post('many')
