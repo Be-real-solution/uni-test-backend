@@ -179,6 +179,11 @@ export class TopicWithExcusedDto {
 	@IsBoolean()
 	@IsNotEmpty()
 	isExcused: boolean
+
+	@ApiPropertyOptional({ example: 'some name' })
+	@IsString()
+	@IsOptional()
+	name?: string
 }
 
 export class UserCollectionUpdateIsExcusedByHemisIdDto {
