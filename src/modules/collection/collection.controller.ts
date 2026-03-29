@@ -42,6 +42,7 @@ import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { UploadedTxtFile } from '../../interfaces'
 import { CheckAuthGuard } from '../../guards'
+import { UserIdInAccessToken } from '../../decorators'
 import { Response } from 'express'
 import { IResponse } from 'interfaces/response.interfaces'
 
@@ -72,8 +73,9 @@ export class CollectionController {
 	@ApiResponse({ type: CollectionFindOneResponseDto })
 	findOneWithQA(
 		@Param() payload: CollectionFindOneRequestDto,
+		@UserIdInAccessToken() userId: string,
 	): Promise<CollectionFindOneWithQuestionAnswers> {
-		return this.service.findOneWithQuestions(payload)
+		return this.service.findOneWithQuestions({ ...payload, userId })
 	}
 
 	@Get(':id/with-question')

@@ -165,8 +165,8 @@ export class CollectionRepository {
 	}
 
 	async findOneWithQuestionAnswers(
-		payload: CollectionFindOneRequest,
-	): Promise<CollectionFindOneWithQuestionAnswers> {
+		payload: CollectionFindOneRequest & { userId?: string },
+	): Promise<CollectionFindOneWithQuestionAnswers & { userCollectiona?: { isExcused: boolean }[] }> {
 		const collection = await this.prisma.collection.findFirst({
 			where: { id: payload.id, deletedAt: null },
 			select: {
@@ -188,6 +188,12 @@ export class CollectionRepository {
 					},
 				},
 				createdAt: true,
+				userCollectiona: payload.userId
+					? {
+							where: { userId: payload.userId, deletedAt: null },
+							select: { isExcused: true },
+					  }
+					: false,
 				questions: {
 					where: { deletedAt: null },
 					select: {

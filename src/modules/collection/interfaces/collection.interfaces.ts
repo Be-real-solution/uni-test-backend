@@ -97,6 +97,7 @@ export declare interface CollectionFindOneWithQuestionAnswers {
 	amountInTest: number
 	admin?: AdminFindOneResponse
 	questions: CollectionQuestion[]
+	isExcused?: boolean
 	createdAt: Date
 }
 

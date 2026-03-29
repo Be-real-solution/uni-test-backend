@@ -58,7 +58,7 @@ export class CollectionService {
 	}
 
 	async findOneWithQuestions(
-		payload: CollectionFindOneRequest,
+		payload: CollectionFindOneRequest & { userId?: string },
 	): Promise<CollectionFindOneWithQuestionAnswers> {
 		const collection = await this.repository.findOneWithQuestionAnswers(payload)
 		if (!collection) {
@@ -95,9 +95,12 @@ export class CollectionService {
 			answers: question.answers.sort(() => 0.5 - Math.random()),
 		}))
 
+		const userCollection = collection.userCollectiona?.[0]
+
 		return {
 			...collection,
 			questions: shuffledQuestionsWithAnswers,
+			isExcused: userCollection?.isExcused ?? false,
 		}
 	}
 
