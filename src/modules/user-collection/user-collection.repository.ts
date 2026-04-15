@@ -23,11 +23,81 @@ export class UserCollectionRepository {
 		this.prisma = prisma
 	}
 
+	// async findFull(
+	// 	payload: UserCollectionFindFullRequest,
+	// ): Promise<UserCollectionFindFullResponse> {
+	// 	const userCollections = await this.prisma.userCollection.findMany({
+	// 		where: { userId: payload.userId, collectionId: payload.collectionId, deletedAt: null },
+	// 		select: {
+	// 			id: true,
+	// 			user: {
+	// 				select: {
+	// 					id: true,
+	// 					createdAt: true,
+	// 					emailAddress: true,
+	// 					fullName: true,
+	// 					type: true,
+	// 					image: true,
+	// 				},
+	// 			},
+	// 			collection: {
+	// 				select: {
+	// 					id: true,
+	// 					name: true,
+	// 					createdAt: true,
+	// 					language: true,
+	// 					maxAttempts: true,
+	// 					givenMinutes: true,
+	// 					amountInTest: true,
+	// 					questions: {
+	// 						select: {
+	// 							id: true,
+	// 							text: true,
+	// 							imageUrl: true,
+	// 							createdAt: true,
+	// 							answers: {
+	// 								select: {
+	// 									id: true,
+	// 									text: true,
+	// 									createdAt: true,
+	// 									isCorrect: true,
+	// 								},
+	// 							},
+	// 						},
+	// 					},
+	// 					science: {
+	// 						select: { id: true, name: true, since_id: true, createdAt: true },
+	// 					},
+	// 				},
+	// 			},
+	// 			haveAttempt: true,
+	// 			createdAt: true,
+	// 		},
+	// 		orderBy: [{ createdAt: 'desc' }],
+	// 	})
+
+	// 	return userCollections
+	// }
+
 	async findFull(
 		payload: UserCollectionFindFullRequest,
 	): Promise<UserCollectionFindFullResponse> {
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+
+		const tomorrow = new Date(today);
+		tomorrow.setDate(tomorrow.getDate() + 1);
+
 		const userCollections = await this.prisma.userCollection.findMany({
-			where: { userId: payload.userId, collectionId: payload.collectionId, deletedAt: null },
+			where: {
+				userId: payload.userId,
+				collectionId: payload.collectionId,
+				deletedAt: null,
+				createdAt: {
+					gte: today,
+					lt: tomorrow,
+				},
+			},
 			select: {
 				id: true,
 				user: {
@@ -74,9 +144,9 @@ export class UserCollectionRepository {
 				createdAt: true,
 			},
 			orderBy: [{ createdAt: 'desc' }],
-		})
+		});
 
-		return userCollections
+		return userCollections;
 	}
 
 	async findAll(payload: UserCollectionFindAllRequest): Promise<UserCollectionFindAllResponse> {
