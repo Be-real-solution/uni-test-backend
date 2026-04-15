@@ -19,6 +19,7 @@ import * as ExcelJs from 'exceljs'
 import { Response } from 'express'
 import * as path from 'path'
 import * as fs from 'fs'
+import { sendResultToJournal } from './journal.helper'
 @Injectable()
 export class ArchiveService {
 	private readonly repository: ArchiveRepository
@@ -47,27 +48,60 @@ export class ArchiveService {
 		return Archive
 	}
 
+	// async create(payload: ArchiveCreateRequest): Promise<ArchiveCreateResponse> {
+	// 	const userCollection = await this.userCollectionRepository.findByUserCollection({
+	// 		collectionId: payload.collectionId,
+	// 		userId: payload.userId,
+	// 	})
+	// 	console.log('userCollec', userCollection)
+	// 	if (!userCollection || !userCollection.haveAttempt) {
+	// 		throw new BadRequestException("You haven't attempt for this collection")
+	// 	}
+	// 	await this.repository.create(payload)
+
+	// 	if (userCollection.haveAttempt === 1) {
+	// 		await this.userCollectionRepository.delete({ id: userCollection.id })
+	// 	} else {
+	// 		await this.userCollectionRepository.update({
+	// 			id: userCollection.id,
+	// 			haveAttempt: userCollection.haveAttempt - 1,
+	// 		})
+	// 	}
+
+	// 	return null
+	// }
+
 	async create(payload: ArchiveCreateRequest): Promise<ArchiveCreateResponse> {
 		const userCollection = await this.userCollectionRepository.findByUserCollection({
 			collectionId: payload.collectionId,
 			userId: payload.userId,
-		})
-		console.log('userCollec', userCollection)
+		});
+
+		console.log('userCollec', userCollection);
+
 		if (!userCollection || !userCollection.haveAttempt) {
-			throw new BadRequestException("You haven't attempt for this collection")
+			throw new BadRequestException("You haven't attempt for this collection");
 		}
-		await this.repository.create(payload)
+
+		await this.repository.create(payload);
 
 		if (userCollection.haveAttempt === 1) {
-			await this.userCollectionRepository.delete({ id: userCollection.id })
+			await this.userCollectionRepository.delete({ id: userCollection.id });
 		} else {
 			await this.userCollectionRepository.update({
 				id: userCollection.id,
 				haveAttempt: userCollection.haveAttempt - 1,
-			})
+			});
 		}
 
-		return null
+		// Background da journal apiga yuborish
+		sendResultToJournal({
+			userId: payload.userId,
+			collectionId: payload.collectionId,
+			result: payload.result,
+		});
+
+		return null;
 	}
 
 	async update(

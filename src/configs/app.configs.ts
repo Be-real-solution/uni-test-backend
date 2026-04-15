@@ -7,4 +7,6 @@ export const appConfig: AppConfigOptions = {
 	file_size: Number(process.env.FILE_SIZE),
 	swagger_login: process.env.SWAGGER_LOGIN,
 	swagger_password: process.env.SWAGGER_PASSWORD,
+	journal_username: process.env.JOURNAL_USERNAME as string,
+	journal_password: process.env.JOURNAL_PASSWORD as string,
 }
