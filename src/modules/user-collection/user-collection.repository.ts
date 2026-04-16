@@ -163,7 +163,7 @@ export class UserCollectionRepository {
 			by: ['collectionId'],
 			where: {
 				userId: payload.userId,
-				deletedAt: null,
+				// deletedAt: null,
 				createdAt: {
 					gte: today,
 					lt: tomorrow,
@@ -184,7 +184,7 @@ export class UserCollectionRepository {
 			where: {
 				userId: payload.userId,
 				collectionId: payload.collectionId,
-				deletedAt: null,
+				// deletedAt: null,
 				createdAt: {
 					gte: today,
 					lt: tomorrow,
@@ -244,6 +244,8 @@ export class UserCollectionRepository {
 
 		return userCollections;
 	}
+	
+
 
 	async findAll(payload: UserCollectionFindAllRequest): Promise<UserCollectionFindAllResponse> {
 		const userCollections = await this.prisma.userCollection.findMany({
