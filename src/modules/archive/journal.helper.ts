@@ -24,7 +24,7 @@ export async function sendResultToJournal(payload: {
             {
                 student_id: payload.userId,
                 collection_id: payload.collectionId,
-                result: payload.result,
+                result: payload.result < 60 ? 0 : payload.result,
             },
             {
                 headers: {
