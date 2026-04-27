@@ -73,11 +73,13 @@ export class ArchiveFindAllRequestDto implements ArchiveFindAllRequest {
 	@ApiPropertyOptional({ example: 5 })
 	@IsNumber()
 	@IsOptional()
+	@Type(() => Number)
 	pageNumber?: number
 
 	@ApiPropertyOptional({ example: 5 })
 	@IsNumber()
 	@IsOptional()
+	@Type(() => Number)
 	pageSize?: number
 
 	@ApiPropertyOptional({ example: 'uuid' })
