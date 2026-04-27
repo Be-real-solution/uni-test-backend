@@ -12,6 +12,7 @@ import {
 import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { CourseFindOneResponse, CourseFindOneResponseDto } from '../../course'
 import { FacultyFindOneResponse, FacultyFindOneResponseDto } from '../../faculty'
+import { Type } from 'class-transformer'
 
 export class GroupFindFullRequestDto implements GroupFindFullRequest {
 	@ApiPropertyOptional({ example: 'uuid' })
@@ -29,11 +30,13 @@ export class GroupFindAllRequestDto implements GroupFindAllRequest {
 	@ApiPropertyOptional({ example: 5 })
 	@IsNumber()
 	@IsOptional()
+	@Type(() => Number)
 	pageNumber?: number
 
 	@ApiPropertyOptional({ example: 5 })
 	@IsNumber()
 	@IsOptional()
+	@Type(() => Number)
 	pageSize?: number
 
 	@ApiPropertyOptional({ example: 'uuid' })
