@@ -9,4 +9,5 @@ export const appConfig: AppConfigOptions = {
 	swagger_password: process.env.SWAGGER_PASSWORD,
 	journal_username: process.env.JOURNAL_USERNAME as string,
 	journal_password: process.env.JOURNAL_PASSWORD as string,
+	journal_webhook_token: process.env.JOURNAL_WEBHOOK_TOKEN as string,
 }

@@ -7,6 +7,7 @@ export declare interface AppConfigOptions {
 	swagger_password: string
 	journal_username: string
 	journal_password: string
+	journal_webhook_token: string
 }
 
 export declare interface DatabaseConfigOptions {
