@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { PrismaClient } from '@prisma/client';
 import { appConfig } from 'configs/app.configs';
 
 const JOURNAL_BASE_URL = 'https://e-journal.tashmeduni.uz/api/v1';
@@ -33,14 +34,36 @@ function retryDelayMs(error: any, attempt: number): number | null {
 
 type JournalPayload = {
     userId: string;
+    hemisId?: string | null;
     collectionId: string;
     collectionName?: string;
     result: number;
 };
 
+// Jurnal talabani avval `unittest_id` (bizdagi userId), topilmasa `hemis_id` bo'yicha qidiradi.
+// Jurnalda unittest_id to'ldirilmagan talabalar uchun hemis_id yuborilmasa 404 "Student not found" qaytadi.
+let prisma: PrismaClient | null = null;
+
+async function resolveHemisId(payload: JournalPayload): Promise<string | null> {
+    if (payload.hemisId !== undefined) return payload.hemisId;
+    try {
+        prisma ??= new PrismaClient();
+        const info = await prisma.userInfo.findFirst({
+            where: { userId: payload.userId, deletedAt: null },
+            select: { hemisId: true },
+        });
+        payload.hemisId = info?.hemisId ?? null;
+    } catch (error: any) {
+        console.error('Journal: hemis_id topilmadi:', payload.userId, error?.message);
+        payload.hemisId = null;
+    }
+    return payload.hemisId;
+}
+
 function toJournalBody(payload: JournalPayload) {
     return {
         student_id: payload.userId,
+        hemis_id: payload.hemisId || undefined,
         collection_id: payload.collectionId,
         collection_name: payload.collectionName,
         result: payload.result < 60 ? 1 : payload.result,
@@ -56,6 +79,7 @@ function logError(attempt: number, error: any) {
 }
 
 async function postMark(payload: JournalPayload): Promise<void> {
+    await resolveHemisId(payload);
     await axios.post(`${JOURNAL_BASE_URL}/journal/student/unittest/marks`, toJournalBody(payload), {
         headers: journalHeaders(),
     });
