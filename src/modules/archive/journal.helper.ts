@@ -43,7 +43,7 @@ function toJournalBody(payload: JournalPayload) {
         student_id: payload.userId,
         collection_id: payload.collectionId,
         collection_name: payload.collectionName,
-        result: payload.result < 60 ? 1 : payload.result,
+        result: payload.result < 70 ? 1 : payload.result,
     };
 }
 
